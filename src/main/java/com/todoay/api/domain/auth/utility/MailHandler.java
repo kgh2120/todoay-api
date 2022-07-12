@@ -1,4 +1,4 @@
-package com.todoay.api.domain.mailSender.utility;
+package com.todoay.api.domain.auth.utility;
 
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;

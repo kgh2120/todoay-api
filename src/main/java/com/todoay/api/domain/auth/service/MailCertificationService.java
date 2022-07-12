@@ -1,10 +1,7 @@
-package com.todoay.api.domain.mailSender.service;
+package com.todoay.api.domain.auth.service;
 
-import com.todoay.api.domain.mailSender.dto.MailDto;
-import com.todoay.api.domain.mailSender.utility.MailHandler;
+import com.todoay.api.domain.auth.utility.MailHandler;
 import lombok.RequiredArgsConstructor;
-import org.springframework.mail.MailSender;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +9,7 @@ import javax.mail.MessagingException;
 
 @Service
 @RequiredArgsConstructor
-public class MailSendingService {
+public class MailCertificationService {
     private final JavaMailSender mailSender;
 
     public void sendEmail(String email) {
