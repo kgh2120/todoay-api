@@ -1,5 +1,6 @@
 package com.todoay.api.domain.auth.service;
 
+import com.todoay.api.domain.auth.dto.EmailDto;
 import com.todoay.api.domain.auth.utility.MailHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -12,10 +13,10 @@ import javax.mail.MessagingException;
 public class MailCertificationService {
     private final JavaMailSender mailSender;
 
-    public void sendEmail(String email) {
+    public void sendEmail(EmailDto emailDto) {
         try {
             MailHandler mailHandler = new MailHandler(mailSender);
-            mailHandler.setTo(email);
+            mailHandler.setTo(emailDto.getEmail());
             mailHandler.setSubject("[TODOAY] 이메일 인증을 완료해주세요.");
             String emailToken = "1234";
             // emailToken = TokenManager.createEmailToken(email, 60*5);
