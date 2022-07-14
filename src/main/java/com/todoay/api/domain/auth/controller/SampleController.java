@@ -19,7 +19,6 @@ public class SampleController {
 
     @PostMapping("/invalid")
     public ResponseEntity<SampleArgumentErrorDto> sampleArgumentError(@RequestBody @Validated SampleArgumentErrorDto dto) {
-
         return ResponseEntity.ok(dto);
     }
 }

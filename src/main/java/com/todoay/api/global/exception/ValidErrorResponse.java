@@ -14,13 +14,15 @@ public class ValidErrorResponse implements ErrorCode{
     private final String name;
     private final String detailMessage;
     private final LocalDateTime timeStamp = LocalDateTime.now();
+    private final String path;
     private final List<ValidDetail> details = new ArrayList<>();
 
 
-    public ValidErrorResponse() {
+    public ValidErrorResponse(String path) {
         httpStatus = HttpStatus.BAD_REQUEST;
         name = "ARGUMENT_FORMAT_INVALID";
         detailMessage = "양식에 맞지 않은 입력값이 입력되었습니다.";
+        this.path = path;
     }
 
     public void addDetail(ValidDetail detail) {
