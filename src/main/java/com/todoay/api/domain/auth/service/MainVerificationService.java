@@ -17,7 +17,7 @@ public class MainVerificationService {
     private final JwtManager jwtManager;
     private final JavaMailSender mailSender;
 
-    public void sendverificationMail(EmailDto emailDto) {
+    public void sendVerificationMail(EmailDto emailDto) {
         try {
             MailHandler mailHandler = new MailHandler(mailSender);
             mailHandler.setTo(emailDto.getEmail());
@@ -31,13 +31,11 @@ public class MainVerificationService {
     }
 
     public void verifyEmailToken(EmailTokenDto emailTokenDto) {
-        String emailToken = emailTokenDto.getEmailToken();
-
 //         io.jsonwebtoken.UnsupportedJwtException – if the claimsJws argument does not represent an Claims JWS
 //         io.jsonwebtoken.MalformedJwtException – if the claimsJws string is not a valid JWS
 //         io.jsonwebtoken.SignatureException – if the claimsJws JWS signature validation fails
 //         io.jsonwebtoken.ExpiredJwtException – if the specified JWT is a Claims JWT and the Claims has an expiration time before the time this method is invoked.
 //         IllegalArgumentException – if the claimsJws string is null or empty or only whitespace
-        Claims verify = jwtManager.verify(emailToken);
+        Claims verify = jwtManager.verify(emailTokenDto.getEmailToken());
     }
 }

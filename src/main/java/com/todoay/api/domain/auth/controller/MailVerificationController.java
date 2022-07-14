@@ -19,7 +19,7 @@ public class MailVerificationController {
 
     @GetMapping("/auth/mail")
     public ResponseEntity<Void> sendVerificationMail(@Valid EmailDto emailDto) {
-        mainVerificationService.sendverificationMail(emailDto);
+        mainVerificationService.sendVerificationMail(emailDto);
         return ResponseEntity.noContent().build();
     }
 
