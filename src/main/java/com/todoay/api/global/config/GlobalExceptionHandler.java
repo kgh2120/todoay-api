@@ -6,6 +6,7 @@ import com.todoay.api.global.exception.ValidDetail;
 import com.todoay.api.global.exception.ValidErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -35,5 +36,10 @@ public class GlobalExceptionHandler {
                         .build()
         ).collect(Collectors.toList());
         return ValidErrorResponse.toResponseEntity(details, request.getRequestURI());
+    }
+
+    @ExceptionHandler(BindException.class)
+    public ResponseEntity<ValidErrorResponse> handleBindException(BindException ex,HttpServletRequest request) {
+        return ValidErrorResponse.toResponseEntity(ex, request.getRequestURI());
     }
 }
