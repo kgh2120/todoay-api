@@ -16,4 +16,6 @@ public class ProfileSaveDto {
     private String imgUrl;
     private String introMsg;
 
+    private String auth;
+
 }
