@@ -1,11 +1,10 @@
 package com.todoay.api.global.config;
 
-import com.todoay.api.global.exception.AbstractApiException;
-import com.todoay.api.global.exception.ErrorResponse;
-import com.todoay.api.global.exception.ValidDetail;
-import com.todoay.api.global.exception.ValidErrorResponse;
+import com.todoay.api.global.exception.*;
+import io.jsonwebtoken.ExpiredJwtException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -25,7 +24,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ValidErrorResponse> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,HttpServletRequest request) {
+    public ResponseEntity<ValidErrorResponse> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpServletRequest request) {
         List<ValidDetail> details = ex.getBindingResult().getFieldErrors().stream().map(e ->
                 ValidDetail.builder()
                         .code(e.getCode())
@@ -35,5 +34,15 @@ public class GlobalExceptionHandler {
                         .build()
         ).collect(Collectors.toList());
         return ValidErrorResponse.toResponseEntity(details, request.getRequestURI());
+    }
+
+    @ExceptionHandler(BindException.class)
+    public ResponseEntity<ValidErrorResponse> handleBindException(BindException ex, HttpServletRequest request) {
+        return ValidErrorResponse.toResponseEntity(ex, request.getRequestURI());
+    }
+
+    @ExceptionHandler(ExpiredJwtException.class)
+    public ResponseEntity<?> handleExpiredJwtException(ExpiredJwtException ex, HttpServletRequest request) {
+        return ErrorResponse.toResponseEntity(GlobalErrorCode.EMAIL_TOKEN_EXPIRED, request.getRequestURI());
     }
 }

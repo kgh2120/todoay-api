@@ -9,7 +9,9 @@ import org.springframework.http.HttpStatus;
 public enum GlobalErrorCode implements ErrorCode{
 
 
-    ARGUMENT_FORMAT_INVALID(HttpStatus.BAD_REQUEST,"양식에 맞지 않은 입력값이 입력되었습니다.");
+    ARGUMENT_FORMAT_INVALID(HttpStatus.BAD_REQUEST,"양식에 맞지 않은 입력값이 입력되었습니다."),
+    EMAIL_TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "이메일 토큰이 만료되었습니다.")
+    ;
 
     private final HttpStatus httpStatus;
     private final String detailMessage;

@@ -3,8 +3,10 @@ package com.todoay.api.global.exception;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindException;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.todoay.api.global.exception.GlobalErrorCode.ARGUMENT_FORMAT_INVALID;
 
@@ -26,5 +28,17 @@ public class ValidErrorResponse extends ErrorResponse{
                         .details(detalis)
                         .build()
                 );
+    }
+
+    public static ResponseEntity<ValidErrorResponse> toResponseEntity(BindException ex, String path) {
+        List<ValidDetail> details = ex.getBindingResult().getFieldErrors().stream().map(e ->
+                ValidDetail.builder()
+                        .code(e.getCode())
+                        .field(e.getField())
+                        .rejectedValue(e.getRejectedValue())
+                        .message(e.getDefaultMessage())
+                        .build()
+        ).collect(Collectors.toList());
+        return toResponseEntity(details, path);
     }
 }
