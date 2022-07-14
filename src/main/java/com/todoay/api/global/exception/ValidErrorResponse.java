@@ -1,46 +1,33 @@
 package com.todoay.api.global.exception;
 
 import lombok.Getter;
-import org.springframework.http.HttpStatus;
+import lombok.experimental.SuperBuilder;
+import org.springframework.http.ResponseEntity;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
+import static com.todoay.api.global.exception.GlobalErrorCode.ARGUMENT_FORMAT_INVALID;
+
 @Getter
-public class ValidErrorResponse implements ErrorCode{
+@SuperBuilder
+public class ValidErrorResponse extends ErrorResponse{
+    private final List<ValidDetail> details;
 
-    private final HttpStatus httpStatus;
-    private final String name;
-    private final String detailMessage;
-    private final LocalDateTime timeStamp = LocalDateTime.now();
-    private final String path;
-    private final List<ValidDetail> details = new ArrayList<>();
+    public static ResponseEntity<ValidErrorResponse> toResponseEntity(List<ValidDetail> detalis, String path) {
 
-
-    public ValidErrorResponse(String path) {
-        httpStatus = HttpStatus.BAD_REQUEST;
-        name = "ARGUMENT_FORMAT_INVALID";
-        detailMessage = "양식에 맞지 않은 입력값이 입력되었습니다.";
-        this.path = path;
+        return ResponseEntity
+                .status(ARGUMENT_FORMAT_INVALID.getHttpStatus())
+                .body(ValidErrorResponse.builder()
+                        .status(ARGUMENT_FORMAT_INVALID.getHttpStatus().value())
+                        .error(ARGUMENT_FORMAT_INVALID.getHttpStatus().name())
+                        .code(ARGUMENT_FORMAT_INVALID.name())
+                        .message(ARGUMENT_FORMAT_INVALID.getDetailMessage())
+                        .path(path)
+                        .details(detalis)
+                        .build()
+                );
     }
-
     public void addDetail(ValidDetail detail) {
         this.details.add(detail);
-    }
-
-    @Override
-    public HttpStatus getHttpStatus() {
-        return httpStatus;
-    }
-
-    @Override
-    public String name() {
-        return name;
-    }
-
-    @Override
-    public String getDetailMessage() {
-        return detailMessage;
     }
 }
