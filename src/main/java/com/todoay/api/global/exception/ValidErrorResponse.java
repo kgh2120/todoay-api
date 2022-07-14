@@ -27,7 +27,4 @@ public class ValidErrorResponse extends ErrorResponse{
                         .build()
                 );
     }
-    public void addDetail(ValidDetail detail) {
-        this.details.add(detail);
-    }
 }
