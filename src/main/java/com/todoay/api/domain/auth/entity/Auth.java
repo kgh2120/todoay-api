@@ -12,7 +12,6 @@ public class Auth {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO) // IDENTITY, TABLE, SEQUENCE
-    @Column(name = "auth_id")
     private Long id;
 
     private String email;
