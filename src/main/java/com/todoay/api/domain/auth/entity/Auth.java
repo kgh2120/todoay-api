@@ -11,7 +11,7 @@ import javax.persistence.*;
 public class Auth {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // AUTO, TABLE, SEQUENCE
+    @GeneratedValue(strategy = GenerationType.AUTO) // IDENTITY, TABLE, SEQUENCE
     @Column(name = "auth_id")
     private Long id;
 

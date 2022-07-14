@@ -11,7 +11,7 @@ import javax.persistence.*;
 public class Profile {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "profile_id")
     private Long id;
 
