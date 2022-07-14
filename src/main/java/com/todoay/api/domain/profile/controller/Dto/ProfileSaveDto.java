@@ -13,7 +13,7 @@ import javax.persistence.*;
 public class ProfileSaveDto {
 
     private String nickname;
-    private String img_url;
-    private String intro_msg;
+    private String imgUrl;
+    private String introMsg;
 
 }
