@@ -23,10 +23,6 @@ public class Auth implements UserDetails {
 
     private String password;
 
-    // Profile table의 PK 참조 (FK)
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "profileId")
-    private Profile profile;
 
     @Builder  //이게 있으면 쉽게 객체 생성이 가능하다
     public Auth(String email, String password) {

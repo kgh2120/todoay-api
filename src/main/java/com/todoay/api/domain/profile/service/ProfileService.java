@@ -1,5 +1,7 @@
 package com.todoay.api.domain.profile.service;
 
+import com.todoay.api.domain.profile.Dto.ProfileSaveDto;
+import com.todoay.api.domain.profile.entity.Profile;
 import com.todoay.api.domain.profile.repository.ProfileRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,18 +15,13 @@ public class ProfileService {
 
     private final ProfileRepository profileRepository;
 
-
-
-//    // 회원정보 저장
-//    public Long save(ProfileSaveDto profileSaveDto) {
-//        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-//        profileSaveDto.setPassword(encoder.encode(profileSaveDto.getPassword()));
-//
-//        return profileRepository.save(UserInfo.builder()
-//                .email(infoDto.getEmail())
-//                .auth(infoDto.getAuth())
-//                .password(infoDto.getPassword()).build()).getCode();
-//    }
-
-
+    // profileService
+    // 프로필 저장
+    public Long save(ProfileSaveDto profileSaveDto) {
+        return profileRepository.save(Profile.builder()
+                .nickname(profileSaveDto.getNickname())
+                .imgUrl(profileSaveDto.getImgUrl())
+                .introMsg(profileSaveDto.getIntroMsg()).build()).getId();
+    }
+    
 }

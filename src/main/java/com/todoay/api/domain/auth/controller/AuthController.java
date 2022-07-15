@@ -2,20 +2,26 @@ package com.todoay.api.domain.auth.controller;
 
 import com.todoay.api.domain.auth.Dto.AuthSaveDto;
 import com.todoay.api.domain.auth.service.AuthService;
+import com.todoay.api.domain.profile.Dto.ProfileSaveDto;
+import com.todoay.api.domain.profile.service.ProfileService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+@RestController
 @RequiredArgsConstructor
+@RequestMapping("/auth")
 public class AuthController {
 
     private final AuthService authService;
+    private final ProfileService profileService;
 
-    @PostMapping("/auth")
-    public String signup(AuthSaveDto authSaveDto) {
+    @PostMapping("/save")
+    public String signup(@RequestBody AuthSaveDto authSaveDto, @RequestBody ProfileSaveDto profileSaveDto) {
         authService.save(authSaveDto);
-        return "redirect:/auth";
+        profileService.save(profileSaveDto);
+        return "signup";
     }
 }

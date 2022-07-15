@@ -1,11 +1,12 @@
 package com.todoay.api.domain.auth.Dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
-@Getter
-@Setter
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class AuthSaveDto {
     private String email;
     private String password;
 }
+
