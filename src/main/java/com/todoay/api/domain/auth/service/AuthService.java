@@ -1,5 +1,6 @@
 package com.todoay.api.domain.auth.service;
 
+import com.todoay.api.domain.auth.Dto.AuthProfileDto;
 import com.todoay.api.domain.auth.Dto.AuthSaveDto;
 import com.todoay.api.domain.auth.entity.Auth;
 import com.todoay.api.domain.auth.repository.AuthRepository;
@@ -28,12 +29,10 @@ public class AuthService implements UserDetailsService {
      * @return 저장되는 회원의 PK
      **/
 
-    public Long save(AuthSaveDto authSaveDto) {
+    public Long save(AuthProfileDto authProfileDto) {
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        authSaveDto.setPassword(encoder.encode(authSaveDto.getPassword()));
+        authProfileDto.setPassword(encoder.encode(authProfileDto.getPassword()));
 
-        return authRepository.save(Auth.builder()
-                .email(authSaveDto.getEmail())
-                .password(authSaveDto.getPassword()).build()).getId();
+        return authRepository.save(authProfileDto.toAuthEntity()).getId();
     }
 }
