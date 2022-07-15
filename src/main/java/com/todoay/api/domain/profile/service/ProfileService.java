@@ -9,17 +9,11 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class ProfileService implements UserDetailsService {
+public class ProfileService {
 
     private final ProfileRepository profileRepository;
 
 
-    // spring security 필수 메소드
-    @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        return profileRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException((email)));
-    }
 
 //    // 회원정보 저장
 //    public Long save(ProfileSaveDto profileSaveDto) {

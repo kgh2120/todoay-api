@@ -1,6 +1,7 @@
 package com.todoay.api.domain.auth.entity;
 
 import com.todoay.api.domain.profile.entity.Profile;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
@@ -26,6 +27,12 @@ public class Auth implements UserDetails {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "profileId")
     private Profile profile;
+
+    @Builder  //이게 있으면 쉽게 객체 생성이 가능하다
+    public Auth(String email, String password) {
+        this.email = email;
+        this.password = password;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
