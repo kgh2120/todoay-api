@@ -25,11 +25,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .authorizeRequests()
-                    .antMatchers("/auth/**", "/signup", "/user/**").permitAll()  // 누구나 접근 가능
-                    .antMatchers("/").hasRole("USER")  // USER, ADMIN만 접근 가능
-                    .antMatchers("/admin").hasRole("ADMIN")  // ADMIN만
-                    .anyRequest().authenticated()  // 나머지 요청들은 권한의 종류에 상관없이 권한이 있어야 접근
+                .csrf().disable()
+                .headers().frameOptions().disable()
+
+                .and()
+                    .authorizeRequests()
+                        .antMatchers("/auth/**", "/signup", "/user/**").permitAll()  // 누구나 접근 가능
+                        .antMatchers("/").hasRole("USER")  // USER, ADMIN만 접근 가능
+                        .antMatchers("/admin").hasRole("ADMIN")  // ADMIN만
+                        .anyRequest().authenticated()  // 나머지 요청들은 권한의 종류에 상관없이 권한이 있어야 접근
 
                 .and()
                     .formLogin()

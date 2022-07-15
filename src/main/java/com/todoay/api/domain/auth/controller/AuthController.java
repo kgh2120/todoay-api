@@ -21,9 +21,9 @@ public class AuthController {
     private final ProfileService profileService;
 
     @PostMapping("save")
-    public String signup(@RequestBody AuthProfileDto authProfileDto) {
+    public AuthProfileDto signup(@RequestBody AuthProfileDto authProfileDto) {
         authService.save(authProfileDto);
         profileService.save(authProfileDto);
-        return "signup";
+        return authProfileDto;
     }
 }
