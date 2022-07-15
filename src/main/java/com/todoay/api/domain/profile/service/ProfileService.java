@@ -1,12 +1,10 @@
 package com.todoay.api.domain.profile.service;
 
-import com.todoay.api.domain.profile.controller.Dto.ProfileSaveDto;
 import com.todoay.api.domain.profile.repository.ProfileRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service

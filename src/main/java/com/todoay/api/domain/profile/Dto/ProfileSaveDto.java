@@ -1,4 +1,4 @@
-package com.todoay.api.domain.profile.controller.Dto;
+package com.todoay.api.domain.profile.Dto;
 
 import com.todoay.api.domain.auth.entity.Auth;
 import lombok.AllArgsConstructor;

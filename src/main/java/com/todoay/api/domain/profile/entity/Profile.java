@@ -1,6 +1,6 @@
 package com.todoay.api.domain.profile.entity;
 import com.todoay.api.domain.auth.entity.Auth;
-import com.todoay.api.domain.profile.controller.Dto.ProfileSaveDto;
+import com.todoay.api.domain.profile.Dto.ProfileSaveDto;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
@@ -12,23 +12,18 @@ import java.util.Collection;
 @Entity
 @Getter
 @Setter
-public class Profile implements UserDetails {
+public class Profile {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(name = "nickname")
     private String nickname;
 
     private String imgUrl;
 
     private String introMsg;
 
-    // Auth table의 PK 참조 (FK)
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "auth_id")
-    private Auth auth;
 
     public static Profile saveProfile(ProfileSaveDto profileSaveDto) {
         // profileEntity타입의 객체를 보내기 위해 profileEntity라는 객체 선언
@@ -43,38 +38,4 @@ public class Profile implements UserDetails {
         return profile;
     }
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
-    }
-
-    @Override
-    public String getPassword() {
-        return null;
-    }
-
-    @Override
-    public String getUsername() {
-        return null;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return false;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return false;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return false;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return false;
-    }
 }
