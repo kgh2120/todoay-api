@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     private final AuthServiceImpl authServiceImpl;
-    private final ProfileService profileService;
 
     @PostMapping("save")
     public AuthSaveDto signup(@RequestBody AuthSaveDto authSaveDto) {

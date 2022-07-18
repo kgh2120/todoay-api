@@ -9,6 +9,4 @@ import org.springframework.web.bind.annotation.PostMapping;
 @RequiredArgsConstructor
 public class ProfileController {
 
-    private final ProfileService profileService;
-
 }

@@ -23,8 +23,7 @@ public class Auth implements UserDetails {
 
     private String password;
 
-    @OneToOne(mappedBy = "Auth", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "profile_Id")
+    @OneToOne(mappedBy = "auth", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Profile profile;
 
 
