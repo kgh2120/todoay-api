@@ -2,7 +2,7 @@ package com.todoay.api.domain.auth.controller;
 
 import com.todoay.api.domain.auth.dto.EmailDto;
 import com.todoay.api.domain.auth.dto.EmailTokenDto;
-import com.todoay.api.domain.auth.service.MailVerificationServiceImpl;
+import com.todoay.api.domain.auth.service.MailVerificationService;
 import com.todoay.api.global.exception.ErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -20,7 +20,7 @@ import javax.validation.Valid;
 @RestController
 @RequiredArgsConstructor
 public class MailVerificationController {
-    private final MailVerificationServiceImpl mailVerificationServiceImpl;
+    private final MailVerificationService mailVerificationService;
 
     @Operation(
             summary = "이메일로 인증 메일을 보낸다.",
@@ -32,7 +32,7 @@ public class MailVerificationController {
     )
     @GetMapping("/auth/mail")
     public ResponseEntity<Void> sendVerificationMail(@Valid EmailDto emailDto) {
-        mailVerificationServiceImpl.sendVerificationMail(emailDto);
+        mailVerificationService.sendVerificationMail(emailDto);
         return ResponseEntity.noContent().build();
     }
 
@@ -46,7 +46,7 @@ public class MailVerificationController {
             }
     )
     public ResponseEntity<Void> verifyEmailToken(@RequestBody @Valid EmailTokenDto emailTokenDto) {
-        mailVerificationServiceImpl.verifyEmailToken(emailTokenDto);
+        mailVerificationService.verifyEmailToken(emailTokenDto);
         return ResponseEntity.noContent().build();
     }
 }
