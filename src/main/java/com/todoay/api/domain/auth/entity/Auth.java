@@ -23,6 +23,10 @@ public class Auth implements UserDetails {
 
     private String password;
 
+    @OneToOne(mappedBy = "Auth", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "profile_Id")
+    private Profile profile;
+
 
     @Builder  //이게 있으면 쉽게 객체 생성이 가능하다
     public Auth(String email, String password) {
