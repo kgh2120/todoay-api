@@ -9,13 +9,17 @@ import java.time.LocalDateTime;
 
 @Getter
 @SuperBuilder
-@Schema(description = "에러 응답")
 public class ErrorResponse {
     private final LocalDateTime timestamp = LocalDateTime.now();
+    @Schema(example = "401")
     private final int status;
+    @Schema(example = "UNAUTHORIZED")
     private final String error;
+    @Schema(example = "JWT_EXPIRED")
     private final String code;
+    @Schema(example = "이메일 토큰이 만료되었습니다.")
     private final String message;
+    @Schema(example = "/auth/email-verification")
     private final String path;
 
     public static ResponseEntity<ErrorResponse> toResponseEntity(ErrorCode errorCode, String path) {
