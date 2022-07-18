@@ -1,3 +1,7 @@
 spring:
   config:
     import: classpath:mailSender.yml
+springfox:
+  documentation:
+    swagger:
+        use-model-v3: false
