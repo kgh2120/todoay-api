@@ -11,8 +11,6 @@ public class AuthSaveDto {
     private String email;
     private String password;
     private String nickname;
-    private String imgUrl;
-    private String introMsg;
 
     public Auth toAuthEntity() {
         Auth authEntity = Auth.builder()
@@ -24,9 +22,7 @@ public class AuthSaveDto {
 
     public Profile toProfileEntity() {
         return Profile.builder()
-                .nickname(nickname)
-                .imgUrl(imgUrl)
-                .introMsg(introMsg).build();
+                .nickname(nickname).build();
     }
 }
 

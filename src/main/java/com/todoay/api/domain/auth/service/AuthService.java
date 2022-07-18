@@ -1,14 +1,13 @@
 package com.todoay.api.domain.auth.service;
 
 
+import com.todoay.api.domain.auth.Dto.AuthSaveDto;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 
-
-interface AuthService extends UserDetailsService {
+public interface AuthService extends UserDetailsService {
     // spring security 필수 메소드
-    @Override
-    public UserDetails loadUserByUsername(String email);
-
+    public Long save(AuthSaveDto authSaveDto);
 }
