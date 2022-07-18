@@ -3,6 +3,7 @@ package com.todoay.api.domain.auth.service;
 import com.todoay.api.domain.auth.dto.EmailDto;
 import com.todoay.api.domain.auth.dto.EmailTokenDto;
 import com.todoay.api.domain.auth.utility.MailHandler;
+import com.todoay.api.global.exception.GlobalErrorCode;
 import com.todoay.api.global.jwt.JwtManager;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +14,7 @@ import javax.mail.MessagingException;
 
 @Service
 @RequiredArgsConstructor
-public class MainVerificationService {
+public class MailVerificationServiceImpl implements MailVerificationService {
     private final JwtManager jwtManager;
     private final JavaMailSender mailSender;
 
