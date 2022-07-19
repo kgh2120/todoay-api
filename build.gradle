@@ -33,7 +33,10 @@ dependencies {
 	testImplementation 'org.springframework.security:spring-security-test'
 	implementation 'javax.xml.bind:jaxb-api:2.3.1'
 	implementation 'io.jsonwebtoken:jjwt:0.9.1'
+
+	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'  // 뷰 단에서 현재 로그인된 사용자의 정보를 가져오기 위해 추가 (필요없을 듯)
 	implementation 'org.springdoc:springdoc-openapi-ui:1.6.8'
+
 }
 
 tasks.named('test') {
