@@ -20,8 +20,10 @@ public class Auth implements UserDetails {
     @GeneratedValue(strategy = GenerationType.AUTO) // IDENTITY, TABLE, SEQUENCE
     private Long id;
 
+    @Column(nullable = false, unique = true)
     private String email;
 
+    @Column(nullable = false)
     private String password;
 
     @OneToOne(mappedBy = "auth", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
