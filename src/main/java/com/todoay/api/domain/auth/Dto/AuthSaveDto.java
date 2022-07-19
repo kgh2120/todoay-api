@@ -1,4 +1,4 @@
-package com.todoay.api.domain.auth.Dto;
+package com.todoay.api.domain.auth.dto;
 
 import com.todoay.api.domain.auth.entity.Auth;
 import com.todoay.api.domain.profile.entity.Profile;
@@ -16,7 +16,7 @@ public class AuthSaveDto {
         Auth authEntity = Auth.builder()
                 .email(email)
                 .password(password).build();
-        authEntity.setProfile(toProfileEntity());
+        authEntity.associateWithProfile(toProfileEntity());
         return authEntity;
     }
 

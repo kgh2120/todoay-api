@@ -3,6 +3,7 @@ package com.todoay.api.domain.auth.entity;
 import com.todoay.api.domain.profile.entity.Profile;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,7 +13,7 @@ import java.util.Collection;
 
 @Entity
 @Getter
-@Setter
+@Setter @NoArgsConstructor
 public class Auth implements UserDetails {
 
     @Id
@@ -33,6 +34,11 @@ public class Auth implements UserDetails {
         this.password = password;
     }
 
+    public void associateWithProfile(Profile profile) {
+        this.profile = profile;
+        profile.setAuth(this);
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;
@@ -40,7 +46,7 @@ public class Auth implements UserDetails {
 
     @Override
     public String getPassword() {
-        return null;
+        return password;
     }
 
     @Override
