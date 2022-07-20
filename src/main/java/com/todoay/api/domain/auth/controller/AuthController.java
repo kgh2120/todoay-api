@@ -3,6 +3,12 @@ package com.todoay.api.domain.auth.controller;
 import com.todoay.api.domain.auth.dto.AuthSaveDto;
 import com.todoay.api.domain.auth.dto.AuthUpdatePasswordReqeustDto;
 import com.todoay.api.domain.auth.service.AuthService;
+import com.todoay.api.global.exception.ErrorResponse;
+import com.todoay.api.global.exception.ValidErrorResponse;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +36,15 @@ public class AuthController {
         return authSaveDto;
     }
 
+    @Operation(
+            summary = "계정의 비밀번호를 변경한다",
+            description ="토큰을 통해 얻은 email에 해당하는 계정의 비밀번호를 수정한다. 토큰이 존재하지 않거나, 입력한 비밀번호가 양식을 지키지 않는다면 오류가 발생한다.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "성공"),
+                    @ApiResponse(responseCode = "400", description = "올바른 비밀번호 양식을 입력하지 않음",content = @Content(schema = @Schema(implementation = ValidErrorResponse.class))) ,
+                    @ApiResponse(responseCode = "401", description = "JWT 토큰 에러 ",content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+            }
+    )
     @PatchMapping("/password")
     public ResponseEntity changePassword(HttpServletRequest request, @RequestBody @Validated AuthUpdatePasswordReqeustDto dto) {
 
@@ -41,6 +56,14 @@ public class AuthController {
         return ResponseEntity.status(200).build();
     }
 
+    @Operation(
+            summary = "계정을 삭제한다",
+            description = "토큰을 통해 얻은 email에 해당하는 계정의 상태를 삭제함으로 변경한다. 토큰에 관련되어 문제가 생길 경우 오류를 발생한다.",
+            responses = {
+                    @ApiResponse(responseCode = "204", description = "성공"),
+                    @ApiResponse(responseCode = "401", description = "JWT 토큰 에러" ,content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            }
+    )
     @DeleteMapping("/my")
     public ResponseEntity deleteAccount(HttpServletRequest request) {
 
