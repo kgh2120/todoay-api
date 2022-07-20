@@ -8,9 +8,10 @@ import com.todoay.api.domain.profile.exception.NicknameDuplicateException;
 import com.todoay.api.domain.profile.repository.ProfileRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@RequiredArgsConstructor
+@RequiredArgsConstructor @Transactional
 public class ProfileServiceImpl implements ProfileService {
 
     private final ProfileRepository profileRepository;
@@ -37,6 +38,8 @@ public class ProfileServiceImpl implements ProfileService {
         Profile profile = getProfileByEmailOrElseThrowEmailNotFoundException(email);
         profile.updateProfile(dto);
     }
+
+
     private Profile getProfileByEmailOrElseThrowEmailNotFoundException(String email) {
         return profileRepository.findProfileByAuthEmail(email)
                 .orElseThrow(EmailNotFoundException::new);

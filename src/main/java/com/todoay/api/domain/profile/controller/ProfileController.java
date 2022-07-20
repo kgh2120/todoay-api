@@ -12,16 +12,17 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 
 @Slf4j
-@Controller
+@RestController
 @RequiredArgsConstructor
 public class ProfileController {
 
     private final ProfileService profileService;
-    @Value("header.access-token")
+    @Value("${header.access-token}")
     private String accessToken;
 
     @GetMapping("/profile/my")
@@ -38,6 +39,7 @@ public class ProfileController {
     public ResponseEntity updateProfile(HttpServletRequest request, @RequestBody @Validated ProfileUpdateReqeustDto dto) {
 
         String email = getJwtTokenByHeader(request);
+        log.info("dto = {} ",dto);
         // TODO jwt를 뜯어줘야 함.
         profileService.updateMyProfile(email, dto);
 
