@@ -1,13 +1,17 @@
 package com.todoay.api.domain.auth.service;
 
 
-import com.todoay.api.domain.auth.Dto.AuthSaveDto;
-import org.springframework.security.core.userdetails.UserDetails;
+import com.todoay.api.domain.auth.dto.AuthSaveDto;
+import com.todoay.api.domain.auth.dto.AuthUpdatePasswordReqeustDto;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 
 public interface AuthService extends UserDetailsService {
     // spring security 필수 메소드
     public Long save(AuthSaveDto authSaveDto);
+
+    void updateAuthPassword(String email, AuthUpdatePasswordReqeustDto dto); // 비밀번호 변경
+
+    // 계정 탈퇴
+    void deleteAuth(String email);
 }

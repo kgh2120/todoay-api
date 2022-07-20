@@ -41,6 +41,10 @@ public class Auth implements UserDetails {
         profile.setAuth(this);
     }
 
+    public void updatePassword(String password) {
+        this.password = password;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;
