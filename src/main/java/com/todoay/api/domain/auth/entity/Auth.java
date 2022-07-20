@@ -33,37 +33,37 @@ public class Auth implements UserDetails {
         this.password = password;
     }
 
-    @Override
+    @Override // 계정이 가지고 있는 권한 목록 리턴
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;
     }
 
-    @Override
+    @Override // 계정의 비밀번호 리턴
     public String getPassword() {
         return null;
     }
 
-    @Override
+    @Override // 계정의 이름 리턴
     public String getUsername() {
         return null;
     }
 
-    @Override
+    @Override // 계정이 만료되었는지 리턴. True: 만료되지 않음
     public boolean isAccountNonExpired() {
         return false;
     }
 
-    @Override
+    @Override // 계정이 잠겨있는지 리턴. True: 잠기지 않음
     public boolean isAccountNonLocked() {
         return false;
     }
 
-    @Override
+    @Override // 비밀번호가 만료되었는지 리턴. True: 만료되지 않음
     public boolean isCredentialsNonExpired() {
         return false;
     }
 
-    @Override
+    @Override // 계정이 활성화 되어있는지 리턴. True: 활성화 상태
     public boolean isEnabled() {
         return false;
     }
