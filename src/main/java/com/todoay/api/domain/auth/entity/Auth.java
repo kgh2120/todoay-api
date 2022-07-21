@@ -1,9 +1,7 @@
 package com.todoay.api.domain.auth.entity;
 
 import com.todoay.api.domain.profile.entity.Profile;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -13,6 +11,7 @@ import java.util.Collection;
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Auth implements UserDetails {
 
     @Id
@@ -40,31 +39,31 @@ public class Auth implements UserDetails {
 
     @Override // 계정의 비밀번호 리턴
     public String getPassword() {
-        return null;
+        return password;
     }
 
     @Override // 계정의 이름 리턴
     public String getUsername() {
-        return null;
+        return email;
     }
 
     @Override // 계정이 만료되었는지 리턴. True: 만료되지 않음
     public boolean isAccountNonExpired() {
-        return false;
+        return true;
     }
 
     @Override // 계정이 잠겨있는지 리턴. True: 잠기지 않음
     public boolean isAccountNonLocked() {
-        return false;
+        return true;
     }
 
     @Override // 비밀번호가 만료되었는지 리턴. True: 만료되지 않음
     public boolean isCredentialsNonExpired() {
-        return false;
+        return true;
     }
 
     @Override // 계정이 활성화 되어있는지 리턴. True: 활성화 상태
     public boolean isEnabled() {
-        return false;
+        return true;
     }
 }

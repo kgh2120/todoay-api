@@ -36,6 +36,6 @@ public class MailVerificationServiceImpl implements MailVerificationService {
 //         io.jsonwebtoken.SignatureException – if the claimsJws JWS signature validation fails
 //         io.jsonwebtoken.ExpiredJwtException – if the specified JWT is a Claims JWT and the Claims has an expiration time before the time this method is invoked.
 //         IllegalArgumentException – if the claimsJws string is null or empty or only whitespace
-        Claims verify = jwtTokenProvider.verify(emailTokenDto.getEmailToken());
+        Claims validateToken = jwtTokenProvider.validateToken(emailTokenDto.getEmailToken());
     }
 }
