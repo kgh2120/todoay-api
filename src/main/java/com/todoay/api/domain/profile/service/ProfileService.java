@@ -1,9 +1,5 @@
 package com.todoay.api.domain.profile.service;
 
-import com.todoay.api.domain.auth.Dto.AuthSaveDto;
-import com.todoay.api.domain.profile.Dto.ProfileSaveDto;
-import com.todoay.api.domain.profile.entity.Profile;
-import com.todoay.api.domain.profile.repository.ProfileRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
