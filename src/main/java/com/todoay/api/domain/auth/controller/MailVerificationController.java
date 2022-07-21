@@ -1,7 +1,7 @@
 package com.todoay.api.domain.auth.controller;
 
-import com.todoay.api.domain.auth.ditio.EmailDto;
-import com.todoay.api.domain.auth.ditio.EmailTokenDto;
+import com.todoay.api.domain.auth.dto.EmailDto;
+import com.todoay.api.domain.auth.dto.EmailTokenDto;
 import com.todoay.api.domain.auth.service.MailVerificationService;
 import com.todoay.api.global.exception.ErrorResponse;
 import com.todoay.api.global.exception.ValidErrorResponse;
