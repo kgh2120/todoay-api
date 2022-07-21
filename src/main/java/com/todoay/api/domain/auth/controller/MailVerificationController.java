@@ -5,6 +5,7 @@ import com.todoay.api.domain.auth.dto.EmailTokenDto;
 import com.todoay.api.domain.auth.service.MailVerificationService;
 import com.todoay.api.global.exception.ErrorResponse;
 import io.jsonwebtoken.JwtException;
+import com.todoay.api.global.exception.ValidErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -29,7 +30,7 @@ public class MailVerificationController {
             description = "입력한 이메일로 인증 메일을 보낸다. 입력한 이메일이 이메일 양식을 지키지 않을 경우 오류 발생.",
             responses = {
                 @ApiResponse(responseCode = "204", description = "성공"),
-                @ApiResponse(responseCode = "400", description = "올바른 이메일 양식을 입력하지 않음.")
+                @ApiResponse(responseCode = "400", description = "올바른 이메일 양식을 입력하지 않음.", content = @Content(schema = @Schema(implementation = ValidErrorResponse.class)))
             }
     )
     @GetMapping("/mail")
