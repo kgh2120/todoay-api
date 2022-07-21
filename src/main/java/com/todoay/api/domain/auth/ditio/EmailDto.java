@@ -1,4 +1,4 @@
-package com.todoay.api.domain.auth.dto;
+package com.todoay.api.domain.auth.ditio;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
