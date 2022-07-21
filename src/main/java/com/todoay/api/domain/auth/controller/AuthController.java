@@ -1,12 +1,8 @@
 package com.todoay.api.domain.auth.controller;
 
-import com.todoay.api.domain.auth.Dto.AuthSaveDto;
-import com.todoay.api.domain.auth.repository.AuthRepository;
-
-
+import com.todoay.api.domain.auth.dto.AuthSaveDto;
 import com.todoay.api.domain.auth.service.AuthService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;

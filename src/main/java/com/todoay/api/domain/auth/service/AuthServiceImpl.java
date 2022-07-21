@@ -1,11 +1,9 @@
 package com.todoay.api.domain.auth.service;
 
-import com.todoay.api.domain.auth.Dto.AuthSaveDto;
-import com.todoay.api.domain.auth.entity.Auth;
+import com.todoay.api.domain.auth.dto.AuthSaveDto;
 import com.todoay.api.domain.auth.repository.AuthRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;

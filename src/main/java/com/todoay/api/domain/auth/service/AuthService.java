@@ -1,10 +1,8 @@
 package com.todoay.api.domain.auth.service;
 
 
-import com.todoay.api.domain.auth.Dto.AuthSaveDto;
-import org.springframework.security.core.userdetails.UserDetails;
+import com.todoay.api.domain.auth.dto.AuthSaveDto;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 
 public interface AuthService extends UserDetailsService {
