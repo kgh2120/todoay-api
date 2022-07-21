@@ -1,11 +1,8 @@
-package com.todoay.api.domain.profile.Dto;
+package com.todoay.api.domain.profile.dto;
 
-import com.todoay.api.domain.auth.entity.Auth;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import javax.persistence.*;
 
 @Data
 @NoArgsConstructor
