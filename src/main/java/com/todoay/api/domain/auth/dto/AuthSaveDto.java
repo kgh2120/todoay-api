@@ -1,4 +1,4 @@
-package com.todoay.api.domain.auth.Dto;
+package com.todoay.api.domain.auth.dto;
 
 import com.todoay.api.domain.auth.entity.Auth;
 import com.todoay.api.domain.profile.entity.Profile;
