@@ -2,16 +2,21 @@ package com.todoay.api.domain.auth.entity;
 
 import com.todoay.api.domain.profile.entity.Profile;
 import lombok.*;
+import org.springframework.boot.context.properties.bind.DefaultValue;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Collection;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@EntityListeners(AuditingEntityListener.class)
 public class Auth implements UserDetails {
 
     @Id
@@ -22,6 +27,14 @@ public class Auth implements UserDetails {
 
     private String password;
 
+    @CreatedDate
+    private LocalDateTime createdAt;
+
+    private LocalDateTime deletedAt;
+
+    private LocalDateTime emailVerifiedAt;  // null일 경우 인증되지 않음. null이 아닐 경우는 해당 시간에 인증되었음을 의미.
+
+
     @OneToOne(mappedBy = "auth", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Profile profile;
 
@@ -31,6 +44,7 @@ public class Auth implements UserDetails {
         this.email = email;
         this.password = password;
     }
+
 
     @Override // 계정이 가지고 있는 권한 목록 리턴
     public Collection<? extends GrantedAuthority> getAuthorities() {

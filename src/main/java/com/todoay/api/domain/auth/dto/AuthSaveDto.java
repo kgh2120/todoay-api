@@ -2,14 +2,28 @@ package com.todoay.api.domain.auth.dto;
 
 import com.todoay.api.domain.auth.entity.Auth;
 import com.todoay.api.domain.profile.entity.Profile;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
+
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class AuthSaveDto {
+    @Schema(required = true)
+    @NotBlank
+    @Email
     private String email;
+
+    @NotNull
+    @Size(min = 8, max = 16)
     private String password;
+
+    @NotBlank
     private String nickname;
 
     public Auth toAuthEntity() {

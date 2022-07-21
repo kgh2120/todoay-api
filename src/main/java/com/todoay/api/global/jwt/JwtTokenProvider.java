@@ -26,6 +26,8 @@ public class JwtTokenProvider {
     @Value("${jwt.key}")
     private String secretKey;
     private final long EMAIL_TOKEN_EXPIRATION = 1000 * 60 * 5;
+    private final long ACCESS_TOKEN_EXPIRATION = 1000 * 60 * 60 * 24;
+    private final long REFRESH_TOKEN_EXPIRATION = 1000 * 60 * 60 * 24 * 30;
 
     private final Logger LOGGER = LoggerFactory.getLogger(JwtTokenProvider.class);
     private final UserDetailsService userDetailsService;
@@ -39,7 +41,8 @@ public class JwtTokenProvider {
         LOGGER.info("[init] JwtTokenProvider 내 secretKey 초기화 완료");
     }
 
-    public String createEmailToken(String email) {
+
+    private String createToken(long expirationTime, String email) {
         // 토큰 생성 시작
         LOGGER.info("[createToken] 토큰 생성 시작");
         Claims claims = Jwts.claims().setSubject(email);
@@ -48,13 +51,27 @@ public class JwtTokenProvider {
         String token = Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(now)
-                .setExpiration(new Date(now.getTime()+EMAIL_TOKEN_EXPIRATION))
+                .setExpiration(new Date(now.getTime()+expirationTime))
                 .signWith(SignatureAlgorithm.HS256, secretKey) // 암호화 알고리즘, secret 값 세팅
                 .compact();
 
         LOGGER.info("[createToken] 토큰 생성 완료");
         return token;
     }
+
+    public String createEmailToken(String email) {
+        return createToken(EMAIL_TOKEN_EXPIRATION, email);
+    }
+
+    public String createAccessToken(String email) {
+        return createToken(ACCESS_TOKEN_EXPIRATION, email);
+    }
+
+    public String createRefreshToken(String email) {
+        // refreshToken 저장해줘야한다.
+        return createToken(REFRESH_TOKEN_EXPIRATION, email);
+    }
+
 
     // 필터에서 인증이 성공했을 때 SecurityContextHolder에 저장할 Authentication을 생성하는 역할
     // 이걸 구현하는 편한 방법은 UsernamePasswordAuthenticationToken을 사용하는 것
