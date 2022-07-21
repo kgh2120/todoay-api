@@ -2,6 +2,7 @@ package com.todoay.api.domain.auth.controller;
 
 import com.todoay.api.domain.auth.dto.AuthSaveDto;
 import com.todoay.api.domain.auth.dto.AuthUpdatePasswordReqeustDto;
+import com.todoay.api.domain.auth.dto.AuthSaveDto;
 import com.todoay.api.domain.auth.service.AuthService;
 import com.todoay.api.global.exception.ErrorResponse;
 import com.todoay.api.global.exception.ValidErrorResponse;
@@ -16,6 +17,10 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor

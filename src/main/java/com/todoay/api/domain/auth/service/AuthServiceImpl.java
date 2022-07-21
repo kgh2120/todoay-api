@@ -4,6 +4,7 @@ package com.todoay.api.domain.auth.service;
 import com.todoay.api.domain.auth.dto.AuthSaveDto;
 import com.todoay.api.domain.auth.dto.AuthUpdatePasswordReqeustDto;
 import com.todoay.api.domain.auth.entity.Auth;
+import com.todoay.api.domain.auth.dto.AuthSaveDto;
 import com.todoay.api.domain.auth.repository.AuthRepository;
 import com.todoay.api.domain.profile.exception.EmailNotFoundException;
 import lombok.RequiredArgsConstructor;
