@@ -6,5 +6,5 @@ import io.jsonwebtoken.Claims;
 
 public interface MailVerificationService {
     void sendVerificationMail(EmailDto emailDto);
-    Claims verifyEmailToken(EmailTokenDto emailTokenDto);
+    void verifyEmail(EmailTokenDto emailTokenDto);
 }

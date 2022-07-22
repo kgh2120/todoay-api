@@ -51,9 +51,10 @@ public class MailVerificationController {
     public ModelAndView verifyEmailTokenOnSignUp(@Valid EmailTokenDto emailTokenDto) {
         ModelAndView modelAndView = new ModelAndView("email-verification");
         try {
-            mailVerificationService.verifyEmailToken(emailTokenDto);
+            mailVerificationService.verifyEmail(emailTokenDto);
 
             // Auth의 이메일 인증 여부를 true로 바꾼다.
+
         } catch (JwtException e) {
             modelAndView.addObject("exception", e.getClass().getSimpleName());
         }
