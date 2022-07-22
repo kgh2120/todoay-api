@@ -45,7 +45,7 @@ public class AuthController {
             summary = "계정의 비밀번호를 변경한다",
             description ="토큰을 통해 얻은 email에 해당하는 계정의 비밀번호를 수정한다. 토큰이 존재하지 않거나, 입력한 비밀번호가 양식을 지키지 않는다면 오류가 발생한다.",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "성공"),
+                    @ApiResponse(responseCode = "204", description = "성공"),
                     @ApiResponse(responseCode = "400", description = "올바른 비밀번호 양식을 입력하지 않음",content = @Content(schema = @Schema(implementation = ValidErrorResponse.class))) ,
                     @ApiResponse(responseCode = "401", description = "JWT 토큰 에러 ",content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
             }
@@ -56,7 +56,7 @@ public class AuthController {
         String loginId = jwtTokenProvider.getLoginId(); // 로그인 못한 상태에서 비밀번호 변경할 때엔 어떤 header를 쓰는지 정해야 할듯??
         authService.updateAuthPassword(loginId,dto);
 
-        return ResponseEntity.status(200).build();
+        return ResponseEntity.noContent().build();
     }
 
     @Operation(
@@ -71,7 +71,7 @@ public class AuthController {
     public ResponseEntity<Void> deleteAccount() {
         String loginId = jwtTokenProvider.getLoginId();
         authService.deleteAuth(loginId);
-        return ResponseEntity.status(204).build();
+        return ResponseEntity.noContent().build();
     }
 
     @Operation(
