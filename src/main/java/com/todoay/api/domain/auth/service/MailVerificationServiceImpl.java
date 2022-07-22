@@ -2,6 +2,7 @@ package com.todoay.api.domain.auth.service;
 
 import com.todoay.api.domain.auth.dto.AuthSendEmailRequestDto;
 import com.todoay.api.domain.auth.dto.AuthVerifyEmailTokenOnSingUpDto;
+import com.todoay.api.domain.auth.dto.CheckEmailVerifiedResponseDto;
 import com.todoay.api.domain.auth.entity.Auth;
 import com.todoay.api.domain.auth.repository.AuthRepository;
 import com.todoay.api.domain.auth.utility.MailHandler;
@@ -51,5 +52,12 @@ public class MailVerificationServiceImpl implements MailVerificationService {
         String email = jwtTokenProvider.validateToken(authVerifyEmailTOkenOnSingUpDto.getEmailToken()).getSubject();
         Auth auth = authRepository.findByEmail(email).orElseThrow(EmailNotFoundException::new);
         auth.completeEmailVerification();
+    }
+
+    @Override
+    public CheckEmailVerifiedResponseDto checkEmailVerified(String email) {
+        Auth auth = authRepository.findByEmail(email).orElseThrow(EmailNotFoundException::new);
+        boolean emailVerified = auth.getEmailVerifiedAt() == null ? false : true;
+        return CheckEmailVerifiedResponseDto.builder().emailVerified(emailVerified).build();
     }
 }

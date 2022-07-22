@@ -24,14 +24,17 @@ class MailVerificationServiceImplTest {
     @Autowired
     AuthRepository authRepository;
 
+    AuthSaveDto dto;
+    AuthSaveDto dto2;
+
     @BeforeEach
     void before_each() {
-        AuthSaveDto dto = new AuthSaveDto();
+        dto = new AuthSaveDto();
         dto.setEmail("test@naver.com");
         dto.setNickname("tester");
         dto.setPassword("12341234");
 
-        AuthSaveDto dto2 = new AuthSaveDto();
+        dto2 = new AuthSaveDto();
         dto2.setEmail("test2@naver.com");
         dto2.setNickname("tester2");
         dto2.setPassword("22222222");
@@ -44,7 +47,7 @@ class MailVerificationServiceImplTest {
     void verifyEmail() {
         // given
         // beforeEach
-        String email = "test@naver.com";
+        String email = dto.getEmail();
 
         // when
         String emailToken = mailVerificationService.sendVerificationMail(AuthSendEmailRequestDto.builder().email(email).build());
@@ -53,5 +56,18 @@ class MailVerificationServiceImplTest {
         // then
         Auth auth = authRepository.findByEmail(email).get();
         Assertions.assertNotNull(auth.getEmailVerifiedAt());
+    }
+
+    @Test
+    void checkEmailVerified() {
+        // given
+        // beforeEach
+        String email1 = dto.getEmail();
+
+        // when
+        boolean emailVerified1 = mailVerificationService.checkEmailVerified(email1).isEmailVerified();
+
+        // then
+        Assertions.assertEquals(emailVerified1, false);
     }
 }

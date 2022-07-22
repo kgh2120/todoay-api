@@ -2,6 +2,7 @@ package com.todoay.api.domain.auth.controller;
 
 import com.todoay.api.domain.auth.dto.AuthSendEmailRequestDto;
 import com.todoay.api.domain.auth.dto.AuthVerifyEmailTokenOnSingUpDto;
+import com.todoay.api.domain.auth.dto.CheckEmailVerifiedResponseDto;
 import com.todoay.api.domain.auth.service.MailVerificationService;
 import com.todoay.api.domain.profile.exception.EmailNotFoundException;
 import com.todoay.api.global.exception.ErrorResponse;
@@ -14,6 +15,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
@@ -59,5 +61,19 @@ public class MailVerificationController {
             modelAndView.addObject("exception", e.getClass().getSimpleName());
         }
         return modelAndView;
+    }
+
+    @GetMapping("/auth/{email}/email-verified")
+    @Operation(
+            summary = "path variable로 받은 email의 계정의 이메일 인증 여부를 응답한다.",
+            description = "{'emailVerified': boolean}",
+            responses = {
+                    @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = CheckEmailVerifiedResponseDto.class))),
+                    @ApiResponse(responseCode = "400", description = "email에 해당하는 계정이 없는 경우", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+            }
+    )
+    public ResponseEntity<CheckEmailVerifiedResponseDto> checkEmailVerified(@PathVariable String email) {
+        CheckEmailVerifiedResponseDto checkEmailVerifiedResponseDto = mailVerificationService.checkEmailVerified(email);
+        return ResponseEntity.ok(checkEmailVerifiedResponseDto);
     }
 }
