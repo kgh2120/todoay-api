@@ -5,6 +5,7 @@ import com.todoay.api.domain.auth.dto.EmailTokenDto;
 import com.todoay.api.domain.auth.entity.Auth;
 import com.todoay.api.domain.auth.repository.AuthRepository;
 import com.todoay.api.domain.auth.utility.MailHandler;
+import com.todoay.api.domain.profile.exception.EmailNotFoundException;
 import com.todoay.api.global.jwt.JwtTokenProvider;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
@@ -41,6 +42,7 @@ public class MailVerificationServiceImpl implements MailVerificationService {
     }
 
     @Override
+    @Transactional
     public void verifyEmail(EmailTokenDto emailTokenDto) {
 //         io.jsonwebtoken.UnsupportedJwtException – if the claimsJws argument does not represent an Claims JWS
 //         io.jsonwebtoken.MalformedJwtException – if the claimsJws string is not a valid JWS
@@ -48,7 +50,7 @@ public class MailVerificationServiceImpl implements MailVerificationService {
 //         io.jsonwebtoken.ExpiredJwtException – if the specified JWT is a Claims JWT and the Claims has an expiration time before the time this method is invoked.
 //         IllegalArgumentException – if the claimsJws string is null or empty or only whitespace
         String email = jwtTokenProvider.validateToken(emailTokenDto.getEmailToken()).get("email", String.class);
-        authRepository.findByEmail(email).orElseThrow(); // pull 받은 후 작업 예정
-
+        Auth auth = authRepository.findByEmail(email).orElseThrow(EmailNotFoundException::new);
+        auth.completeEmailVerification();
     }
 }
