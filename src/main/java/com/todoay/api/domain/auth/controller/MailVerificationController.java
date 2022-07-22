@@ -5,7 +5,7 @@ import com.todoay.api.domain.auth.dto.EmailTokenDto;
 import com.todoay.api.domain.auth.service.MailVerificationService;
 import com.todoay.api.domain.profile.exception.EmailNotFoundException;
 import com.todoay.api.global.exception.ErrorResponse;
-import io.jsonwebtoken.JwtException;
+import com.todoay.api.global.exception.JwtException;
 import com.todoay.api.global.exception.ValidErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -53,9 +54,7 @@ public class MailVerificationController {
         ModelAndView modelAndView = new ModelAndView("email-verification");
         try {
             mailVerificationService.verifyEmail(emailTokenDto);
-        } catch (JwtException e) {
-            modelAndView.addObject("exception", e.getClass().getSimpleName());
-        } catch (EmailNotFoundException e) {
+        } catch (JwtException | EmailNotFoundException e) {
             modelAndView.addObject("exception", e.getClass().getSimpleName());
         }
         return modelAndView;

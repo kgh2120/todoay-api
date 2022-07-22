@@ -28,7 +28,7 @@ import java.util.Objects;
 public class JwtTokenProvider {
     @Value("${jwt.key}")
     private String secretKey;
-    private final long EMAIL_TOKEN_EXPIRATION = 1000 * 60 * 5;
+    private final long EMAIL_TOKEN_EXPIRATION = 1000 * 20 ;
     private final long ACCESS_TOKEN_EXPIRATION = 1000 * 60 * 60 * 24;
 
     private final long REFRESH_TOKEN_EXPIRATION = 1000 * 60 * 60 * 24 * 30;
