@@ -1,6 +1,11 @@
 spring:
   config:
     import: classpath:mailSender.yml
+  jpa:
+    show-sql: true
+  h2:
+    console:
+      enabled: true
 springdoc:
   swagger-ui:
     enabled: true # swagger ui 사용여부 (굳이 설정하지 않아도 default는 true)
@@ -8,3 +13,4 @@ springdoc:
   default-consumes-media-type: application/json # 기본 consume media type
   default-produces-media-type: application/json # 기본 produce media type
   model-and-view-allowed: true # ModelAndView 허용
+
