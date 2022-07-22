@@ -45,23 +45,4 @@ public class GlobalExceptionHandler {
         return ValidErrorResponse.toResponseEntity(ex, request.getRequestURI());
     }
 
-    @ExceptionHandler(ExpiredJwtException.class)
-    public ResponseEntity<?> handleExpiredJwtException(HttpServletRequest request) {
-        return ErrorResponse.toResponseEntity(GlobalErrorCode.JWT_EXPIRED, request.getRequestURI());
-    }
-
-    @ExceptionHandler(SignatureException.class)
-    public ResponseEntity<?> handleSignatureException(HttpServletRequest request) {
-        return ErrorResponse.toResponseEntity(GlobalErrorCode.JWT_NOT_VERIFIED, request.getRequestURI());
-    }
-
-    @ExceptionHandler(MalformedJwtException.class)
-    public ResponseEntity<?> handleMalformedJwtException(HttpServletRequest request) {
-        return ErrorResponse.toResponseEntity(GlobalErrorCode.JWT_MALFORMED, request.getRequestURI());
-    }
-
-    @ExceptionHandler(UnsupportedJwtException.class)
-    public ResponseEntity<?> handleUnsupportedJwtException(HttpServletRequest request) {
-        return ErrorResponse.toResponseEntity(GlobalErrorCode.JWT_UNSUPPORTED, request.getRequestURI());
-    }
 }
