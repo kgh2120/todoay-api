@@ -1,11 +1,13 @@
 package com.todoay.api.domain.auth.service;
 
-import com.todoay.api.domain.auth.Dto.AuthSaveDto;
+import com.todoay.api.domain.auth.dto.AuthSaveDto;
+import com.todoay.api.domain.auth.dto.LoginRequestDto;
+import com.todoay.api.domain.auth.dto.LoginResponseDto;
 import com.todoay.api.domain.auth.entity.Auth;
 import com.todoay.api.domain.auth.repository.AuthRepository;
+import com.todoay.api.global.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 public class AuthServiceImpl implements AuthService {
 
         private final AuthRepository authRepository;
+        private final JwtTokenProvider jwtTokenProvider;
 
         // spring security 필수 메소드
         @Override
@@ -35,12 +38,16 @@ public class AuthServiceImpl implements AuthService {
             return authRepository.save(authSaveDto.toAuthEntity()).getId();
         }
 
-//        public Auth toAuthEntity() {
-//            Auth authEntity = Auth.builder()
-//                    .email(email)
-//                    .password(password).build();
-//            authEntity.associateProfile(toProfileEntity());
-//            return authEntity;
-//        }
+        @Override
+        public LoginResponseDto login(LoginRequestDto loginRequestDto) {
+            Auth auth = (Auth)loadUserByUsername(loginRequestDto.getEmail());
+            BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+            if (!encoder.matches(loginRequestDto.getPassword(), auth.getPassword())) {
+                throw new IllegalArgumentException();  // 나중에 custom exception 추가
+            }
 
+            String accessToken = jwtTokenProvider.createAccessToken(loginRequestDto.getEmail());
+            String refreshToken = jwtTokenProvider.createRefreshToken(loginRequestDto.getEmail());
+            return new LoginResponseDto(accessToken, refreshToken);
+        }
 }
