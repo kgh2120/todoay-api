@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -49,8 +50,14 @@ public class MailVerificationController {
                     @ApiResponse(responseCode = "401", description = "JWT_EXPIRED, JWT_NOT_VERIFIED, JWT_NOT_VERIFIED, JWT_MALFORMED, JWT_UNSUPPORTED", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             }
     )
-    public ModelAndView verifyEmailTokenOnSignUp(@Valid AuthVerifyEmailTokenOnSingUpDto authVerifyEmailTOkenOnSingUpDto) {
+    public ModelAndView verifyEmailTokenOnSignUp(AuthVerifyEmailTokenOnSingUpDto authVerifyEmailTOkenOnSingUpDto) {
+        String emailToken = authVerifyEmailTOkenOnSingUpDto.getEmailToken();
         ModelAndView modelAndView = new ModelAndView("email-verification");
+
+        if(emailToken == null || emailToken.trim().length() == 0){
+            return modelAndView.addObject("exception", BindException.class.getSimpleName());
+        }
+
         try {
             mailVerificationService.verifyEmail(authVerifyEmailTOkenOnSingUpDto);
         } catch (JwtException e) {
