@@ -34,4 +34,16 @@ public class ErrorResponse {
                         .build()
                 );
     }
+
+    @Override
+    public String toString() {
+        return "ErrorResponse{" +
+                "timestamp=" + timestamp +
+                ",\n status=" + status +
+                ",\n error='" + error + '\'' +
+                ",\n code='" + code + '\'' +
+                ",\n message='" + message + '\'' +
+                ",\n path='" + path + '\'' +
+                '}';
+    }
 }

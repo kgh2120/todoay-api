@@ -1,5 +1,6 @@
 package com.todoay.api.global.jwt;
 
+import com.todoay.api.global.exception.*;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -18,7 +19,6 @@ import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
 
@@ -29,7 +29,8 @@ public class JwtTokenProvider {
     @Value("${jwt.key}")
     private String secretKey;
     private final long EMAIL_TOKEN_EXPIRATION = 1000 * 60 * 5;
-    private final long ACCESS_TOKEN_EXPIRATION = 1000 * 60 * 60 * 24;
+    //    private final long ACCESS_TOKEN_EXPIRATION = 1000 * 60 * 60 * 24;
+    private final long ACCESS_TOKEN_EXPIRATION = 1000 * 30;
     private final long REFRESH_TOKEN_EXPIRATION = 1000 * 60 * 60 * 24 * 30;
 
     private final Logger LOGGER = LoggerFactory.getLogger(JwtTokenProvider.class);
@@ -86,12 +87,16 @@ public class JwtTokenProvider {
     }
 
     public String getUserEmail(String token) {
-        // Jwts.parser()로 secretKey를 설정하고 claim을 추출해서 토큰 생성할 때 넣었던 sub 값 추출
-        LOGGER.info("[getUserEmail] 토큰 기반 회원 구별 정보 추출");
-        String info = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody()
-                .getSubject();
-        LOGGER.info("[getUserEmail] 토큰 기반 회원 구별 정보 추출 완료, info : {}", info);
-        return info;
+        try {
+            // Jwts.parser()로 secretKey를 설정하고 claim을 추출해서 토큰 생성할 때 넣었던 sub 값 추출
+            LOGGER.info("[getUserEmail] 토큰 기반 회원 구별 정보 추출");
+            String info = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody()
+                    .getSubject();
+            LOGGER.info("[getUserEmail] 토큰 기반 회원 구별 정보 추출 완료, info : {}", info);
+            return info;
+        } catch (IllegalArgumentException e) {
+            throw new JwtHeaderNotFoundException();
+        }
     }
 
     public String resolveToken(HttpServletRequest request) {
@@ -106,8 +111,18 @@ public class JwtTokenProvider {
     }
 
     public Claims validateToken(String token) {
-        LOGGER.info("[validateToken] 토큰 유효 체크 시작");
-        Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
-        return claims.getBody();
+        try {
+            LOGGER.info("[validateToken] 토큰 유효 체크 시작");
+            Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
+            return claims.getBody();
+        } catch (ExpiredJwtException e) {
+            throw new JwtExpiredException();
+        } catch (MalformedJwtException e) {
+            throw new JwtMalformedException();
+        } catch (UnsupportedJwtException e) {
+            throw new JwtUnsupportedException();
+        } catch (SignatureException e) {
+            throw new JwtNotVerifedException();
+        }
     }
 }
