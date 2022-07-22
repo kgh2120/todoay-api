@@ -47,6 +47,10 @@ public class Auth implements UserDetails {
         this.password = password;
     }
 
+    public void completeEmailVerification() {
+        this.emailVerifiedAt = LocalDateTime.now();
+    }
+
     public void associateWithProfile(Profile profile) {
         this.profile = profile;
         profile.setAuth(this);
@@ -59,7 +63,6 @@ public class Auth implements UserDetails {
     public void deleteAuth() {
         this.deletedAt = LocalDateTime.now();
     }
-
 
     @Override // 계정이 가지고 있는 권한 목록 리턴
     public Collection<? extends GrantedAuthority> getAuthorities() {
