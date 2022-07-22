@@ -54,11 +54,7 @@ public class MailVerificationController {
         ModelAndView modelAndView = new ModelAndView("email-verification");
         try {
             mailVerificationService.verifyEmail(authVerifyEmailTOkenOnSingUpDto);
-        } catch (JwtException e) {
-            modelAndView.addObject("exception", e.getClass().getSimpleName());
-        } catch (EmailNotFoundException e) {
-            mailVerificationService.verifyEmail(emailTokenDto);
-        } catch (JwtException | EmailNotFoundException e) {
+        }  catch (JwtException | EmailNotFoundException e) {
             modelAndView.addObject("exception", e.getClass().getSimpleName());
         }
         return modelAndView;
