@@ -17,5 +17,5 @@ public interface AuthService extends UserDetailsService {
     // 계정 탈퇴
     void deleteAuth(String email);
     Long save(AuthSaveDto authSaveDto);
-    LoginResponseDto login(LoginRequestDto loginRequestDto);
+    void login(LoginRequestDto loginRequestDto);
 }
