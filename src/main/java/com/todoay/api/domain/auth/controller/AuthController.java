@@ -30,7 +30,7 @@ public class AuthController {
     }
 
     // login 할 때는 jwt로 반환하기로
-    
+    @PostMapping("/login")
     public ResponseEntity<LoginResponseDto> login(@RequestBody @Validated LoginRequestDto loginRequestDto) {
         authService.login(loginRequestDto);
 
