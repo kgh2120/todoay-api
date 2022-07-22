@@ -30,7 +30,7 @@ public class AuthSaveDto {
         Auth authEntity = Auth.builder()
                 .email(email)
                 .password(password).build();
-        authEntity.setProfile(toProfileEntity());
+        authEntity.associateWithProfile(toProfileEntity());
         return authEntity;
     }
 

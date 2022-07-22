@@ -2,7 +2,6 @@ package com.todoay.api.domain.auth.entity;
 
 import com.todoay.api.domain.profile.entity.Profile;
 import lombok.*;
-import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
@@ -17,14 +16,17 @@ import java.util.Collection;
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
+
 public class Auth implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO) // IDENTITY, TABLE, SEQUENCE
     private Long id;
 
+    @Column(nullable = false, unique = true)
     private String email;
 
+    @Column(nullable = false)
     private String password;
 
     @CreatedDate
@@ -45,6 +47,22 @@ public class Auth implements UserDetails {
         this.password = password;
     }
 
+    public void completeEmailVerification() {
+        this.emailVerifiedAt = LocalDateTime.now();
+    }
+
+    public void associateWithProfile(Profile profile) {
+        this.profile = profile;
+        profile.setAuth(this);
+    }
+
+    public void updatePassword(String password) {
+        this.password = password;
+    }
+
+    public void deleteAuth() {
+        this.deletedAt = LocalDateTime.now();
+    }
 
     @Override // 계정이 가지고 있는 권한 목록 리턴
     public Collection<? extends GrantedAuthority> getAuthorities() {
