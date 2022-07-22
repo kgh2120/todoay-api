@@ -29,8 +29,8 @@ public class JwtTokenProvider {
     @Value("${jwt.key}")
     private String secretKey;
     private final long EMAIL_TOKEN_EXPIRATION = 1000 * 60 * 5;
-    //    private final long ACCESS_TOKEN_EXPIRATION = 1000 * 60 * 60 * 24;
-    private final long ACCESS_TOKEN_EXPIRATION = 1000 * 30;
+    private final long ACCESS_TOKEN_EXPIRATION = 1000 * 60 * 60 * 24;
+
     private final long REFRESH_TOKEN_EXPIRATION = 1000 * 60 * 60 * 24 * 30;
 
     private final Logger LOGGER = LoggerFactory.getLogger(JwtTokenProvider.class);
