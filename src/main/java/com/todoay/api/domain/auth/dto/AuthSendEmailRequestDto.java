@@ -11,7 +11,7 @@ import javax.validation.constraints.NotBlank;
 @Getter
 @AllArgsConstructor
 @Builder
-public class EmailDto {
+public class AuthSendEmailRequestDto {
     @Schema(required = true)
     @NotBlank
     @Email

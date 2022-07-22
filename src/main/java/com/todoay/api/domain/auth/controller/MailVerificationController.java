@@ -1,7 +1,7 @@
 package com.todoay.api.domain.auth.controller;
 
-import com.todoay.api.domain.auth.dto.EmailDto;
-import com.todoay.api.domain.auth.dto.EmailTokenDto;
+import com.todoay.api.domain.auth.dto.AuthSendEmailRequestDto;
+import com.todoay.api.domain.auth.dto.AuthVerifyEmailTokenOnSingUpDto;
 import com.todoay.api.domain.auth.service.MailVerificationService;
 import com.todoay.api.domain.profile.exception.EmailNotFoundException;
 import com.todoay.api.global.exception.ErrorResponse;
@@ -35,9 +35,9 @@ public class MailVerificationController {
                 @ApiResponse(responseCode = "400", description = "올바른 이메일 양식을 입력하지 않음.", content = @Content(schema = @Schema(implementation = ValidErrorResponse.class)))
             }
     )
-    @GetMapping("/mail")
-    public ResponseEntity<Void> sendVerificationMail(@Valid EmailDto emailDto) {
-        mailVerificationService.sendVerificationMail(emailDto);
+    @GetMapping("/send-mail")
+    public ResponseEntity<Void> sendVerificationMail(@Valid AuthSendEmailRequestDto authSendEmailRequestDto) {
+        mailVerificationService.sendVerificationMail(authSendEmailRequestDto);
         return ResponseEntity.noContent().build();
     }
 
@@ -50,9 +50,13 @@ public class MailVerificationController {
                     @ApiResponse(responseCode = "401", description = "JWT_EXPIRED, JWT_NOT_VERIFIED, JWT_NOT_VERIFIED, JWT_MALFORMED, JWT_UNSUPPORTED", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             }
     )
-    public ModelAndView verifyEmailTokenOnSignUp(@Valid EmailTokenDto emailTokenDto) {
+    public ModelAndView verifyEmailTokenOnSignUp(@Valid AuthVerifyEmailTokenOnSingUpDto authVerifyEmailTOkenOnSingUpDto) {
         ModelAndView modelAndView = new ModelAndView("email-verification");
         try {
+            mailVerificationService.verifyEmail(authVerifyEmailTOkenOnSingUpDto);
+        } catch (JwtException e) {
+            modelAndView.addObject("exception", e.getClass().getSimpleName());
+        } catch (EmailNotFoundException e) {
             mailVerificationService.verifyEmail(emailTokenDto);
         } catch (JwtException | EmailNotFoundException e) {
             modelAndView.addObject("exception", e.getClass().getSimpleName());

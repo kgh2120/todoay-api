@@ -1,8 +1,8 @@
 package com.todoay.api.domain.auth.service;
 
 import com.todoay.api.domain.auth.dto.AuthSaveDto;
-import com.todoay.api.domain.auth.dto.EmailDto;
-import com.todoay.api.domain.auth.dto.EmailTokenDto;
+import com.todoay.api.domain.auth.dto.AuthSendEmailRequestDto;
+import com.todoay.api.domain.auth.dto.AuthVerifyEmailTokenOnSingUpDto;
 import com.todoay.api.domain.auth.entity.Auth;
 import com.todoay.api.domain.auth.repository.AuthRepository;
 import org.junit.jupiter.api.Assertions;
@@ -47,8 +47,8 @@ class MailVerificationServiceImplTest {
         String email = "test@naver.com";
 
         // when
-        String emailToken = mailVerificationService.sendVerificationMail(EmailDto.builder().email(email).build());
-        mailVerificationService.verifyEmail(EmailTokenDto.builder().emailToken(emailToken).build());
+        String emailToken = mailVerificationService.sendVerificationMail(AuthSendEmailRequestDto.builder().email(email).build());
+        mailVerificationService.verifyEmail(AuthVerifyEmailTokenOnSingUpDto.builder().emailToken(emailToken).build());
 
         // then
         Auth auth = authRepository.findByEmail(email).get();
