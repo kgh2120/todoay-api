@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 public class AuthServiceImpl implements AuthService {
 
         private final AuthRepository authRepository;
-        private final JwtTokenProvider jwtTokenProvider;
 
         // spring security 필수 메소드
         @Override
@@ -39,15 +38,11 @@ public class AuthServiceImpl implements AuthService {
         }
 
         @Override
-        public LoginResponseDto login(LoginRequestDto loginRequestDto) {
+        public void login(LoginRequestDto loginRequestDto) {
             Auth auth = (Auth)loadUserByUsername(loginRequestDto.getEmail());
             BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
             if (!encoder.matches(loginRequestDto.getPassword(), auth.getPassword())) {
                 throw new IllegalArgumentException();  // 나중에 custom exception 추가
             }
-
-            String accessToken = jwtTokenProvider.createAccessToken(loginRequestDto.getEmail());
-            String refreshToken = jwtTokenProvider.createRefreshToken(loginRequestDto.getEmail());
-            return new LoginResponseDto(accessToken, refreshToken);
         }
 }

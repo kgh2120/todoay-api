@@ -4,6 +4,7 @@ import com.todoay.api.domain.auth.dto.AuthSaveDto;
 import com.todoay.api.domain.auth.dto.LoginRequestDto;
 import com.todoay.api.domain.auth.dto.LoginResponseDto;
 import com.todoay.api.domain.auth.service.AuthService;
+import com.todoay.api.global.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -19,6 +20,7 @@ public class AuthController {
 
 //    private final AuthServiceImpl authServiceImpl;
     private final AuthService authService;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @PostMapping("/sign-up")
     public ResponseEntity<Void> signup(@RequestBody @Validated AuthSaveDto authSaveDto) {  // validated하고 설정하면 그 중에 몇개만 골라서 검사 해줌. valid는 다 함
@@ -28,8 +30,13 @@ public class AuthController {
     }
 
     // login 할 때는 jwt로 반환하기로
+    
     public ResponseEntity<LoginResponseDto> login(@RequestBody @Validated LoginRequestDto loginRequestDto) {
-        LoginResponseDto login = authService.login(loginRequestDto);
-        return ResponseEntity.status(201).body(login);
+        authService.login(loginRequestDto);
+
+
+        String accessToken = jwtTokenProvider.createAccessToken(loginRequestDto.getEmail());
+        String refreshToken = jwtTokenProvider.createRefreshToken(loginRequestDto.getEmail());
+        return ResponseEntity.status(201).body(new LoginResponseDto(accessToken,refreshToken));
     }
 }
