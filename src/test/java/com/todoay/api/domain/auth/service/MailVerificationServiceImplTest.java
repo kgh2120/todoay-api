@@ -1,6 +1,8 @@
 package com.todoay.api.domain.auth.service;
 
 import com.todoay.api.domain.auth.dto.AuthSaveDto;
+import com.todoay.api.domain.auth.dto.EmailDto;
+import com.todoay.api.domain.auth.dto.EmailTokenDto;
 import com.todoay.api.domain.auth.entity.Auth;
 import com.todoay.api.domain.auth.repository.AuthRepository;
 import org.junit.jupiter.api.Assertions;
@@ -10,20 +12,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
-
 @SpringBootTest
 @Transactional
 class MailVerificationServiceImplTest {
-
     @Autowired
     AuthService authService;
 
     @Autowired
-    AuthRepository authRepository;
+    MailVerificationService mailVerificationService;
 
     @Autowired
-    EntityManager em;
+    AuthRepository authRepository;
 
     @BeforeEach
     void before_each() {
@@ -47,12 +46,12 @@ class MailVerificationServiceImplTest {
         // beforeEach
         String email = "test@naver.com";
 
-
         // when
-        Auth auth = authRepository.findByEmail(email).get();
-        auth.completeEmailVerification();
+        String emailToken = mailVerificationService.sendVerificationMail(EmailDto.builder().email(email).build());
+        mailVerificationService.verifyEmail(EmailTokenDto.builder().emailToken(emailToken).build());
 
         // then
+        Auth auth = authRepository.findByEmail(email).get();
         Assertions.assertNotNull(auth.getEmailVerifiedAt());
     }
 }

@@ -22,7 +22,7 @@ public class MailVerificationServiceImpl implements MailVerificationService {
     private final AuthRepository authRepository;
 
     @Override
-    public void sendVerificationMail(EmailDto emailDto) {
+    public String sendVerificationMail(EmailDto emailDto) {
         try {
             MailHandler mailHandler = new MailHandler(mailSender);
             mailHandler.setTo(emailDto.getEmail());
@@ -33,9 +33,11 @@ public class MailVerificationServiceImpl implements MailVerificationService {
                     "')>링크를 클릭하여 인증을 완료해주세요</a>";
             mailHandler.setText(sb, true);
             mailHandler.send();
+            return emailToken;
         } catch (MessagingException e) {
             e.printStackTrace();
         }
+        return null;
     }
 
     @Override
@@ -46,7 +48,7 @@ public class MailVerificationServiceImpl implements MailVerificationService {
 //         io.jsonwebtoken.SignatureException – if the claimsJws JWS signature validation fails
 //         io.jsonwebtoken.ExpiredJwtException – if the specified JWT is a Claims JWT and the Claims has an expiration time before the time this method is invoked.
 //         IllegalArgumentException – if the claimsJws string is null or empty or only whitespace
-        String email = jwtTokenProvider.validateToken(emailTokenDto.getEmailToken()).get("email", String.class);
+        String email = jwtTokenProvider.validateToken(emailTokenDto.getEmailToken()).getSubject();
         Auth auth = authRepository.findByEmail(email).orElseThrow(EmailNotFoundException::new);
         auth.completeEmailVerification();
     }

@@ -5,6 +5,6 @@ import com.todoay.api.domain.auth.dto.EmailTokenDto;
 import io.jsonwebtoken.Claims;
 
 public interface MailVerificationService {
-    void sendVerificationMail(EmailDto emailDto);
+    String sendVerificationMail(EmailDto emailDto);
     void verifyEmail(EmailTokenDto emailTokenDto);
 }
