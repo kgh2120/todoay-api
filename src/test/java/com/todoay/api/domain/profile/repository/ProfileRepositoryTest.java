@@ -52,7 +52,7 @@ class ProfileRepositoryTest {
         System.out.println(profile.getAuth().getEmail());
         System.out.println(profile.getAuth().getPassword());
 
-        assertThat(profile.getNickname()).isEqualTo("tester1");
+        assertThat(profile.getNickname()).isEqualTo("tester");
     }
 
 
