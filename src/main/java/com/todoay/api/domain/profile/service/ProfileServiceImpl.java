@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@RequiredArgsConstructor @Transactional
+@RequiredArgsConstructor @Transactional(readOnly = true)
 public class ProfileServiceImpl implements ProfileService {
 
     private final ProfileRepository profileRepository;
@@ -25,6 +25,7 @@ public class ProfileServiceImpl implements ProfileService {
         return ProfileReadResponseDto.createResponseDto(profile);
     }
 
+    @Transactional
     @Override
     public void updateMyProfile(String email, ProfileUpdateReqeustDto dto) {
 
