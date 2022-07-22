@@ -39,6 +39,15 @@ public class ProfileServiceImpl implements ProfileService {
         profile.updateProfile(dto);
     }
 
+    @Override
+    public void nicknameDuplicateCheck(String nickname) {
+        profileRepository.findProfileByNickname(nickname)
+                .ifPresent(p -> {
+                            throw new NicknameDuplicateException();
+                        }
+                );
+    }
+
 
     private Profile getProfileByEmailOrElseThrowEmailNotFoundException(String email) {
         return profileRepository.findProfileByAuthEmail(email)

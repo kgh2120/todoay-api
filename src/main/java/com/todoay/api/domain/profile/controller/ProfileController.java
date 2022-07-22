@@ -5,6 +5,7 @@ import com.todoay.api.domain.profile.dto.ProfileUpdateReqeustDto;
 import com.todoay.api.domain.profile.service.ProfileService;
 import com.todoay.api.global.exception.ErrorResponse;
 import com.todoay.api.global.exception.ValidErrorResponse;
+import com.todoay.api.global.jwt.JwtTokenProvider;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -28,8 +29,8 @@ import javax.servlet.http.HttpServletRequest;
 public class ProfileController {
 
     private final ProfileService profileService;
-    @Value("${header.access-token}")
-    private String accessToken;
+    private final JwtTokenProvider jwtTokenProvider;
+
 
 
     @Operation(
@@ -43,8 +44,7 @@ public class ProfileController {
     @GetMapping("/profile/my")
     public ResponseEntity<ProfileReadResponseDto> getMyProfile(HttpServletRequest request) {
 
-        String email = getJwtTokenByHeader(request);
-        // TODO jwt를 뜯어줘야 함.
+        String email = jwtTokenProvider.getLoginId();
         ProfileReadResponseDto profile = profileService.readMyProfile(email);
 
         return ResponseEntity.ok(profile);
@@ -62,16 +62,12 @@ public class ProfileController {
     @PutMapping("/profile/my")
     public ResponseEntity updateProfile(HttpServletRequest request, @RequestBody @Validated ProfileUpdateReqeustDto dto) {
 
-        String email = getJwtTokenByHeader(request);
+        String email = jwtTokenProvider.getLoginId();
         log.info("dto = {} ",dto);
-        // TODO jwt를 뜯어줘야 함.
         profileService.updateMyProfile(email, dto);
 
         return ResponseEntity.status(204).build();
     }
 
-    private String getJwtTokenByHeader(HttpServletRequest request) { // jwt 관련 클래스가 있다면 거기로 이전하는 것이 좋아보임.
-        String token = request.getHeader(accessToken);
-        return token;
-    }
+
 }

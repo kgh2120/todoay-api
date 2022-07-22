@@ -3,14 +3,10 @@ package com.todoay.api.domain.auth.service;
 
 import com.todoay.api.domain.auth.dto.AuthSaveDto;
 import com.todoay.api.domain.auth.dto.AuthUpdatePasswordReqeustDto;
-import com.todoay.api.domain.auth.entity.Auth;
-import com.todoay.api.domain.auth.dto.AuthSaveDto;
 import com.todoay.api.domain.auth.dto.LoginRequestDto;
-import com.todoay.api.domain.auth.dto.LoginResponseDto;
 import com.todoay.api.domain.auth.entity.Auth;
 import com.todoay.api.domain.auth.repository.AuthRepository;
 import com.todoay.api.domain.profile.exception.EmailNotFoundException;
-import com.todoay.api.global.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -59,7 +55,10 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public void deleteAuth(String email) {
-        // attribute 생성.
+
+        Auth auth = authRepository.findByEmail(email)
+                .orElseThrow(EmailNotFoundException::new);
+        auth.deleteAuth();
 
 
     }

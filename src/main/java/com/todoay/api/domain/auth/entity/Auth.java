@@ -1,12 +1,7 @@
 package com.todoay.api.domain.auth.entity;
 
 import com.todoay.api.domain.profile.entity.Profile;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.*;
-import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
@@ -59,6 +54,10 @@ public class Auth implements UserDetails {
 
     public void updatePassword(String password) {
         this.password = password;
+    }
+
+    public void deleteAuth() {
+        this.deletedAt = LocalDateTime.now();
     }
 
 

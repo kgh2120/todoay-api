@@ -1,24 +1,19 @@
 package com.todoay.api.domain.auth.controller;
 
-import com.todoay.api.domain.auth.dto.AuthSaveDto;
-import com.todoay.api.domain.auth.dto.AuthUpdatePasswordReqeustDto;
-import com.todoay.api.domain.auth.dto.LoginRequestDto;
-import com.todoay.api.domain.auth.dto.LoginResponseDto;
+import com.todoay.api.domain.auth.dto.*;
 import com.todoay.api.domain.auth.service.AuthService;
-import com.todoay.api.global.jwt.JwtTokenProvider;
+import com.todoay.api.domain.profile.service.ProfileService;
 import com.todoay.api.global.exception.ErrorResponse;
 import com.todoay.api.global.exception.ValidErrorResponse;
+import com.todoay.api.global.jwt.JwtTokenProvider;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequiredArgsConstructor
@@ -26,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 public class AuthController {
 
     private final AuthService authService;
+    private final ProfileService profileService;
     private final JwtTokenProvider jwtTokenProvider;
 
     @PostMapping("/sign-up")
@@ -39,7 +35,6 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDto> login(@RequestBody @Validated LoginRequestDto loginRequestDto) {
         authService.login(loginRequestDto);
-
 
         String accessToken = jwtTokenProvider.createAccessToken(loginRequestDto.getEmail());
         String refreshToken = jwtTokenProvider.createRefreshToken(loginRequestDto.getEmail());
@@ -56,12 +51,10 @@ public class AuthController {
             }
     )
     @PatchMapping("/password")
-    public ResponseEntity changePassword(HttpServletRequest request, @RequestBody @Validated AuthUpdatePasswordReqeustDto dto) {
+    public ResponseEntity<Void> changePassword(@RequestBody @Validated AuthUpdatePasswordReqeustDto dto) {
 
-        // 400 실패  password 유효성 검사 실패 경우인듯.
-        // 401 실패 아마 토큰이 없는 경우인듯
-        String token = getJwtEmailOrAccessTokenByHeader(request);
-        authService.updateAuthPassword(token,dto);
+        String loginId = jwtTokenProvider.getLoginId(); // 로그인 못한 상태에서 비밀번호 변경할 때엔 어떤 header를 쓰는지 정해야 할듯??
+        authService.updateAuthPassword(loginId,dto);
 
         return ResponseEntity.status(200).build();
     }
@@ -75,38 +68,26 @@ public class AuthController {
             }
     )
     @DeleteMapping("/my")
-    public ResponseEntity deleteAccount(HttpServletRequest request) {
-
-        String jwtAccessToken = getJwtAccessToken(request);
-        authService.deleteAuth(jwtAccessToken);
-
+    public ResponseEntity<Void> deleteAccount() {
+        String loginId = jwtTokenProvider.getLoginId();
+        authService.deleteAuth(loginId);
         return ResponseEntity.status(204).build();
     }
 
-    private String getJwtEmailOrAccessTokenByHeader(HttpServletRequest request) { // jwt 관련 클래스가 있다면 거기로 이전하는 것이 좋아보임.
-        String aToken = getJwtToken(request,accessToken);
-        String eToken = getJwtToken(request,emailToken);
-
-        String token = aToken != null ? aToken : eToken;
-        isExistToken(token);
-
-        return token;
-    }
-
-    private String getJwtAccessToken(HttpServletRequest request) {
-        String jwtToken = getJwtToken(request, accessToken);
-        isExistToken(jwtToken);
-        return jwtToken;
-    }
-
-    private void isExistToken(String token) {
-        if (token == null) { // email, access 둘다 토큰이 존재하지 않음.
-            throw new IllegalArgumentException(); // TODO token이 없는데 접근하는 exception 추가
-        }
+    @Operation(
+            summary = "닉네임 중복검사",
+            description = "body를 통해 전달받은 nickname이 이미 저장된 닉네임인지 검사한다. 입력한 닉네임이 유효성 검사를 통과하지 못하거나, 입력한 닉네임이 이미 존재할 경우 오류를 발생한다.",
+            responses = {
+                    @ApiResponse(responseCode = "204", description = "성공"),
+                    @ApiResponse(responseCode = "400", description = "1. 유효성 검사 실패\t\n2. 이미 존재하는 닉네임 입력", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+            }
+    )
+    @PostMapping("/nickname-duplicate-check")
+    public ResponseEntity<Void> nicknameDuplicateCheck(@RequestBody @Validated NicknameDuplicateReqeustDto dto) {
+        profileService.nicknameDuplicateCheck(dto.getNickname());
+        return ResponseEntity.noContent().build();
     }
 
 
-    private String getJwtToken(HttpServletRequest request, String header) {
-        return request.getHeader(header);
-    }
+
 }
