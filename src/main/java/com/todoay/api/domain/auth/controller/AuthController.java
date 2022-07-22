@@ -3,6 +3,8 @@ package com.todoay.api.domain.auth.controller;
 import com.todoay.api.domain.auth.dto.AuthSaveDto;
 import com.todoay.api.domain.auth.dto.AuthUpdatePasswordReqeustDto;
 import com.todoay.api.domain.auth.dto.AuthSaveDto;
+import com.todoay.api.domain.auth.dto.LoginRequestDto;
+import com.todoay.api.domain.auth.dto.LoginResponseDto;
 import com.todoay.api.domain.auth.service.AuthService;
 import com.todoay.api.global.exception.ErrorResponse;
 import com.todoay.api.global.exception.ValidErrorResponse;
@@ -11,6 +13,8 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -29,6 +33,8 @@ public class AuthController {
 
     private final AuthService authService;
 
+    @PostMapping("/sign-up")
+    public ResponseEntity<Void> signup(@RequestBody @Validated AuthSaveDto authSaveDto) {  // validated하고 설정하면 그 중에 몇개만 골라서 검사 해줌. valid는 다 함
     @Value("${header.access-token}")
     private String accessToken;
     @Value("${header.email-token}")
@@ -38,7 +44,13 @@ public class AuthController {
     public AuthSaveDto signup(@RequestBody AuthSaveDto authSaveDto) {
         authService.save(authSaveDto);
         // save까지 authService interface에 구현?
-        return authSaveDto;
+        return ResponseEntity.noContent().build();
+    }
+
+    // login 할 때는 jwt로 반환하기로
+    public ResponseEntity<LoginResponseDto> login(@RequestBody @Validated LoginRequestDto loginRequestDto) {
+        LoginResponseDto login = authService.login(loginRequestDto);
+        return ResponseEntity.status(201).body(login);
     }
 
     @Operation(

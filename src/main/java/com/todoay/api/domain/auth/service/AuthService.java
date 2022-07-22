@@ -4,6 +4,8 @@ package com.todoay.api.domain.auth.service;
 import com.todoay.api.domain.auth.dto.AuthSaveDto;
 import com.todoay.api.domain.auth.dto.AuthUpdatePasswordReqeustDto;
 import com.todoay.api.domain.auth.dto.AuthSaveDto;
+import com.todoay.api.domain.auth.dto.LoginRequestDto;
+import com.todoay.api.domain.auth.dto.LoginResponseDto;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 
@@ -15,4 +17,6 @@ public interface AuthService extends UserDetailsService {
 
     // 계정 탈퇴
     void deleteAuth(String email);
+    Long save(AuthSaveDto authSaveDto);
+    LoginResponseDto login(LoginRequestDto loginRequestDto);
 }
