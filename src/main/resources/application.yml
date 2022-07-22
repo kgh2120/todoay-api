@@ -14,9 +14,3 @@ springdoc:
   default-produces-media-type: application/json # 기본 produce media type
   model-and-view-allowed: true # ModelAndView 허용
 
-
----
-spring:
-  config:
-    activate:
-      on-profile: test
