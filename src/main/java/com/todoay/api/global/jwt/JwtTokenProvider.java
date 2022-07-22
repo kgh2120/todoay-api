@@ -123,6 +123,8 @@ public class JwtTokenProvider {
             throw new JwtUnsupportedException();
         } catch (SignatureException e) {
             throw new JwtNotVerifedException();
+        } catch (IllegalArgumentException e) {
+            throw new JwtHeaderNotFoundException();
         }
     }
 }
