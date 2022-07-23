@@ -45,7 +45,8 @@ public class AuthController {
             description = "가입된 이메일과 패스워드로 로그인을 진행. 입력한 이메일과 패스워드가 가입된 이메일, 패스워드와 다르거나 없는 경우 오류 발생.",
             responses = {
                     @ApiResponse(responseCode = "201", description = "성공"),
-                    @ApiResponse(responseCode = "400", description = "일치하는 회원정보가 없음.", content = @Content(schema = @Schema(implementation = ValidErrorResponse.class)))
+                    @ApiResponse(responseCode = "400", description = "올바른 이메일,패스워드 양식을 입력하지 않음.", content = @Content(schema = @Schema(implementation = ValidErrorResponse.class))),
+                    @ApiResponse(responseCode = "404", description = "일치하는 회원정보가 없음.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
             }
     )
     @PostMapping("/login")
