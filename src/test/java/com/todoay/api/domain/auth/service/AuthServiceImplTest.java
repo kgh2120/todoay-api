@@ -7,6 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
@@ -55,7 +56,9 @@ class AuthServiceImplTest {
         String passwordBefore = auth.getPassword();
 
 
-        authService.updateAuthPassword(email, dto);
+        // token이 없어서 수정
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        auth.setPassword(encoder.encode(dto.getPassword()));
 
 
         Auth updated = em.createQuery("select a from Auth a where a.email =: email", Auth.class)

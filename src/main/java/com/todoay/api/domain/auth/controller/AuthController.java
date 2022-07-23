@@ -22,7 +22,7 @@ public class AuthController {
 
     private final AuthService authService;
     private final ProfileService profileService;
-    private final JwtProvider jwtProvider;
+//    private final JwtProvider jwtProvider;
 
     @PostMapping("/sign-up")
     public ResponseEntity<Void> signup(@RequestBody @Validated AuthSaveDto authSaveDto) {  // validated하고 설정하면 그 중에 몇개만 골라서 검사 해줌. valid는 다 함
@@ -34,11 +34,8 @@ public class AuthController {
     // login 할 때는 jwt로 반환하기로
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDto> login(@RequestBody @Validated LoginRequestDto loginRequestDto) {
-        authService.login(loginRequestDto);
-
-        String accessToken = jwtProvider.createAccessToken(loginRequestDto.getEmail());
-        String refreshToken = jwtProvider.createRefreshToken(loginRequestDto.getEmail());
-        return ResponseEntity.status(201).body(new LoginResponseDto(accessToken,refreshToken));
+        LoginResponseDto tokens = authService.login(loginRequestDto);
+        return ResponseEntity.status(201).body(tokens);
     }
 
     @Operation(
@@ -53,8 +50,7 @@ public class AuthController {
     @PatchMapping("/password")
     public ResponseEntity<Void> changePassword(@RequestBody @Validated AuthUpdatePasswordReqeustDto dto) {
 
-        String loginId = jwtProvider.getLoginId(); // 로그인 못한 상태에서 비밀번호 변경할 때엔 어떤 header를 쓰는지 정해야 할듯??
-        authService.updateAuthPassword(loginId,dto);
+        authService.updateAuthPassword(dto);
 
         return ResponseEntity.noContent().build();
     }
@@ -69,8 +65,8 @@ public class AuthController {
     )
     @DeleteMapping("/my")
     public ResponseEntity<Void> deleteAccount() {
-        String loginId = jwtProvider.getLoginId();
-        authService.deleteAuth(loginId);
+
+        authService.deleteAuth();
         return ResponseEntity.noContent().build();
     }
 
