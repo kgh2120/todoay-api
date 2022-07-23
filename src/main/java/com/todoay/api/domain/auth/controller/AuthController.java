@@ -5,7 +5,7 @@ import com.todoay.api.domain.auth.service.AuthService;
 import com.todoay.api.domain.profile.service.ProfileService;
 import com.todoay.api.global.exception.ErrorResponse;
 import com.todoay.api.global.exception.ValidErrorResponse;
-import com.todoay.api.global.jwt.JwtTokenProvider;
+import com.todoay.api.global.jwt.JwtProvider;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -22,7 +22,7 @@ public class AuthController {
 
     private final AuthService authService;
     private final ProfileService profileService;
-    private final JwtTokenProvider jwtTokenProvider;
+    private final JwtProvider jwtProvider;
 
     @PostMapping("/sign-up")
     public ResponseEntity<Void> signup(@RequestBody @Validated AuthSaveDto authSaveDto) {  // validated하고 설정하면 그 중에 몇개만 골라서 검사 해줌. valid는 다 함
@@ -36,8 +36,8 @@ public class AuthController {
     public ResponseEntity<LoginResponseDto> login(@RequestBody @Validated LoginRequestDto loginRequestDto) {
         authService.login(loginRequestDto);
 
-        String accessToken = jwtTokenProvider.createAccessToken(loginRequestDto.getEmail());
-        String refreshToken = jwtTokenProvider.createRefreshToken(loginRequestDto.getEmail());
+        String accessToken = jwtProvider.createAccessToken(loginRequestDto.getEmail());
+        String refreshToken = jwtProvider.createRefreshToken(loginRequestDto.getEmail());
         return ResponseEntity.status(201).body(new LoginResponseDto(accessToken,refreshToken));
     }
 
@@ -53,7 +53,7 @@ public class AuthController {
     @PatchMapping("/password")
     public ResponseEntity<Void> changePassword(@RequestBody @Validated AuthUpdatePasswordReqeustDto dto) {
 
-        String loginId = jwtTokenProvider.getLoginId(); // 로그인 못한 상태에서 비밀번호 변경할 때엔 어떤 header를 쓰는지 정해야 할듯??
+        String loginId = jwtProvider.getLoginId(); // 로그인 못한 상태에서 비밀번호 변경할 때엔 어떤 header를 쓰는지 정해야 할듯??
         authService.updateAuthPassword(loginId,dto);
 
         return ResponseEntity.noContent().build();
@@ -69,7 +69,7 @@ public class AuthController {
     )
     @DeleteMapping("/my")
     public ResponseEntity<Void> deleteAccount() {
-        String loginId = jwtTokenProvider.getLoginId();
+        String loginId = jwtProvider.getLoginId();
         authService.deleteAuth(loginId);
         return ResponseEntity.noContent().build();
     }

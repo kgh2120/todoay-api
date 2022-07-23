@@ -1,6 +1,9 @@
 package com.todoay.api.global.jwt;
 
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,21 +21,20 @@ import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
 
 @PropertySource("classpath:secret.properties")
 @Component
 @RequiredArgsConstructor
-public class JwtTokenProvider {
+public class JwtProvider {
     @Value("${jwt.key}")
     private String secretKey;
     private final long EMAIL_TOKEN_EXPIRATION = 1000 * 60 * 5;
     private final long ACCESS_TOKEN_EXPIRATION = 1000 * 60 * 60 * 24;
     private final long REFRESH_TOKEN_EXPIRATION = 1000 * 60 * 60 * 24 * 30;
 
-    private final Logger LOGGER = LoggerFactory.getLogger(JwtTokenProvider.class);
+    private final Logger LOGGER = LoggerFactory.getLogger(JwtProvider.class);
     private final UserDetailsService userDetailsService;
 
     @PostConstruct // init() 메소드
