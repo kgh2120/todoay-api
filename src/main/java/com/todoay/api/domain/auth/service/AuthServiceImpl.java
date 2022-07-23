@@ -5,6 +5,7 @@ import com.todoay.api.domain.auth.dto.AuthSaveDto;
 import com.todoay.api.domain.auth.dto.AuthUpdatePasswordReqeustDto;
 import com.todoay.api.domain.auth.dto.LoginRequestDto;
 import com.todoay.api.domain.auth.entity.Auth;
+import com.todoay.api.domain.auth.exception.EmailDuplicateException;
 import com.todoay.api.domain.auth.repository.AuthRepository;
 import com.todoay.api.domain.profile.exception.EmailNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -76,5 +77,10 @@ public class AuthServiceImpl implements AuthService {
         if (!encoder.matches(loginRequestDto.getPassword(), auth.getPassword())) {
             throw new IllegalArgumentException();  // 나중에 custom exception 추가
         }
+    }
+
+    @Override
+    public boolean isExistEmail(String email) {
+       return authRepository.findByEmail(email).isPresent();
     }
 }
