@@ -54,7 +54,7 @@ public class MailVerificationController {
         String emailToken = authVerifyEmailTOkenOnSingUpDto.getEmailToken();
         ModelAndView modelAndView = new ModelAndView("email-verification");
 
-        if(emailToken == null || emailToken.trim().length() == 0){
+        if (emailToken == null || emailToken.isBlank()) {
             return modelAndView.addObject("exception", BindException.class.getSimpleName());
         }
 
