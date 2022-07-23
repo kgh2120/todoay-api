@@ -4,13 +4,13 @@ import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 @Getter
-public class AbstractApiException extends RuntimeException implements ErrorCode{
+public abstract class AbstractApiException extends RuntimeException implements ErrorCode{
 
     private final HttpStatus httpStatus;
     private final String name;
     private final String detailMessage;
 
-    public AbstractApiException(ErrorCode errorCode) {
+    protected AbstractApiException(ErrorCode errorCode) {
         this.httpStatus = errorCode.getHttpStatus();
         this.name = errorCode.name();
         this.detailMessage = errorCode.getDetailMessage();

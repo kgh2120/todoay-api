@@ -6,8 +6,8 @@ import com.todoay.api.domain.auth.dto.CheckEmailVerifiedResponseDto;
 import com.todoay.api.domain.auth.service.MailVerificationService;
 import com.todoay.api.domain.profile.exception.EmailNotFoundException;
 import com.todoay.api.global.exception.ErrorResponse;
-import io.jsonwebtoken.JwtException;
 import com.todoay.api.global.exception.ValidErrorResponse;
+import io.jsonwebtoken.JwtException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -62,9 +62,7 @@ public class MailVerificationController {
 
         try {
             mailVerificationService.verifyEmail(authVerifyEmailTOkenOnSingUpDto);
-        } catch (JwtException e) {
-            modelAndView.addObject("exception", e.getClass().getSimpleName());
-        } catch (EmailNotFoundException e) {
+        }  catch (JwtException | EmailNotFoundException e) {
             modelAndView.addObject("exception", e.getClass().getSimpleName());
         }
         return modelAndView;
