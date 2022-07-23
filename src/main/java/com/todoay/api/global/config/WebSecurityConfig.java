@@ -2,7 +2,7 @@ package com.todoay.api.global.config;
 
 import com.todoay.api.domain.auth.service.AuthService;
 import com.todoay.api.global.jwt.JwtAuthenticationFilter;
-import com.todoay.api.global.jwt.JwtExcecptionHandlingFilter;
+import com.todoay.api.global.jwt.JwtExceptionHandlingFilter;
 import com.todoay.api.global.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
@@ -54,7 +54,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .and()
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(new JwtExcecptionHandlingFilter(), JwtAuthenticationFilter.class);
+                .addFilterBefore(new JwtExceptionHandlingFilter(), JwtAuthenticationFilter.class);
 
     }
 
