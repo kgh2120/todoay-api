@@ -1,10 +1,13 @@
-package com.todoay.api.domain.auth.service;
+package com.todoay.api.domain.auth.controller;
 
 import com.todoay.api.domain.auth.dto.AuthSaveDto;
 import com.todoay.api.domain.auth.dto.AuthSendEmailRequestDto;
 import com.todoay.api.domain.auth.dto.AuthVerifyEmailTokenOnSingUpDto;
 import com.todoay.api.domain.auth.entity.Auth;
 import com.todoay.api.domain.auth.repository.AuthRepository;
+import com.todoay.api.domain.auth.service.AuthService;
+import com.todoay.api.domain.auth.service.MailVerificationService;
+import com.todoay.api.global.jwt.JwtTokenProvider;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,60 +17,51 @@ import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
 @Transactional
-class MailVerificationServiceImplTest {
+class MailVerificationControllerTest {
     @Autowired
     AuthService authService;
 
     @Autowired
-    MailVerificationService mailVerificationService;
+    MailVerificationController mailVerificationController;
 
     @Autowired
     AuthRepository authRepository;
 
-    AuthSaveDto dto;
+    @Autowired
+    JwtTokenProvider jwtTokenProvider;
+
+    AuthSaveDto dto1;
     AuthSaveDto dto2;
 
     @BeforeEach
     void before_each() {
-        dto = new AuthSaveDto();
-        dto.setEmail("test@naver.com");
-        dto.setNickname("tester");
-        dto.setPassword("12341234");
+        dto1 = new AuthSaveDto();
+        dto1.setEmail("test@naver.com");
+        dto1.setNickname("tester");
+        dto1.setPassword("12341234");
 
         dto2 = new AuthSaveDto();
         dto2.setEmail("test2@naver.com");
         dto2.setNickname("tester2");
         dto2.setPassword("22222222");
 
-        authService.save(dto);
+        authService.save(dto1);
         authService.save(dto2);
     }
 
     @Test
-    void verifyEmail() {
+    void verifyEmailTokenOnSignUp() {
         // given
         // beforeEach
-        String email = dto.getEmail();
+        String email = dto1.getEmail();
+        String emailToken = jwtTokenProvider.createEmailToken(email);
+        // 테스트 하려면 만료된 토큰 생성하는 것이 필요할 듯. JwtTokenProvider::createToken을 public으로 바꾸면 가능.
 
         // when
-        String emailToken = mailVerificationService.sendVerificationMail(AuthSendEmailRequestDto.builder().email(email).build());
-        mailVerificationService.verifyEmail(AuthVerifyEmailTokenOnSingUpDto.builder().emailToken(emailToken).build());
-
-        // then
+        mailVerificationController.verifyEmailTokenOnSignUp(AuthVerifyEmailTokenOnSingUpDto.builder().emailToken(emailToken).build());
         Auth auth = authRepository.findByEmail(email).get();
-        Assertions.assertNotNull(auth.getEmailVerifiedAt());
-    }
-
-    @Test
-    void checkEmailVerified() {
-        // given
-        // beforeEach
-        String email1 = dto.getEmail();
-
-        // when
-        boolean emailVerified1 = mailVerificationService.checkEmailVerified(email1).isEmailVerified();
 
         // then
-        Assertions.assertEquals(emailVerified1, false);
+        Assertions.assertNotNull(auth.getEmailVerifiedAt());
     }
 }
