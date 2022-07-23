@@ -1,9 +1,9 @@
 package com.todoay.api.domain.auth.service;
 
-import com.todoay.api.domain.auth.dto.EmailDto;
-import com.todoay.api.domain.auth.dto.EmailTokenDto;
+import com.todoay.api.domain.auth.dto.AuthSendEmailRequestDto;
+import com.todoay.api.domain.auth.dto.AuthVerifyEmailTokenOnSingUpDto;
 
 public interface MailVerificationService {
-    void sendVerificationMail(EmailDto emailDto);
-    void verifyEmailToken(EmailTokenDto emailTokenDto);
+    String sendVerificationMail(AuthSendEmailRequestDto authSendEmailRequestDto);
+    void verifyEmail(AuthVerifyEmailTokenOnSingUpDto authVerifyEmailTOkenOnSingUpDto);
 }
