@@ -1,5 +1,7 @@
 package com.todoay.api.global.jwt;
 
+import com.todoay.api.global.exception.*;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
@@ -89,11 +91,15 @@ public class JwtProvider {
 
     public String getUserEmail(String token) {
         // Jwts.parser()로 secretKey를 설정하고 claim을 추출해서 토큰 생성할 때 넣었던 sub 값 추출
-        LOGGER.info("[getUserEmail] 토큰 기반 회원 구별 정보 추출");
-        String info = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody()
-                .getSubject();
-        LOGGER.info("[getUserEmail] 토큰 기반 회원 구별 정보 추출 완료, info : {}", info);
-        return info;
+        try {
+            LOGGER.info("[getUserEmail] 토큰 기반 회원 구별 정보 추출");
+            String info = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody()
+                    .getSubject();
+            LOGGER.info("[getUserEmail] 토큰 기반 회원 구별 정보 추출 완료, info : {}", info);
+            return info;
+        } catch (IllegalArgumentException e) {
+            throw new JwtHeaderNotFoundException();
+        }
     }
 
     public String resolveToken(HttpServletRequest request) {
