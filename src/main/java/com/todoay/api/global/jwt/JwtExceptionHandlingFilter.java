@@ -2,7 +2,8 @@ package com.todoay.api.global.jwt;
 
 import com.todoay.api.global.exception.AbstractApiException;
 import com.todoay.api.global.exception.ErrorResponse;
-import com.todoay.api.global.exception.JwtException;
+import com.todoay.api.global.exception.GlobalErrorCode;
+import io.jsonwebtoken.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -11,6 +12,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+
+import static com.todoay.api.global.exception.GlobalErrorCode.*;
 
 public class JwtExceptionHandlingFilter extends OncePerRequestFilter {
     @Override
@@ -22,17 +25,23 @@ public class JwtExceptionHandlingFilter extends OncePerRequestFilter {
         }
     }
 
-    public void sendError(HttpStatus status,HttpServletRequest request, HttpServletResponse response, AbstractApiException e) throws IOException {
+    public void sendError(HttpStatus status,HttpServletRequest request, HttpServletResponse response, JwtException e) throws IOException {
         response.setStatus(status.value());
         response.setContentType("application/json; charset=utf-8");
 
-        ErrorResponse errorResponse = ErrorResponse.builder()
-                .status(e.getHttpStatus().value())
-                .error(e.getHttpStatus().name())
-                .code(e.name())
-                .message(e.getDetailMessage())
-                .path(request.getRequestURI())
-                .build();
-        response.getWriter().write(errorResponse.toString());
+        String errorMsg = "";
+        if(e instanceof MalformedJwtException)
+            errorMsg =  ErrorResponse.toResponseString(JWT_MALFORMED,request.getRequestURI());
+        if(e instanceof ExpiredJwtException)
+            errorMsg =  ErrorResponse.toResponseString(JWT_EXPIRED,request.getRequestURI());
+        if (e instanceof UnsupportedJwtException)
+            errorMsg =  ErrorResponse.toResponseString(JWT_UNSUPPORTED,request.getRequestURI());
+         if (e instanceof SignatureException )
+             errorMsg =  ErrorResponse.toResponseString(JWT_NOT_VERIFIED,request.getRequestURI());
+
+
+
+        response.getWriter().write(errorMsg);
+
     }
 }
