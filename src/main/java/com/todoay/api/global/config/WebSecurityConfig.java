@@ -3,7 +3,7 @@ package com.todoay.api.global.config;
 import com.todoay.api.domain.auth.service.AuthService;
 import com.todoay.api.global.jwt.JwtAuthenticationFilter;
 import com.todoay.api.global.jwt.JwtExceptionHandlingFilter;
-import com.todoay.api.global.jwt.JwtTokenProvider;
+import com.todoay.api.global.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -14,15 +14,14 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import static org.hibernate.criterion.Restrictions.and;
-
 @RequiredArgsConstructor
 @EnableWebSecurity
 @Configuration
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final AuthService authService;
-    private final JwtTokenProvider jwtTokenProvider;
+    private final JwtProvider jwtTokenProvider;
+
 
 
     @Override
@@ -53,7 +52,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         .invalidateHttpSession(true)
 
                 .and()
-                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider,authService), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(new JwtExceptionHandlingFilter(), JwtAuthenticationFilter.class);
 
     }

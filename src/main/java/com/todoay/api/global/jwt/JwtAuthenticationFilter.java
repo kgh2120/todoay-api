@@ -2,8 +2,11 @@ package com.todoay.api.global.jwt;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -16,10 +19,12 @@ import java.io.IOException;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final Logger LOGGER = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
-    private final JwtTokenProvider jwtTokenProvider;
+    private final JwtProvider jwtTokenProvider;
+    private final UserDetailsService userDetailsService;
 
-    public JwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider) {
+    public JwtAuthenticationFilter(JwtProvider jwtTokenProvider,UserDetailsService userDetailsService) {
         this.jwtTokenProvider = jwtTokenProvider;
+        this.userDetailsService = userDetailsService;
     }
 
     @Override
@@ -29,12 +34,21 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         LOGGER.info("[doFilterInternal] token 값 유효성 체크 시작");
         if (token != null && jwtTokenProvider.validateToken(token) == null) {  // (2)
-            Authentication authentication = jwtTokenProvider.getAuthentication(token);
+            Authentication authentication = this.getAuthentication(token);
             SecurityContextHolder.getContext().setAuthentication(authentication);  // (3)
             LOGGER.info("[doFilterInternal] token 값 유효성 체크 완료");
         }
 
         filterChain.doFilter(servletRequest, servletResponse);
+    }
+
+    // 필터에서 인증이 성공했을 때 SecurityContextHolder에 저장할 Authentication을 생성하는 역할
+    // 이걸 구현하는 편한 방법은 UsernamePasswordAuthenticationToken을 사용하는 것
+    public Authentication getAuthentication(String token) {
+        LOGGER.info("[getAuthentication] 토큰 인증 정보 조회 시작");
+        UserDetails userDetails = userDetailsService.loadUserByUsername(jwtTokenProvider.getUserEmail(token));
+        LOGGER.info("[getAuthentication] 토큰 인증 정보 조회 완료, UserDetails UserName : {}", userDetails.getUsername());
+        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 }
 // (1) JwtTokenProvider를 통해 servletRequest에서 토큰 추출

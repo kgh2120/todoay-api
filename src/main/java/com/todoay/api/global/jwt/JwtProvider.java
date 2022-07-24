@@ -2,6 +2,10 @@ package com.todoay.api.global.jwt;
 
 import com.todoay.api.global.exception.*;
 import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,16 +29,14 @@ import java.util.Objects;
 @PropertySource("classpath:secret.properties")
 @Component
 @RequiredArgsConstructor
-public class JwtTokenProvider {
+public class JwtProvider {
     @Value("${jwt.key}")
     private String secretKey;
     private final long EMAIL_TOKEN_EXPIRATION = 1000 * 60 * 5;
-    private final long ACCESS_TOKEN_EXPIRATION = 1000 * 30;
-
+    private final long ACCESS_TOKEN_EXPIRATION = 1000 * 60 * 60 * 24;
     private final long REFRESH_TOKEN_EXPIRATION = 1000 * 60 * 60 * 24 * 30;
 
-    private final Logger LOGGER = LoggerFactory.getLogger(JwtTokenProvider.class);
-    private final UserDetailsService userDetailsService;
+    private final Logger LOGGER = LoggerFactory.getLogger(JwtProvider.class);
 
     @PostConstruct // init() 메소드
     protected void init() {  // secretKey를 Base64형식으로 인코딩함. 인코딩 전후 확인 로깅
@@ -74,16 +76,6 @@ public class JwtTokenProvider {
     public String createRefreshToken(String email) {
         // refreshToken 저장해줘야한다.
         return createToken(REFRESH_TOKEN_EXPIRATION, email);
-    }
-
-
-    // 필터에서 인증이 성공했을 때 SecurityContextHolder에 저장할 Authentication을 생성하는 역할
-    // 이걸 구현하는 편한 방법은 UsernamePasswordAuthenticationToken을 사용하는 것
-    public Authentication getAuthentication(String token) {
-        LOGGER.info("[getAuthentication] 토큰 인증 정보 조회 시작");
-        UserDetails userDetails = userDetailsService.loadUserByUsername(this.getUserEmail(token));
-        LOGGER.info("[getAuthentication] 토큰 인증 정보 조회 완료, UserDetails UserName : {}", userDetails.getUsername());
-        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 
     public String getUserEmail(String token) {

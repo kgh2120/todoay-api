@@ -1,13 +1,11 @@
 package com.todoay.api.domain.auth.controller;
 
 import com.todoay.api.domain.auth.dto.AuthSaveDto;
-import com.todoay.api.domain.auth.dto.AuthSendEmailRequestDto;
 import com.todoay.api.domain.auth.dto.AuthVerifyEmailTokenOnSingUpDto;
 import com.todoay.api.domain.auth.entity.Auth;
 import com.todoay.api.domain.auth.repository.AuthRepository;
 import com.todoay.api.domain.auth.service.AuthService;
-import com.todoay.api.domain.auth.service.MailVerificationService;
-import com.todoay.api.global.jwt.JwtTokenProvider;
+import com.todoay.api.global.jwt.JwtProvider;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,7 +26,7 @@ class MailVerificationControllerTest {
     AuthRepository authRepository;
 
     @Autowired
-    JwtTokenProvider jwtTokenProvider;
+    JwtProvider jwtProvider;
 
     AuthSaveDto dto1;
     AuthSaveDto dto2;
@@ -54,7 +52,7 @@ class MailVerificationControllerTest {
         // given
         // beforeEach
         String email = dto1.getEmail();
-        String emailToken = jwtTokenProvider.createEmailToken(email);
+        String emailToken = jwtProvider.createEmailToken(email);
         // 테스트 하려면 만료된 토큰 생성하는 것이 필요할 듯. JwtTokenProvider::createToken을 public으로 바꾸면 가능.
 
         // when

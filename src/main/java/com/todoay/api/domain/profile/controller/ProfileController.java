@@ -5,16 +5,14 @@ import com.todoay.api.domain.profile.dto.ProfileUpdateReqeustDto;
 import com.todoay.api.domain.profile.service.ProfileService;
 import com.todoay.api.global.exception.ErrorResponse;
 import com.todoay.api.global.exception.ValidErrorResponse;
-import com.todoay.api.global.jwt.JwtTokenProvider;
+import com.todoay.api.global.jwt.JwtProvider;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -29,7 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 public class ProfileController {
 
     private final ProfileService profileService;
-    private final JwtTokenProvider jwtTokenProvider;
+    private final JwtProvider jwtProvider;
 
 
 
@@ -44,7 +42,7 @@ public class ProfileController {
     @GetMapping("/profile/my")
     public ResponseEntity<ProfileReadResponseDto> getMyProfile(HttpServletRequest request) {
 
-        String email = jwtTokenProvider.getLoginId();
+        String email = jwtProvider.getLoginId();
         ProfileReadResponseDto profile = profileService.readMyProfile(email);
 
         return ResponseEntity.ok(profile);
@@ -62,7 +60,7 @@ public class ProfileController {
     @PutMapping("/profile/my")
     public ResponseEntity updateProfile(HttpServletRequest request, @RequestBody @Validated ProfileUpdateReqeustDto dto) {
 
-        String email = jwtTokenProvider.getLoginId();
+        String email = jwtProvider.getLoginId();
         log.info("dto = {} ",dto);
         profileService.updateMyProfile(email, dto);
 
