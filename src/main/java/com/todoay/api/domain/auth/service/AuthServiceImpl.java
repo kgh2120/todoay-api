@@ -78,7 +78,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public void login(LoginRequestDto loginRequestDto) {
+    public LoginResponseDto login(LoginRequestDto loginRequestDto) {
         Auth auth = authRepository.findByEmail(loginRequestDto.getEmail())
                 .orElseThrow(LoginUnmatchedException::new);
 
