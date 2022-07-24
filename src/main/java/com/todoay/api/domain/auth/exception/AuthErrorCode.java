@@ -10,8 +10,9 @@ import org.springframework.http.HttpStatus;
 public enum AuthErrorCode implements ErrorCode {
 
 
-    EMAIL_DUPLICATE(HttpStatus.BAD_REQUEST, "이미 사용 중인 이메일입니다.");
-
+    EMAIL_DUPLICATE(HttpStatus.BAD_REQUEST, "이미 사용 중인 이메일입니다."),
+    LOGIN_FAILED(HttpStatus.NOT_FOUND, "로그인에 실패하였습니다."),
+    ;
 
     private final HttpStatus httpStatus;
     private final String detailMessage;

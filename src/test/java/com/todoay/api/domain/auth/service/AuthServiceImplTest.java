@@ -3,6 +3,7 @@ package com.todoay.api.domain.auth.service;
 import com.todoay.api.domain.auth.dto.AuthSaveDto;
 import com.todoay.api.domain.auth.dto.AuthUpdatePasswordReqeustDto;
 import com.todoay.api.domain.auth.entity.Auth;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -21,7 +25,7 @@ class AuthServiceImplTest {
     @Autowired
     AuthService authService;
 
-    @Autowired
+    @PersistenceContext
     EntityManager em;
 
     @BeforeEach
@@ -38,6 +42,15 @@ class AuthServiceImplTest {
 
         authService.save(dto);
         authService.save(dto2);
+    }
+
+    @AfterEach
+    void after_each() { // 테스트 후에 데이터 삭제
+        List<Auth> auths = em.createQuery("select a from Auth a", Auth.class)
+                .getResultList();
+        for (Auth auth : auths) {
+            em.remove(auth);
+        }
     }
 
 
@@ -71,7 +84,7 @@ class AuthServiceImplTest {
         System.out.println("passwordUpdated = " + passwordUpdated);
 
         assertThat(passwordBefore).isNotSameAs(passwordUpdated);
-
-
     }
+
+    // login test
 }

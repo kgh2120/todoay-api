@@ -7,6 +7,7 @@ import com.todoay.api.domain.auth.dto.LoginRequestDto;
 import com.todoay.api.domain.auth.dto.LoginResponseDto;
 import com.todoay.api.domain.auth.entity.Auth;
 import com.todoay.api.domain.auth.exception.EmailDuplicateException;
+import com.todoay.api.domain.auth.exception.LoginUnmatchedException;
 import com.todoay.api.domain.auth.repository.AuthRepository;
 import com.todoay.api.domain.profile.exception.EmailNotFoundException;
 import com.todoay.api.global.jwt.JwtProvider;
@@ -77,11 +78,13 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public LoginResponseDto login(LoginRequestDto loginRequestDto) {
-        Auth auth = (Auth) loadUserByUsername(loginRequestDto.getEmail());
+    public void login(LoginRequestDto loginRequestDto) {
+        Auth auth = authRepository.findByEmail(loginRequestDto.getEmail())
+                .orElseThrow(LoginUnmatchedException::new);
+
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         if (!encoder.matches(loginRequestDto.getPassword(), auth.getPassword())) {
-            throw new IllegalArgumentException();  // 나중에 custom exception 추가
+            throw new LoginUnmatchedException();  // 나중에 custom exception 추가
         }
         String accessToken = jwtProvider.createAccessToken(loginRequestDto.getEmail());
         String refreshToken = jwtProvider.createRefreshToken(loginRequestDto.getEmail());
