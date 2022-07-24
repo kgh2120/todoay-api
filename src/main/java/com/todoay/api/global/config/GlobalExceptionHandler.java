@@ -13,8 +13,11 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.servlet.http.HttpServletRequest;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.todoay.api.global.exception.GlobalErrorCode.SQL_INTEGRITY_CONSTRAINT_VIOLATION;
 
 @Slf4j
 @RestControllerAdvice
@@ -43,6 +46,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BindException.class)
     public ResponseEntity<ValidErrorResponse> handleBindException(BindException ex, HttpServletRequest request) {
         return ValidErrorResponse.toResponseEntity(ex, request.getRequestURI());
+    }
+
+    @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
+    public ResponseEntity<ErrorResponse> handleSqlIntegrityConstraintViolationException(SQLIntegrityConstraintViolationException ex, HttpServletRequest request) {
+        return ErrorResponse.toResponseEntity(SQL_INTEGRITY_CONSTRAINT_VIOLATION, request.getRequestURI());
     }
 
 }
