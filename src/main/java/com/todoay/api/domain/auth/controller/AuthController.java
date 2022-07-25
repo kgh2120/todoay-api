@@ -2,6 +2,7 @@ package com.todoay.api.domain.auth.controller;
 
 import com.todoay.api.domain.auth.dto.*;
 import com.todoay.api.domain.auth.service.AuthService;
+import com.todoay.api.domain.auth.service.RefreshTokenService;
 import com.todoay.api.domain.profile.service.ProfileService;
 import com.todoay.api.global.exception.ErrorResponse;
 import com.todoay.api.global.exception.ValidErrorResponse;
@@ -11,6 +12,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +24,7 @@ public class AuthController {
 
     private final AuthService authService;
     private final ProfileService profileService;
-//    private final JwtProvider jwtProvider;
+    private final RefreshTokenService refreshTokenService;
 
     @Operation(
             summary = "회원가입을 한다.",
@@ -52,6 +54,7 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDto> login(@RequestBody @Validated LoginRequestDto loginRequestDto) {
         LoginResponseDto tokens = authService.login(loginRequestDto);
+        refreshTokenService.login(loginRequestDto,tokens.getRefreshToken()); // refreshToken 저장
         return ResponseEntity.status(201).body(tokens);
     }
 
@@ -113,6 +116,25 @@ public class AuthController {
     public ResponseEntity<Boolean> isEmailExist(@Validated AuthEmailExistReqeustDto dto) {
         boolean isExistEmail = authService.isExistEmail(dto.getEmail());
         return ResponseEntity.ok(isExistEmail);
+    }
+
+
+
+
+    @Operation(
+            summary = "토큰 재발급",
+            description = "accessToken을 재발급 받기 위해 refreshToken을 전달한다. refreshToken에 대한 유효성 검사 이후 이를 통과하면 새로운 토큰을 발급해준다.",
+            responses = {
+                    @ApiResponse(responseCode = "201", description = "새로운 토큰을 발급한다.", content = @Content(schema = @Schema(implementation = RefreshResponseDto.class))),
+                    @ApiResponse(responseCode = "401", description = "JWT 관련 에러",content = @Content(schema = @Schema(implementation = ErrorResponse.class)) ),
+                    @ApiResponse(responseCode = "404", description = "전달받은 refreshToken이 존재하지 않음.",content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+            }
+
+    )
+    @PostMapping("/refresh")
+    public ResponseEntity<RefreshResponseDto> refreshAccessToken(@RequestBody @Validated RefreshRequestDto dto) {
+        RefreshResponseDto responseDto = refreshTokenService.refreshTokens(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
 
 
