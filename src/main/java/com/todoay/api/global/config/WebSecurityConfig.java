@@ -37,15 +37,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .and()
                     .authorizeRequests()
-                        .antMatchers("/auth/**", "/signup", "/user/**", "/docs", "/profile/**", "/h2-console/**").permitAll()  // 누구나 접근 가능 // profile/my는 permitAll하면 안됨.
+                        .antMatchers("/auth/**", "/signup", "/docs", "/h2-console/**").permitAll()  // 누구나 접근 가능 // profile/my는 permitAll하면 안됨.
                         .antMatchers("/").hasRole("USER")  // USER, ADMIN만 접근 가능
                         .antMatchers("/admin").hasRole("ADMIN")  // ADMIN만
                         .anyRequest().authenticated()  // 나머지 요청들은 권한의 종류에 상관없이 권한이 있어야 접근
-
-                .and()
-                    .formLogin()
-                        .loginPage("/auth")  // 로그인 페이지 링크
-                        .defaultSuccessUrl("/")  // 로그인 성공 후 리다이렉트 주소
                 .and()
                     .logout()
                         .logoutSuccessUrl("/")  // 로그아웃 성공시 리다이렉트 주소

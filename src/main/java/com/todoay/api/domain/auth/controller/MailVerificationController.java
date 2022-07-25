@@ -68,7 +68,7 @@ public class MailVerificationController {
         return modelAndView;
     }
 
-    @GetMapping("/auth/{email}/email-verified")
+    @GetMapping("/{email}/email-verified")
     @Operation(
             summary = "path variable로 받은 email의 계정의 이메일 인증 여부를 응답한다.",
             description = "{'emailVerified': boolean}",

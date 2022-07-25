@@ -1,7 +1,7 @@
 package com.todoay.api.global.jwt;
 
-import com.todoay.api.global.exception.*;
-import io.jsonwebtoken.*;
+import com.todoay.api.domain.auth.entity.Auth;
+import com.todoay.api.global.exception.JwtHeaderNotFoundException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
@@ -11,20 +11,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Date;
-import java.util.Objects;
 
 @PropertySource("classpath:secret.properties")
 @Component
@@ -74,7 +70,6 @@ public class JwtProvider {
     }
 
     public String createRefreshToken(String email) {
-        // refreshToken 저장해줘야한다.
         return createToken(REFRESH_TOKEN_EXPIRATION, email);
     }
 
@@ -97,9 +92,11 @@ public class JwtProvider {
     }
 
     public String getLoginId() {
-        HttpServletRequest httpServletRequest = Objects.requireNonNull(((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest());
-        String token = httpServletRequest.getHeader("X-AUTH-TOKEN");
-        return getUserEmail(token);
+        SecurityContext context = SecurityContextHolder.getContext();
+        Authentication authentication = context.getAuthentication();
+        Auth auth = (Auth) authentication.getPrincipal();
+        LOGGER.info("auth = {}", auth);
+        return auth.getEmail();
     }
 
     public Claims validateToken(String token) {
