@@ -6,9 +6,11 @@ import com.todoay.api.domain.auth.dto.AuthUpdatePasswordReqeustDto;
 import com.todoay.api.domain.auth.dto.LoginRequestDto;
 import com.todoay.api.domain.auth.dto.LoginResponseDto;
 import com.todoay.api.domain.auth.entity.Auth;
+import com.todoay.api.domain.auth.exception.EmailDuplicateException;
 import com.todoay.api.domain.auth.exception.LoginUnmatchedException;
 import com.todoay.api.domain.auth.repository.AuthRepository;
 import com.todoay.api.domain.profile.exception.EmailNotFoundException;
+import com.todoay.api.domain.profile.exception.NicknameDuplicateException;
 import com.todoay.api.global.exception.AbstractApiException;
 import com.todoay.api.global.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
@@ -45,6 +47,19 @@ public class AuthServiceImpl implements AuthService {
 
     @Transactional
     public Long save(AuthSaveDto authSaveDto) {
+
+        // 이메일 중복검사
+
+        authRepository.findByEmail(authSaveDto.getEmail())
+                        .ifPresent(auth -> {
+                            throw new EmailDuplicateException();
+                        });
+
+        // 닉네임 중복검사..?
+        authRepository.findByNickname(authSaveDto.getNickname())
+                        .ifPresent(auth -> {
+                            throw new NicknameDuplicateException();
+                        });
 
         authSaveDto.setPassword(encoder.encode(authSaveDto.getPassword()));
 
