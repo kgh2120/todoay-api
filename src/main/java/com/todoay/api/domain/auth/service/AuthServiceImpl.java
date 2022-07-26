@@ -92,7 +92,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public boolean isExistEmail(String email) {
+    public boolean emailExists(String email) {
        return authRepository.findByEmail(email).isPresent();
     }
 }
