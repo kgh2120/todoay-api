@@ -30,7 +30,8 @@ public class AuthController {
             description = "이메일,패스워드,닉네임을 입력하여 회원가입 진행. 각 항목별로 양식을 지키지 않을 경우 오류 발생.",
             responses = {
                     @ApiResponse(responseCode = "201", description = "성공"),
-                    @ApiResponse(responseCode = "400", description = "올바른 이메일/패스워드/닉네임 양식을 입력하지 않음.", content = @Content(schema = @Schema(implementation = ValidErrorResponse.class)))
+                    @ApiResponse(responseCode = "400", description = "올바른 이메일/패스워드/닉네임 양식을 입력하지 않음.", content = @Content(schema = @Schema(implementation = ValidErrorResponse.class))),
+                    @ApiResponse(responseCode = "409", description = "입력한 이메일 혹은 닉네임이 이미 존재한다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
             }
     )
     @PostMapping("/sign-up")
@@ -49,6 +50,7 @@ public class AuthController {
             responses = {
                     @ApiResponse(responseCode = "201", description = "성공"),
                     @ApiResponse(responseCode = "400", description = "올바른 이메일,패스워드 양식을 입력하지 않음.", content = @Content(schema = @Schema(implementation = ValidErrorResponse.class))),
+                    @ApiResponse(responseCode = "403",description = "로그인 할 수 없는 계정으로 로그인 시도", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
                     @ApiResponse(responseCode = "404", description = "일치하는 회원정보가 없음.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
             }
     )

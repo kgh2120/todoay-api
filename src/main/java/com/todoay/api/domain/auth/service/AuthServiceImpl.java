@@ -50,21 +50,16 @@ public class AuthServiceImpl implements AuthService {
     @Transactional
     public Long save(AuthSaveDto authSaveDto) {
 
-        // 이메일 중복검사
-
         authRepository.findByEmail(authSaveDto.getEmail())
                         .ifPresent(auth -> {
                             throw new EmailDuplicateException();
                         });
-
-        // 닉네임 중복검사..?
         authRepository.findByNickname(authSaveDto.getNickname())
                         .ifPresent(auth -> {
                             throw new NicknameDuplicateException();
                         });
 
         authSaveDto.setPassword(encoder.encode(authSaveDto.getPassword()));
-
         return authRepository.save(authSaveDto.toAuthEntity()).getId();
     }
 
