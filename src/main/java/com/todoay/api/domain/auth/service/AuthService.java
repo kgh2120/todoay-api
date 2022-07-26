@@ -18,5 +18,5 @@ public interface AuthService extends UserDetailsService {
     Long save(AuthSaveDto authSaveDto);
     LoginResponseDto login(LoginRequestDto loginRequestDto);
 
-    boolean isExistEmail(String email);
+    boolean emailExists(String email);
 }

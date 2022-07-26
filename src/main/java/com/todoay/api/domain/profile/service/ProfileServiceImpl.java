@@ -41,12 +41,8 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public void nicknameDuplicateCheck(String nickname) {
-        profileRepository.findProfileByNickname(nickname)
-                .ifPresent(p -> {
-                            throw new NicknameDuplicateException();
-                        }
-                );
+    public boolean nicknameExists(String nickname) {
+        return profileRepository.findProfileByNickname(nickname).isPresent();
     }
 
 

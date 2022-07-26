@@ -13,6 +13,6 @@ public interface ProfileService {
     // 내 정보 변경
     void updateMyProfile(String email, ProfileUpdateReqeustDto dto);
 
-    void nicknameDuplicateCheck(String nickname);
+    boolean nicknameExists(String nickname);
 
 }
