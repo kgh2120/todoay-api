@@ -2,8 +2,11 @@ package com.todoay.api.domain.auth.service;
 
 import com.todoay.api.domain.auth.dto.AuthSaveDto;
 import com.todoay.api.domain.auth.dto.AuthUpdatePasswordReqeustDto;
+import com.todoay.api.domain.auth.dto.LoginRequestDto;
 import com.todoay.api.domain.auth.entity.Auth;
 import com.todoay.api.domain.auth.exception.EmailDuplicateException;
+import com.todoay.api.domain.auth.exception.EmailNotVerifiedException;
+import com.todoay.api.domain.auth.exception.LoginDeletedAccountException;
 import com.todoay.api.domain.profile.exception.NicknameDuplicateException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
@@ -18,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
@@ -101,6 +105,39 @@ class AuthServiceImplTest {
         assertThatThrownBy(() -> authService.save(dto))
                 // then
                 .isInstanceOf(NicknameDuplicateException.class);
+    }
+
+    @Test @DisplayName("로그인_예외_이메일_인증이_되지않은_계정")
+    void loginEmailNotVerifiedException() {
+        //given
+        LoginRequestDto dto = new LoginRequestDto();
+        dto.setEmail("test@naver.com");
+        dto.setPassword("12341234");
+
+        //when then
+        assertThatThrownBy(()-> authService.login(dto))
+                .isInstanceOf(EmailNotVerifiedException.class);
+    }
+    @Test @DisplayName("로그인_예외_삭제된_계정")
+    void loginLoginDeletedAccountException() {
+        String email = "test@naver.com";
+        Auth auth = em.createQuery("select a from Auth a where a.email =: email", Auth.class)
+                .setParameter("email", email)
+                .getSingleResult();
+        auth.setEmailVerifiedAt(LocalDateTime.now());
+        auth.setDeletedAt(LocalDateTime.now());
+
+        em.flush();
+
+        LoginRequestDto dto = new LoginRequestDto();
+        dto.setEmail("test@naver.com");
+        dto.setPassword("12341234");
+
+        //when then
+        assertThatThrownBy(()-> authService.login(dto))
+                .isInstanceOf(LoginDeletedAccountException.class);
+
+
     }
 
 

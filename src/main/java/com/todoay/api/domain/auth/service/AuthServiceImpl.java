@@ -7,6 +7,8 @@ import com.todoay.api.domain.auth.dto.LoginRequestDto;
 import com.todoay.api.domain.auth.dto.LoginResponseDto;
 import com.todoay.api.domain.auth.entity.Auth;
 import com.todoay.api.domain.auth.exception.EmailDuplicateException;
+import com.todoay.api.domain.auth.exception.EmailNotVerifiedException;
+import com.todoay.api.domain.auth.exception.LoginDeletedAccountException;
 import com.todoay.api.domain.auth.exception.LoginUnmatchedException;
 import com.todoay.api.domain.auth.repository.AuthRepository;
 import com.todoay.api.domain.profile.exception.EmailNotFoundException;
@@ -94,12 +96,26 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public LoginResponseDto login(LoginRequestDto loginRequestDto) {
+
+        // 이메일 검증
         Auth auth = getAuthOrElseThrow(loginRequestDto.getEmail(), new LoginUnmatchedException());
 
-
+        // 비밀번호 검증
         if (!encoder.matches(loginRequestDto.getPassword(), auth.getPassword())) {
             throw new LoginUnmatchedException();  // 나중에 custom exception 추가
         }
+
+        // 이메일 인증 검증
+        if(auth.getEmailVerifiedAt()==null)
+            throw new EmailNotVerifiedException(); // EMAIL_NOT_VERIFIED_EXCEPTION
+
+        // 삭제 상태 검증
+        if (auth.getDeletedAt() != null) {
+            throw new LoginDeletedAccountException(); // LOGIN_DELETE_ACCOUNT_EXCEPTION
+        }
+
+
+
         String accessToken = jwtProvider.createAccessToken(loginRequestDto.getEmail());
         String refreshToken = jwtProvider.createRefreshToken(loginRequestDto.getEmail());
         return new LoginResponseDto(accessToken,refreshToken);

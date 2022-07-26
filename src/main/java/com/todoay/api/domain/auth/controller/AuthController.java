@@ -37,8 +37,6 @@ public class AuthController {
     public ResponseEntity<Void> signup(@RequestBody @Validated AuthSaveDto authSaveDto) {  // validated하고 설정하면 그 중에 몇개만 골라서 검사 해줌. valid는 다 함
 
 
-
-
         authService.save(authSaveDto);
         // save까지 authService interface에 구현?
         return ResponseEntity.noContent().build();
