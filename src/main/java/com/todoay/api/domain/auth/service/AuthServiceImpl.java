@@ -6,10 +6,10 @@ import com.todoay.api.domain.auth.dto.AuthUpdatePasswordReqeustDto;
 import com.todoay.api.domain.auth.dto.LoginRequestDto;
 import com.todoay.api.domain.auth.dto.LoginResponseDto;
 import com.todoay.api.domain.auth.entity.Auth;
-import com.todoay.api.domain.auth.exception.EmailDuplicateException;
 import com.todoay.api.domain.auth.exception.LoginUnmatchedException;
 import com.todoay.api.domain.auth.repository.AuthRepository;
 import com.todoay.api.domain.profile.exception.EmailNotFoundException;
+import com.todoay.api.global.exception.AbstractApiException;
 import com.todoay.api.global.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +28,8 @@ public class AuthServiceImpl implements AuthService {
     private final AuthRepository authRepository;
     private final JwtProvider jwtProvider;
 
+    private final BCryptPasswordEncoder encoder;
+
     // spring security 필수 메소드
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -43,7 +45,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Transactional
     public Long save(AuthSaveDto authSaveDto) {
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+
         authSaveDto.setPassword(encoder.encode(authSaveDto.getPassword()));
 
         return authRepository.save(authSaveDto.toAuthEntity()).getId();
@@ -55,11 +57,10 @@ public class AuthServiceImpl implements AuthService {
 
 
         String email = jwtProvider.getLoginId();
-        Auth auth = authRepository.findByEmail(email)
-                .orElseThrow(EmailNotFoundException::new);
+        Auth auth = getAuthOrElseThrow(email, new EmailNotFoundException());
 
         String password = dto.getPassword();
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+
         String encodedPassword = encoder.encode(password);
 
         auth.updatePassword(encodedPassword);
@@ -70,8 +71,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public void deleteAuth() {
         String email = jwtProvider.getLoginId();
-        Auth auth = authRepository.findByEmail(email)
-                .orElseThrow(EmailNotFoundException::new);
+        Auth auth = getAuthOrElseThrow(email, new EmailNotFoundException());
         auth.deleteAuth();
 
 
@@ -79,10 +79,9 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public LoginResponseDto login(LoginRequestDto loginRequestDto) {
-        Auth auth = authRepository.findByEmail(loginRequestDto.getEmail())
-                .orElseThrow(LoginUnmatchedException::new);
+        Auth auth = getAuthOrElseThrow(loginRequestDto.getEmail(), new LoginUnmatchedException());
 
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+
         if (!encoder.matches(loginRequestDto.getPassword(), auth.getPassword())) {
             throw new LoginUnmatchedException();  // 나중에 custom exception 추가
         }
@@ -94,5 +93,10 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public boolean emailExists(String email) {
        return authRepository.findByEmail(email).isPresent();
+    }
+
+    private Auth getAuthOrElseThrow(String email, AbstractApiException e) {
+        return authRepository.findByEmail(email)
+                .orElseThrow(() -> e);
     }
 }

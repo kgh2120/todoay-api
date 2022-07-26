@@ -22,6 +22,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final AuthService authService;
     private final JwtProvider jwtTokenProvider;
 
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+
 
 
     @Override
@@ -54,6 +56,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(authService).passwordEncoder(new BCryptPasswordEncoder());
+        auth.userDetailsService(authService).passwordEncoder(bCryptPasswordEncoder);
     }
 }

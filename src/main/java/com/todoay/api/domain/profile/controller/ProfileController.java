@@ -27,7 +27,6 @@ import javax.servlet.http.HttpServletRequest;
 public class ProfileController {
 
     private final ProfileService profileService;
-    private final JwtProvider jwtProvider;
 
 
 
@@ -40,10 +39,10 @@ public class ProfileController {
             }
     )
     @GetMapping("/profile/my")
-    public ResponseEntity<ProfileReadResponseDto> getMyProfile(HttpServletRequest request) {
+    public ResponseEntity<ProfileReadResponseDto> getMyProfile() {
 
-        String email = jwtProvider.getLoginId();
-        ProfileReadResponseDto profile = profileService.readMyProfile(email);
+
+        ProfileReadResponseDto profile = profileService.readMyProfile();
 
         return ResponseEntity.ok(profile);
     }
@@ -58,11 +57,9 @@ public class ProfileController {
             }
     )
     @PutMapping("/profile/my")
-    public ResponseEntity updateProfile(HttpServletRequest request, @RequestBody @Validated ProfileUpdateReqeustDto dto) {
-
-        String email = jwtProvider.getLoginId();
+    public ResponseEntity<Void> updateProfile(@RequestBody @Validated ProfileUpdateReqeustDto dto) {
         log.info("dto = {} ",dto);
-        profileService.updateMyProfile(email, dto);
+        profileService.updateMyProfile(dto);
 
         return ResponseEntity.status(204).build();
     }
