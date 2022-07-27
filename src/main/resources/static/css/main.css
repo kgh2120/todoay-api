@@ -1,0 +1,61 @@
+@font-face {
+    font-family: "BlackOblique";
+    src: url("LeferiPointBlackOblique.ttf");
+}
+@font-face {
+    font-family: "White";
+    src: url("LeferiPointWhite.ttf");
+}
+@font-face {
+    font-family: "WhiteOblique";
+    src: url("LeferiPointWhiteOblique.ttf");
+}
+@font-face {
+    font-family: "Regular";
+    src: url("LeferiBaseRegular.ttf");
+}
+#title_container {
+    font-family: "BlackOblique";
+    text-align: center;
+    font-size: 1.4em;
+    padding: 10px;
+}
+#status_container {
+    font-family: "WhiteOblique";
+    font-size: 1.35rem;
+    padding-top: 1.2rem;
+    padding-left: 8rem;
+    padding-bottom: 1.2rem;
+}
+#status_code {
+    font-family: "BlackOblique";
+}
+#message_title_container {
+    font-family: "Regular";
+    font-size: 1.8rem;
+    margin: auto;
+}
+#message_context_container {
+    font-family: "White";
+    font-size: 1.1rem;
+
+}
+#message_container {
+    font-family: "White";
+    text-align: center;
+    font-size: 1.1em;
+
+}
+#error_message_container {
+    width: 100%;
+    padding-left: 8rem;
+}
+#footer_container {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    padding: 10px;
+    font-family: "White";
+    font-size: 0.8em;
+    text-align: center;
+}
