@@ -73,8 +73,6 @@ public class AuthServiceImpl implements AuthService {
         Auth auth = authRepository.findByEmail(email)
                 .orElseThrow(EmailNotFoundException::new);
         auth.deleteAuth();
-
-
     }
 
     @Override
