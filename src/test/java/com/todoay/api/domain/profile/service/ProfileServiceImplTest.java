@@ -53,7 +53,7 @@ class ProfileServiceImplTest {
     void readMyProfile_Exception_EmailNotFoundException() {
 
 
-        assertThatThrownBy(() -> profileService.readMyProfile("tttttt"))
+        assertThatThrownBy(() -> profileService.readMyProfile())
                 .isInstanceOf(EmailNotFoundException.class);
     }
 
@@ -67,9 +67,9 @@ class ProfileServiceImplTest {
         dto.setImageUrl("c/user/example/picture/image1.png");
         String email = "test@naver.com";
 
-        profileService.updateMyProfile(email,dto);
+        profileService.updateMyProfile(dto);
 
-        ProfileReadResponseDto profile = profileService.readMyProfile(email);
+        ProfileReadResponseDto profile = profileService.readMyProfile();
         System.out.println(profile);
 
         assertThat(profile.getIntroMsg()).isEqualTo(introMsg);
@@ -82,7 +82,7 @@ class ProfileServiceImplTest {
         ProfileUpdateReqeustDto dto = new ProfileUpdateReqeustDto();
         dto.setNickname("tester");
 
-        assertThatThrownBy(() -> profileService.updateMyProfile("test@naver.com",dto))
+        assertThatThrownBy(() -> profileService.updateMyProfile(dto))
                 .isInstanceOf(NicknameDuplicateException.class);
 
 
