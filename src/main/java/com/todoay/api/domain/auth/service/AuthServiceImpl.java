@@ -85,8 +85,6 @@ public class AuthServiceImpl implements AuthService {
         String email = jwtProvider.getLoginId();
         Auth auth = getAuthOrElseThrow(email, new EmailNotFoundException());
         auth.deleteAuth();
-
-
     }
 
     @Override

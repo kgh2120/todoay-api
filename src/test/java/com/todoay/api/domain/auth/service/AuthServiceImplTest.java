@@ -9,6 +9,8 @@ import com.todoay.api.domain.auth.exception.EmailNotVerifiedException;
 import com.todoay.api.domain.auth.exception.LoginDeletedAccountException;
 import com.todoay.api.domain.profile.exception.NicknameDuplicateException;
 import org.assertj.core.api.Assertions;
+import org.h2.jdbc.JdbcSQLIntegrityConstraintViolationException;
+import org.hibernate.exception.ConstraintViolationException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -20,9 +22,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceException;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -172,6 +177,47 @@ class AuthServiceImplTest {
 
         assertThat(passwordBefore).isNotSameAs(passwordUpdated);
     }
+
+    @Test
+    void deleteTest() {
+        String email = "test@naver.com";
+        Auth auth = em.createQuery("select a from Auth a where a.email =: email", Auth.class)
+                .setParameter("email", email)
+                .getSingleResult();
+
+        auth.deleteAuth();
+        em.flush();
+
+        Auth deleted = em.find(Auth.class, auth.getId());
+
+        System.out.println(deleted.getEmail());
+        System.out.println(deleted.getDeletedAt());
+        System.out.println("deleted.getProfile().getNickname() = " + deleted.getProfile().getNickname());
+        System.out.println("deleted.getProfile().getImgUrl() = " + deleted.getProfile().getImgUrl());
+        System.out.println("deleted.getProfile().getIntroMsg() = " + deleted.getProfile().getIntroMsg());
+
+        assertThat(deleted.getDeletedAt()).isNotNull();
+    }
+
+    @Test
+    void deleteTestUUIDDuplicate() {
+        String email = "test@naver.com";
+        Auth auth = em.createQuery("select a from Auth a where a.email =: email", Auth.class)
+                .setParameter("email", email)
+                .getSingleResult();
+        try {
+            auth.setEmail("test2@naver.com");
+            em.flush();
+        } catch (PersistenceException e) {
+            auth.setEmail(UUID.randomUUID().toString());
+        }finally {
+            System.out.println("auth.getEmail() = " + auth.getEmail());
+            em.clear();
+        }
+    }
+
+
+
 
     // login test
 }
