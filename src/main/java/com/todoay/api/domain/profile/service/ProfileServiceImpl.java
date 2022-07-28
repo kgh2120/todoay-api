@@ -32,15 +32,15 @@ public class ProfileServiceImpl implements ProfileService {
     @Override
     public void updateMyProfile(ProfileUpdateReqeustDto dto) {
         String email = jwtProvider.getLoginId();
+        Profile profile = getProfileByEmailOrElseThrowEmailNotFoundException(email);
 
         String nickname = dto.getNickname();
-        profileRepository.findProfileByNickname(nickname)
-                .ifPresent(p -> {
-                    throw new NicknameDuplicateException();
-                }
-        );
-
-        Profile profile = getProfileByEmailOrElseThrowEmailNotFoundException(email);
+        if(!profile.getNickname().equals(nickname))
+            profileRepository.findProfileByNickname(nickname)
+                    .ifPresent(p -> {
+                        throw new NicknameDuplicateException();
+                    }
+            );
         profile.updateProfile(dto);
     }
 
