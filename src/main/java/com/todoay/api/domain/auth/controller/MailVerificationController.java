@@ -1,8 +1,6 @@
 package com.todoay.api.domain.auth.controller;
 
-import com.todoay.api.domain.auth.dto.AuthSendEmailRequestDto;
-import com.todoay.api.domain.auth.dto.AuthVerifyEmailTokenOnSingUpDto;
-import com.todoay.api.domain.auth.dto.CheckEmailVerifiedResponseDto;
+import com.todoay.api.domain.auth.dto.*;
 import com.todoay.api.domain.auth.service.MailVerificationService;
 import com.todoay.api.domain.profile.exception.EmailNotFoundException;
 import com.todoay.api.global.exception.ErrorResponse;
@@ -50,16 +48,16 @@ public class MailVerificationController {
                     @ApiResponse(responseCode = "200", description = "토큰인증 결과를 HTML로 반환"),
             }
     )
-    public ModelAndView verifyEmailTokenOnSignUp(AuthVerifyEmailTokenOnSingUpDto authVerifyEmailTOkenOnSingUpDto) {
-        String emailToken = authVerifyEmailTOkenOnSingUpDto.getEmailToken();
+    public ModelAndView verifyEmailTokenOnSignUp(AuthVerifyEmailTokenOnSingUpDto authVerifyEmailTokenOnSingUpDto) {
+        String emailToken = authVerifyEmailTokenOnSingUpDto.getEmailToken();
         ModelAndView modelAndView = new ModelAndView("email-verification");
 
         if (emailToken == null || emailToken.isBlank()) {
-            return modelAndView.addObject("exception", BindException.class.getSimpleName());
+            return modelAndView.addObject("exception", BindException.class.getSimpleName()); // 적절한 exception 으로 바꿔야 함
         }
 
         try {
-            mailVerificationService.verifyEmail(authVerifyEmailTOkenOnSingUpDto);
+            mailVerificationService.verifyEmailOnSignUp(authVerifyEmailTokenOnSingUpDto);
         }  catch (JwtException | EmailNotFoundException e) {
             modelAndView.addObject("exception", e.getClass().getSimpleName());
         }
@@ -78,5 +76,41 @@ public class MailVerificationController {
     public ResponseEntity<CheckEmailVerifiedResponseDto> checkEmailVerified(@PathVariable String email) {
         CheckEmailVerifiedResponseDto checkEmailVerifiedResponseDto = mailVerificationService.checkEmailVerified(email);
         return ResponseEntity.ok(checkEmailVerifiedResponseDto);
+    }
+
+    @GetMapping("/send-mail/update-password")
+    @Operation(
+            summary = "계정 비밀번호를 임시 비밀번호로 변경하고 알려주는 링크를 담은 메일을 전송한다.",
+            responses = {
+                    @ApiResponse(responseCode = "204", description = "성공"),
+                    @ApiResponse(responseCode = "400", description = "올바른 이메일 양식을 입력하지 않음.", content = @Content(schema = @Schema(implementation = ValidErrorResponse.class)))
+            }
+    )
+    public ResponseEntity<Void> sendUpdatePasswordMail(@Validated AuthSendUpdatePasswordMailRequestDto dto) {
+        mailVerificationService.sendUpdatePasswordMail(dto);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/email-verification/update-password")
+    @Operation(
+            summary = "계정 비밀번호를 임시 비밀번호로 변경한다. HTML을 응답하여 임시 비밀번호를 알려준다.",
+            responses = {
+                    @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = CheckEmailVerifiedResponseDto.class))),
+                    @ApiResponse(responseCode = "404", description = "email에 해당하는 계정이 없는 경우", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+            }
+    )
+    public ModelAndView verifyEmailTokenOnUpdatePassword(AuthVerifyEmailTokenOnUpdatePassword dto) {
+        String emailToken = dto.getEmailToken();
+        ModelAndView modelAndView = new ModelAndView("update-password");
+        if (emailToken == null || emailToken.isBlank()) {
+            return modelAndView.addObject("exception", BindException.class.getSimpleName()); // 적절한 exception 으로 바꿔야 함
+        }
+        try{
+            String newPassword = mailVerificationService.verifyEmailOnUpdatePassword(dto);
+            modelAndView.addObject("password", newPassword);
+        }  catch (JwtException | EmailNotFoundException e) {
+            modelAndView.addObject("exception", e.getClass().getSimpleName());
+        }
+        return modelAndView;
     }
 }
