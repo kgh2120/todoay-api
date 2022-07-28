@@ -51,7 +51,7 @@ class MailVerificationServiceImplTest {
 
         // when
         String emailToken = mailVerificationService.sendVerificationMail(AuthSendEmailRequestDto.builder().email(email).build());
-        mailVerificationService.verifyEmail(AuthVerifyEmailTokenOnSingUpDto.builder().emailToken(emailToken).build());
+        mailVerificationService.verifyEmailOnSignUp(AuthVerifyEmailTokenOnSingUpDto.builder().emailToken(emailToken).build());
 
         // then
         Auth auth = authRepository.findByEmail(email).get();
