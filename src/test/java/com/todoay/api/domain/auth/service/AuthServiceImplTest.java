@@ -8,9 +8,6 @@ import com.todoay.api.domain.auth.exception.EmailDuplicateException;
 import com.todoay.api.domain.auth.exception.EmailNotVerifiedException;
 import com.todoay.api.domain.auth.exception.LoginDeletedAccountException;
 import com.todoay.api.domain.profile.exception.NicknameDuplicateException;
-import org.assertj.core.api.Assertions;
-import org.h2.jdbc.JdbcSQLIntegrityConstraintViolationException;
-import org.hibernate.exception.ConstraintViolationException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -23,14 +20,12 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
-
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
-import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 @Transactional
