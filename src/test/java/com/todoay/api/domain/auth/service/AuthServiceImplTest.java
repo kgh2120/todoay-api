@@ -62,7 +62,6 @@ class AuthServiceImplTest {
         }
     }
 
-
     @Test @DisplayName("회원가입 테스트")
     void signUp() {
         //given
