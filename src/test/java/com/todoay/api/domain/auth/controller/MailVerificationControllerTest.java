@@ -34,8 +34,8 @@ class MailVerificationControllerTest {
     @BeforeEach
     void before_each() {
         dto1 = new AuthSaveDto();
-        dto1.setEmail("test@naver.com");
-        dto1.setNickname("tester");
+        dto1.setEmail("test1234@naver.com");
+        dto1.setNickname("tester1234");
         dto1.setPassword("12341234");
 
         dto2 = new AuthSaveDto();
@@ -43,8 +43,12 @@ class MailVerificationControllerTest {
         dto2.setNickname("tester2");
         dto2.setPassword("22222222");
 
-        authService.save(dto1);
-        authService.save(dto2);
+        Auth auth1 = dto1.toAuthEntity();
+
+        Auth auth2 = dto2.toAuthEntity();
+
+        authRepository.save(auth1);
+        authRepository.save(auth2);
     }
 
     @Test

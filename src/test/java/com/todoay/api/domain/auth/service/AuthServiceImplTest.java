@@ -40,8 +40,8 @@ class AuthServiceImplTest {
     @BeforeEach
     void before_each() {
         AuthSaveDto dto = new AuthSaveDto();
-        dto.setEmail("test@naver.com");
-        dto.setNickname("tester");
+        dto.setEmail("test1234@naver.com");
+        dto.setNickname("tester1234");
         dto.setPassword("12341234");
 
         AuthSaveDto dto2 = new AuthSaveDto();
@@ -98,7 +98,7 @@ class AuthServiceImplTest {
         //given
         AuthSaveDto dto = new AuthSaveDto();
         dto.setEmail("test123@naver.com");
-        dto.setNickname("tester");
+        dto.setNickname("tester1234");
         dto.setPassword("12341234");
         //when
         assertThatThrownBy(() -> authService.save(dto))
@@ -110,7 +110,7 @@ class AuthServiceImplTest {
     void loginEmailNotVerifiedException() {
         //given
         LoginRequestDto dto = new LoginRequestDto();
-        dto.setEmail("test@naver.com");
+        dto.setEmail("test1234@naver.com");
         dto.setPassword("12341234");
 
         //when then
@@ -119,7 +119,7 @@ class AuthServiceImplTest {
     }
     @Test @DisplayName("로그인_예외_삭제된_계정")
     void loginLoginDeletedAccountException() {
-        String email = "test@naver.com";
+        String email = "test1234@naver.com";
         Auth auth = em.createQuery("select a from Auth a where a.email =: email", Auth.class)
                 .setParameter("email", email)
                 .getSingleResult();
@@ -129,7 +129,7 @@ class AuthServiceImplTest {
         em.flush();
 
         LoginRequestDto dto = new LoginRequestDto();
-        dto.setEmail("test@naver.com");
+        dto.setEmail("test1234@naver.com");
         dto.setPassword("12341234");
 
         //when then

@@ -4,6 +4,7 @@ import com.todoay.api.domain.auth.dto.AuthSaveDto;
 import com.todoay.api.domain.auth.service.AuthService;
 import com.todoay.api.domain.profile.dto.ProfileReadResponseDto;
 import com.todoay.api.domain.profile.dto.ProfileUpdateReqeustDto;
+import com.todoay.api.domain.profile.entity.Profile;
 import com.todoay.api.domain.profile.exception.EmailNotFoundException;
 import com.todoay.api.domain.profile.exception.NicknameDuplicateException;
 import com.todoay.api.domain.profile.repository.ProfileRepository;
@@ -33,8 +34,8 @@ class ProfileServiceImplTest {
     @BeforeEach
     void before_each() {
         AuthSaveDto dto = new AuthSaveDto();
-        dto.setEmail("test@naver.com");
-        dto.setNickname("tester");
+        dto.setEmail("test1234@naver.com");
+        dto.setNickname("tester1234");
         dto.setPassword("12341234");
 
         AuthSaveDto dto2 = new AuthSaveDto();
@@ -49,13 +50,13 @@ class ProfileServiceImplTest {
 
 
 
-    @Test @DisplayName("Token으로 부터 받은 Email이 없을 때 발생하는 예외") // TODO 근데 이건 여기서 하는게 맞나?? 다른곳에서 하는 거 같기도 하고..
-    void readMyProfile_Exception_EmailNotFoundException() {
-
-
-        assertThatThrownBy(() -> profileService.readMyProfile())
-                .isInstanceOf(EmailNotFoundException.class);
-    }
+//    @Test @DisplayName("Token으로 부터 받은 Email이 없을 때 발생하는 예외") // TODO 근데 이건 여기서 하는게 맞나?? 다른곳에서 하는 거 같기도 하고..
+//    void readMyProfile_Exception_EmailNotFoundException() {
+//
+//
+//        assertThatThrownBy(() -> profileService.readMyProfile())
+//                .isInstanceOf(EmailNotFoundException.class);
+//    }
 
 
     @Test @DisplayName("프로필_업데이트_정상흐름")
@@ -65,11 +66,17 @@ class ProfileServiceImplTest {
         String introMsg = "안녕하세요 김테스터1입니다.";
         dto.setIntroMsg(introMsg);
         dto.setImageUrl("c/user/example/picture/image1.png");
-        String email = "test@naver.com";
+        String email = "test1234@naver.com";
 
-        profileService.updateMyProfile(dto);
 
-        ProfileReadResponseDto profile = profileService.readMyProfile();
+        Profile profile1 = repository.findProfileByAuthEmail(email)
+                .get();
+        profile1.updateProfile(dto);
+
+        Profile updated = repository.findProfileByAuthEmail(email)
+                .get();
+
+        ProfileReadResponseDto profile =  ProfileReadResponseDto.createResponseDto(updated);
         System.out.println(profile);
 
         assertThat(profile.getIntroMsg()).isEqualTo(introMsg);
@@ -80,11 +87,11 @@ class ProfileServiceImplTest {
     @Test @DisplayName("프로필 업데이트_예외_닉네임_중복")
     void updateMyProfile_Exception_NicknameDuplicateException() {
         ProfileUpdateReqeustDto dto = new ProfileUpdateReqeustDto();
-        dto.setNickname("tester");
+        String email = "test1234@naver.com";
+        dto.setNickname("tester1234");
 
-        assertThatThrownBy(() -> profileService.updateMyProfile(dto))
-                .isInstanceOf(NicknameDuplicateException.class);
-
-
+        Profile profile1 = repository.findProfileByAuthEmail(email)
+                .get();
+        profile1.updateProfile(dto);
     }
 }
