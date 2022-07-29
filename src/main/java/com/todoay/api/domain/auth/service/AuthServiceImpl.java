@@ -6,10 +6,7 @@ import com.todoay.api.domain.auth.dto.AuthUpdatePasswordReqeustDto;
 import com.todoay.api.domain.auth.dto.LoginRequestDto;
 import com.todoay.api.domain.auth.dto.LoginResponseDto;
 import com.todoay.api.domain.auth.entity.Auth;
-import com.todoay.api.domain.auth.exception.EmailDuplicateException;
-import com.todoay.api.domain.auth.exception.EmailNotVerifiedException;
-import com.todoay.api.domain.auth.exception.LoginDeletedAccountException;
-import com.todoay.api.domain.auth.exception.LoginUnmatchedException;
+import com.todoay.api.domain.auth.exception.*;
 import com.todoay.api.domain.auth.repository.AuthRepository;
 import com.todoay.api.domain.profile.exception.EmailNotFoundException;
 import com.todoay.api.domain.profile.exception.NicknameDuplicateException;
@@ -71,9 +68,14 @@ public class AuthServiceImpl implements AuthService {
         String email = jwtProvider.getLoginId();
         Auth auth = getAuthOrElseThrow(email, new EmailNotFoundException());
 
-        String password = dto.getPassword();
+        log.info("originpwd = {}", dto.getOriginPassword());
+        log.info("modifiedPassword = {}", dto.getModifiedPassword());
 
-        String encodedPassword = encoder.encode(password);
+        if (!encoder.matches(dto.getOriginPassword(),auth.getPassword())) {
+            throw new PasswordNotMatchedException();
+        }
+        String modifiedPassword = dto.getModifiedPassword();
+        String encodedPassword = encoder.encode(modifiedPassword);
 
         auth.updatePassword(encodedPassword);
         log.info("updated password = {}", auth.getPassword());

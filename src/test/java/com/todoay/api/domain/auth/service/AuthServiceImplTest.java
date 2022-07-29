@@ -143,7 +143,7 @@ class AuthServiceImplTest {
     @Test
     void updateAuthPassword() {
         AuthUpdatePasswordReqeustDto dto = new AuthUpdatePasswordReqeustDto();
-        dto.setPassword("password1234");
+        dto.setOriginPassword("password1234");
 
 
         String email = "test@naver.com";
@@ -157,7 +157,7 @@ class AuthServiceImplTest {
 
         // token이 없어서 수정
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        auth.setPassword(encoder.encode(dto.getPassword()));
+        auth.setPassword(encoder.encode(dto.getOriginPassword()));
 
 
         Auth updated = em.createQuery("select a from Auth a where a.email =: email", Auth.class)
