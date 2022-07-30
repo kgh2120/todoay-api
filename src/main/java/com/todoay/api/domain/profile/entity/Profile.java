@@ -46,8 +46,8 @@ public class Profile {
 
     public void delete() {
         this.nickname = UUID.randomUUID().toString();
-        this.imgUrl = "";
-        this.introMsg = "";
+        this.imgUrl = null;
+        this.introMsg = null;
     }
 
 
