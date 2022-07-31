@@ -34,8 +34,8 @@ class MailVerificationControllerTest {
     @BeforeEach
     void before_each() {
         dto1 = new AuthSaveDto();
-        dto1.setEmail("test@naver.com");
-        dto1.setNickname("tester");
+        dto1.setEmail("test1234@naver.com");
+        dto1.setNickname("tester1234");
         dto1.setPassword("12341234");
 
         dto2 = new AuthSaveDto();

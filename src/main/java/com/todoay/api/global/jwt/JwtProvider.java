@@ -100,8 +100,12 @@ public class JwtProvider {
     }
 
     public Claims validateToken(String token) {
-        LOGGER.info("[validateToken] 토큰 유효 체크 시작");
-        Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
-        return claims.getBody();
+        try {
+            LOGGER.info("[validateToken] 토큰 유효 체크 시작");
+            Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
+            return claims.getBody();
+        } catch (IllegalArgumentException e) {
+            throw new JwtHeaderNotFoundException();
+        }
     }
 }

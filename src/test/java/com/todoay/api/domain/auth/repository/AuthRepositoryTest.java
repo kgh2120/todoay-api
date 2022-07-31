@@ -22,8 +22,8 @@ class AuthRepositoryTest {
     @BeforeEach
     void before_each() {
         AuthSaveDto dto = new AuthSaveDto();
-        dto.setEmail("test@naver.com");
-        dto.setNickname("tester");
+        dto.setEmail("test1234@naver.com");
+        dto.setNickname("tester1234");
         dto.setPassword("12341234");
 
         AuthSaveDto dto2 = new AuthSaveDto();
@@ -43,12 +43,12 @@ class AuthRepositoryTest {
     void findByNickname() {
 
         //when
-        String nickname = "tester";
+        String nickname = "tester1234";
         Auth tester = authRepository.findByNickname(nickname).get();
 
         //then
 
-        assertThat(tester.getEmail()).isEqualTo("test@naver.com");
+        assertThat(tester.getEmail()).isEqualTo("test1234@naver.com");
 
     }
 }

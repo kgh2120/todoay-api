@@ -66,10 +66,8 @@ public class AuthServiceImpl implements AuthService {
 
 
         String email = jwtProvider.getLoginId();
-        Auth auth = getAuthOrElseThrow(email, new EmailNotFoundException());
-
-        log.info("originpwd = {}", dto.getOriginPassword());
-        log.info("modifiedPassword = {}", dto.getModifiedPassword());
+        Auth auth =authRepository.findByEmail(email)
+                .orElseThrow(EmailNotFoundException::new);
 
         if (!encoder.matches(dto.getOriginPassword(),auth.getPassword())) {
             throw new PasswordNotMatchedException();
@@ -78,14 +76,14 @@ public class AuthServiceImpl implements AuthService {
         String encodedPassword = encoder.encode(modifiedPassword);
 
         auth.updatePassword(encodedPassword);
-        log.info("updated password = {}", auth.getPassword());
     }
 
     @Transactional
     @Override
     public void deleteAuth() {
         String email = jwtProvider.getLoginId();
-        Auth auth = getAuthOrElseThrow(email, new EmailNotFoundException());
+        Auth auth =authRepository.findByEmail(email)
+                .orElseThrow(EmailNotFoundException::new);
         auth.deleteAuth();
     }
 
@@ -93,8 +91,8 @@ public class AuthServiceImpl implements AuthService {
     public LoginResponseDto login(LoginRequestDto loginRequestDto) {
 
         // 이메일 검증
-        Auth auth = getAuthOrElseThrow(loginRequestDto.getEmail(), new LoginUnmatchedException());
-
+        Auth auth =authRepository.findByEmail(loginRequestDto.getEmail())
+                .orElseThrow(LoginUnmatchedException::new);
         // 비밀번호 검증
         if (!encoder.matches(loginRequestDto.getPassword(), auth.getPassword())) {
             throw new LoginUnmatchedException();  // 나중에 custom exception 추가
@@ -121,8 +119,4 @@ public class AuthServiceImpl implements AuthService {
        return authRepository.findByEmail(email).isPresent();
     }
 
-    private Auth getAuthOrElseThrow(String email, AbstractApiException e) {
-        return authRepository.findByEmail(email)
-                .orElseThrow(() -> e);
-    }
 }

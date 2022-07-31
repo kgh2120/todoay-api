@@ -58,7 +58,6 @@ public class ProfileController {
     )
     @PutMapping("/profile/my")
     public ResponseEntity<Void> updateProfile(@RequestBody @Validated ProfileUpdateReqeustDto dto) {
-        log.info("dto = {} ",dto);
         profileService.updateMyProfile(dto);
 
         return ResponseEntity.status(204).build();

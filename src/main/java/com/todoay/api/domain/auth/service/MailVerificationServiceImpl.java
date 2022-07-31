@@ -66,13 +66,14 @@ public class MailVerificationServiceImpl implements MailVerificationService {
     }
 
     private Auth verifyEmailToken(String emailToken) {
-        return authRepository.findByEmail(jwtProvider.validateToken(emailToken).getSubject()).orElseThrow(EmailNotFoundException::new);
+        return authRepository.findByEmail(jwtProvider.validateToken(emailToken).getSubject())
+                .orElseThrow(EmailNotFoundException::new);
     }
 
     @Override
     public CheckEmailVerifiedResponseDto checkEmailVerified(String email) {
         Auth auth = authRepository.findByEmail(email).orElseThrow(EmailNotFoundException::new);
-        boolean emailVerified = auth.getEmailVerifiedAt() == null ? false : true;
+        boolean emailVerified = auth.getEmailVerifiedAt() != null;
         return CheckEmailVerifiedResponseDto.builder().emailVerified(emailVerified).build();
     }
 
