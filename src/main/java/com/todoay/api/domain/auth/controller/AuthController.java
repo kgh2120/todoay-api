@@ -138,6 +138,7 @@ public class AuthController {
     public ResponseEntity<RefreshResponseDto> refreshAccessToken(@RequestBody @Validated RefreshRequestDto dto) {
         RefreshResponseDto responseDto = refreshTokenService.refreshTokens(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
+
     }
 
 
