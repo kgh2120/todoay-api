@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.UUID;
 
 @Entity
 @Getter
@@ -41,6 +42,12 @@ public class Profile {
         this.nickname = dto.getNickname();
         this.imgUrl = dto.getImageUrl();
         this.introMsg = dto.getIntroMsg();
+    }
+
+    public void delete() {
+        this.nickname = UUID.randomUUID().toString();
+        this.imgUrl = null;
+        this.introMsg = null;
     }
 
 

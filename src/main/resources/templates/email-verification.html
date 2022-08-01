@@ -2,17 +2,38 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>TODOAY</title>
+    <title>Todoay 이메일 인증</title>
+    <link th:href="@{/css/main.css}" rel="stylesheet">
 </head>
 <body>
+<div id="title_container">
+    <h1>Todoay</h1>
+</div>
 <th:block th:unless="${exception}">
-    <h1>이메일 인증에 성공하였습니다.</h1>
+    <div id="message_container">
+        <p>메일 인증에 성공하셨습니다.<br>
+            앱으로 돌아가서 '확인' 버튼을 클릭해주세요.</p>
+    </div>
 </th:block>
 <th:block th:if="${exception}">
-    <h1>이메일 인증에 실패하였습니다.</h1>
-    <th:block th:switch="${exception}">
-        <span th:case="ExpiredJwtException">인증 시간이 만료되었습니다.</span>
-    </th:block>
+    <div id="message_title_container">
+        <div id="status_container">
+            <h3>인증에 실패하였습니다.</h3>
+        </div>
+    </div>
+    <div id="error_message_container">
+        <div id="message_context_container">
+            <th:block th:switch="${exception}">
+                <p th:case="ExpiredJwtException">
+                    인증 시간이 만료되었습니다</br>
+                    이메일 인증을 다시 시도해주세요.
+                </p>
+            </th:block>
+        </div>
+    </div>
 </th:block>
+<div id="footer_container">
+    <p>Copyright 2022. Todoay Co. all rights reserved.</p>
+</div>
 </body>
 </html>

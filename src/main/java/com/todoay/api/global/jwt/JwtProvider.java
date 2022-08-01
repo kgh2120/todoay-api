@@ -28,9 +28,9 @@ import java.util.Date;
 public class JwtProvider {
     @Value("${jwt.key}")
     private String secretKey;
-    private final long EMAIL_TOKEN_EXPIRATION = 1000 * 60 * 5;
-    private final long ACCESS_TOKEN_EXPIRATION = 1000 * 60 * 60 * 24;
-    private final long REFRESH_TOKEN_EXPIRATION = 1000 * 60 * 60 * 24 * 30;
+    private final long EMAIL_TOKEN_EXPIRATION = 1000 * 60 * 5L;
+    private final long ACCESS_TOKEN_EXPIRATION = 1000 * 60 * 60 * 24L;
+    private final long REFRESH_TOKEN_EXPIRATION = 1000 * 60 * 60 * 24 * 30L;
 
     private final Logger LOGGER = LoggerFactory.getLogger(JwtProvider.class);
 
@@ -100,8 +100,12 @@ public class JwtProvider {
     }
 
     public Claims validateToken(String token) {
-        LOGGER.info("[validateToken] 토큰 유효 체크 시작");
-        Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
-        return claims.getBody();
+        try {
+            LOGGER.info("[validateToken] 토큰 유효 체크 시작");
+            Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
+            return claims.getBody();
+        } catch (IllegalArgumentException e) {
+            throw new JwtHeaderNotFoundException();
+        }
     }
 }

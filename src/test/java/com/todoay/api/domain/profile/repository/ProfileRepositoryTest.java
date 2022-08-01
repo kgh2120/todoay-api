@@ -29,8 +29,8 @@ class ProfileRepositoryTest {
     @BeforeEach @Rollback(value = false)
     void before_each() {
         AuthSaveDto dto = new AuthSaveDto();
-        dto.setEmail("test@naver.com");
-        dto.setNickname("tester");
+        dto.setEmail("test1234@naver.com");
+        dto.setNickname("tester1234");
         dto.setPassword("12341234");
 
         AuthSaveDto dto2 = new AuthSaveDto();
@@ -45,14 +45,14 @@ class ProfileRepositoryTest {
 
     @Test @DisplayName("조인 쿼리 정상 작동 테스트")
     void findProfileByAuthEmail() {
-        Profile profile = profileRepository.findProfileByAuthEmail("test@naver.com").get();
+        Profile profile = profileRepository.findProfileByAuthEmail("test1234@naver.com").get();
 
 
         System.out.println(profile.getNickname());
         System.out.println(profile.getAuth().getEmail());
         System.out.println(profile.getAuth().getPassword());
 
-        assertThat(profile.getNickname()).isEqualTo("tester");
+        assertThat(profile.getNickname()).isEqualTo("tester1234");
     }
 
 

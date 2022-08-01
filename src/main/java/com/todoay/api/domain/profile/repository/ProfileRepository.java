@@ -13,5 +13,6 @@ public interface ProfileRepository extends JpaRepository<Profile, Long> {
     @Query("select p from Profile p inner join p.auth a on a.email = :email")
     Optional<Profile> findProfileByAuthEmail(@Param("email") String email);
 
+
     Optional<Profile> findProfileByNickname(String nickname);
 }

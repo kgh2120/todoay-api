@@ -6,6 +6,7 @@ import com.todoay.api.domain.profile.entity.Profile;
 import com.todoay.api.domain.profile.exception.EmailNotFoundException;
 import com.todoay.api.domain.profile.exception.NicknameDuplicateException;
 import com.todoay.api.domain.profile.repository.ProfileRepository;
+import com.todoay.api.global.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,11 +16,13 @@ import org.springframework.transaction.annotation.Transactional;
 public class ProfileServiceImpl implements ProfileService {
 
     private final ProfileRepository profileRepository;
+    private final JwtProvider jwtProvider;
 
 
     @Override
-    public ProfileReadResponseDto readMyProfile(String email) {
+    public ProfileReadResponseDto readMyProfile() {
 
+        String email = jwtProvider.getLoginId();
         Profile profile = getProfileByEmailOrElseThrowEmailNotFoundException(email);
 
         return ProfileReadResponseDto.createResponseDto(profile);
@@ -27,16 +30,17 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Transactional
     @Override
-    public void updateMyProfile(String email, ProfileUpdateReqeustDto dto) {
+    public void updateMyProfile(ProfileUpdateReqeustDto dto) {
+        String email = jwtProvider.getLoginId();
+        Profile profile = getProfileByEmailOrElseThrowEmailNotFoundException(email);
 
         String nickname = dto.getNickname();
-        profileRepository.findProfileByNickname(nickname)
-                .ifPresent(p -> {
-                    throw new NicknameDuplicateException();
-                }
-        );
-
-        Profile profile = getProfileByEmailOrElseThrowEmailNotFoundException(email);
+        if(!profile.getNickname().equals(nickname))
+            profileRepository.findProfileByNickname(nickname)
+                    .ifPresent(p -> {
+                        throw new NicknameDuplicateException();
+                    }
+            );
         profile.updateProfile(dto);
     }
 

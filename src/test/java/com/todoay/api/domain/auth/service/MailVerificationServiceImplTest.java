@@ -30,8 +30,8 @@ class MailVerificationServiceImplTest {
     @BeforeEach
     void before_each() {
         dto = new AuthSaveDto();
-        dto.setEmail("test@naver.com");
-        dto.setNickname("tester");
+        dto.setEmail("test1234@naver.com");
+        dto.setNickname("tester1234");
         dto.setPassword("12341234");
 
         dto2 = new AuthSaveDto();
@@ -51,7 +51,7 @@ class MailVerificationServiceImplTest {
 
         // when
         String emailToken = mailVerificationService.sendVerificationMail(AuthSendEmailRequestDto.builder().email(email).build());
-        mailVerificationService.verifyEmail(AuthVerifyEmailTokenOnSingUpDto.builder().emailToken(emailToken).build());
+        mailVerificationService.verifyEmailOnSignUp(AuthVerifyEmailTokenOnSingUpDto.builder().emailToken(emailToken).build());
 
         // then
         Auth auth = authRepository.findByEmail(email).get();
