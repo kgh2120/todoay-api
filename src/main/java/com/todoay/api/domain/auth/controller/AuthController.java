@@ -67,7 +67,8 @@ public class AuthController {
             responses = {
                     @ApiResponse(responseCode = "204", description = "성공"),
                     @ApiResponse(responseCode = "400", description = "올바른 비밀번호 양식을 입력하지 않음",content = @Content(schema = @Schema(implementation = ValidErrorResponse.class))) ,
-                    @ApiResponse(responseCode = "401", description = "JWT 토큰 에러 ",content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+                    @ApiResponse(responseCode = "401", description = "JWT 토큰 에러 ",content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+                    @ApiResponse(responseCode = "404", description = "Origin password가 저장된 값과 일치하지 않을 때 ",content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
             }
     )
     @PatchMapping("/password")
