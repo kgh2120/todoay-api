@@ -1,7 +1,7 @@
 package com.todoay.api.domain.auth.controller;
 
 import com.todoay.api.domain.auth.dto.AuthSaveDto;
-import com.todoay.api.domain.auth.dto.AuthVerifyEmailTokenOnSingUpDto;
+import com.todoay.api.domain.auth.dto.AuthVerifyEmailTokenOnSingUpRequestDto;
 import com.todoay.api.domain.auth.entity.Auth;
 import com.todoay.api.domain.auth.repository.AuthRepository;
 import com.todoay.api.domain.auth.service.AuthService;
@@ -56,7 +56,7 @@ class MailVerificationControllerTest {
         // 테스트 하려면 만료된 토큰 생성하는 것이 필요할 듯. JwtTokenProvider::createToken을 public으로 바꾸면 가능.
 
         // when
-        mailVerificationController.verifyEmailTokenOnSignUp(AuthVerifyEmailTokenOnSingUpDto.builder().emailToken(emailToken).build());
+        mailVerificationController.verifyEmailTokenOnSignUp(AuthVerifyEmailTokenOnSingUpRequestDto.builder().emailToken(emailToken).build());
         Auth auth = authRepository.findByEmail(email).get();
 
         // then

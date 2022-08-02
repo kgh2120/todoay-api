@@ -72,7 +72,7 @@ public class AuthController {
             }
     )
     @PatchMapping("/password")
-    public ResponseEntity<Void> changePassword(@RequestBody @Validated AuthUpdatePasswordReqeustDto dto) {
+    public ResponseEntity<Void> changePassword(@RequestBody @Validated AuthUpdatePasswordRequestDto dto) {
 
         authService.updateAuthPassword(dto);
 
