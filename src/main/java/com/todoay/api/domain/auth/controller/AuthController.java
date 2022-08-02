@@ -130,6 +130,7 @@ public class AuthController {
             description = "accessToken을 재발급 받기 위해 refreshToken을 전달한다. refreshToken에 대한 유효성 검사 이후 이를 통과하면 새로운 토큰을 발급해준다.",
             responses = {
                     @ApiResponse(responseCode = "201", description = "새로운 토큰을 발급한다.", content = @Content(schema = @Schema(implementation = RefreshResponseDto.class))),
+                    @ApiResponse(responseCode = "400", description = "RefreshToken이 만료됨", content = @Content(schema = @Schema(implementation = ErrorResponse.class)) ),
                     @ApiResponse(responseCode = "401", description = "JWT 관련 에러",content = @Content(schema = @Schema(implementation = ErrorResponse.class)) ),
                     @ApiResponse(responseCode = "404", description = "전달받은 refreshToken이 존재하지 않음.",content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
             }
