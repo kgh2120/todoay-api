@@ -4,9 +4,11 @@ import com.todoay.api.domain.auth.dto.LoginRequestDto;
 import com.todoay.api.domain.auth.dto.RefreshRequestDto;
 import com.todoay.api.domain.auth.dto.RefreshResponseDto;
 import com.todoay.api.domain.auth.entity.RefreshToken;
+import com.todoay.api.domain.auth.exception.RefreshTokenExpiredException;
 import com.todoay.api.domain.auth.exception.RefreshTokenNotFoundException;
 import com.todoay.api.domain.auth.repository.RefreshTokenRepository;
 import com.todoay.api.global.jwt.JwtProvider;
+import io.jsonwebtoken.ExpiredJwtException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,7 +37,11 @@ public class RefreshTokenServiceImpl implements RefreshTokenService{
                 .orElseThrow(RefreshTokenNotFoundException::new);
 
         // refreshToken validation
-        jwtProvider.validateToken(refreshToken.getToken());
+        try {
+            jwtProvider.validateToken(refreshToken.getToken());
+        } catch (ExpiredJwtException e) {
+            throw new RefreshTokenExpiredException();
+        }
         String accessToken = jwtProvider.createAccessToken(refreshToken.getSubjectEmail());
 
         // refresh refreshToken expiration
