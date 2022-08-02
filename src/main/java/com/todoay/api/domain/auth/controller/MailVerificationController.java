@@ -48,8 +48,8 @@ public class MailVerificationController {
                     @ApiResponse(responseCode = "200", description = "토큰인증 결과를 HTML로 반환"),
             }
     )
-    public ModelAndView verifyEmailTokenOnSignUp(AuthVerifyEmailTokenOnSingUpRequestDto authVerifyEmailTokenOnSingUpRequestDto) {
-        String emailToken = authVerifyEmailTokenOnSingUpRequestDto.getEmailToken();
+    public ModelAndView verifyEmailTokenOnSignUp(AuthVerifyEmailTokenOnSignUpRequestDto authVerifyEmailTokenOnSignUpRequestDto) {
+        String emailToken = authVerifyEmailTokenOnSignUpRequestDto.getEmailToken();
         ModelAndView modelAndView = new ModelAndView("email-verification");
 
         if (emailToken == null || emailToken.isBlank()) {
@@ -57,7 +57,7 @@ public class MailVerificationController {
         }
 
         try {
-            mailVerificationService.verifyEmailOnSignUp(authVerifyEmailTokenOnSingUpRequestDto);
+            mailVerificationService.verifyEmailOnSignUp(authVerifyEmailTokenOnSignUpRequestDto);
         }  catch (JwtException | EmailNotFoundException e) {
             modelAndView.addObject("exception", e.getClass().getSimpleName());
         }

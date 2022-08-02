@@ -45,13 +45,13 @@ public class MailVerificationServiceImpl implements MailVerificationService {
 
     @Override
     @Transactional
-    public void verifyEmailOnSignUp(AuthVerifyEmailTokenOnSingUpRequestDto authVerifyEmailTokenOnSingUpRequestDto) {
+    public void verifyEmailOnSignUp(AuthVerifyEmailTokenOnSignUpRequestDto authVerifyEmailTokenOnSignUpRequestDto) {
 //         io.jsonwebtoken.UnsupportedJwtException – if the claimsJws argument does not represent an Claims JWS
 //         io.jsonwebtoken.MalformedJwtException – if the claimsJws string is not a valid JWS
 //         io.jsonwebtoken.SignatureException – if the claimsJws JWS signature validation fails
 //         io.jsonwebtoken.ExpiredJwtException – if the specified JWT is a Claims JWT and the Claims has an expiration time before the time this method is invoked.
 //         IllegalArgumentException – if the claimsJws string is null or empty or only whitespace
-        Auth auth = this.verifyEmailToken(authVerifyEmailTokenOnSingUpRequestDto.getEmailToken());
+        Auth auth = this.verifyEmailToken(authVerifyEmailTokenOnSignUpRequestDto.getEmailToken());
         auth.completeEmailVerification();
     }
 
