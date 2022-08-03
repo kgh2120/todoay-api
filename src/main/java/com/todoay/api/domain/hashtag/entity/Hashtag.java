@@ -1,4 +1,4 @@
-package com.todoay.api.domain.todo.entity;
+package com.todoay.api.domain.hashtag.entity;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -12,5 +12,4 @@ public class Hashtag {
     private Long id;
 
     private String name;
-
 }

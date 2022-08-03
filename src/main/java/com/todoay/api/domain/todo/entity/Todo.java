@@ -25,6 +25,6 @@ public abstract class Todo {
     @JoinColumn(name = "auth_id")
     private Auth auth;
 
-    @OneToMany(mappedBy = "todo", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "todo", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TodoHashtag> todoHashtags = new ArrayList<>();
 }

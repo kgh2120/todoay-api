@@ -1,6 +1,8 @@
 package com.todoay.api.domain.todo.entity;
 
 
+import com.todoay.api.domain.hashtag.entity.Hashtag;
+
 import javax.persistence.*;
 
 @Entity
