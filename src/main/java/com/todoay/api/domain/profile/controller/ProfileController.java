@@ -35,7 +35,8 @@ public class ProfileController {
             description = "Jwt 토큰을 통해 얻은 email로 정보를 검색하여, 반환한다.",
             responses = {
                     @ApiResponse(responseCode = "200",description = "성공", content = @Content(schema = @Schema(implementation = ProfileReadResponseDto.class))),
-                    @ApiResponse(responseCode = "401", description = "JWT 토큰 에러", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+                    @ApiResponse(responseCode = "401", description = "AccessToken 만료 ",content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+                    @ApiResponse(responseCode = "403",description = "허락되지 않은 접근",content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
             }
     )
     @GetMapping("/profile/my")
@@ -53,7 +54,8 @@ public class ProfileController {
             responses = {
                     @ApiResponse(responseCode = "204", description = "성공"),
                     @ApiResponse(responseCode = "400", description = "입력 값이 유효성 검사를 통과하지 못했습니다.", content = @Content(schema = @Schema(implementation = ValidErrorResponse.class))),
-                    @ApiResponse(responseCode = "401", description = "JWT 토큰 에러", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+                    @ApiResponse(responseCode = "401", description = "AccessToken 만료 ",content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+                    @ApiResponse(responseCode = "403",description = "허락되지 않은 접근",content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
             }
     )
     @PutMapping("/profile/my")
