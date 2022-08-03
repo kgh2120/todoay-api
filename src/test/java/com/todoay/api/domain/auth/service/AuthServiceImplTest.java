@@ -1,7 +1,7 @@
 package com.todoay.api.domain.auth.service;
 
 import com.todoay.api.domain.auth.dto.AuthSaveDto;
-import com.todoay.api.domain.auth.dto.AuthUpdatePasswordReqeustDto;
+import com.todoay.api.domain.auth.dto.AuthUpdatePasswordRequestDto;
 import com.todoay.api.domain.auth.dto.LoginRequestDto;
 import com.todoay.api.domain.auth.entity.Auth;
 import com.todoay.api.domain.auth.exception.EmailDuplicateException;
@@ -142,7 +142,7 @@ class AuthServiceImplTest {
 
     @Test
     void updateAuthPassword() {
-        AuthUpdatePasswordReqeustDto dto = new AuthUpdatePasswordReqeustDto();
+        AuthUpdatePasswordRequestDto dto = new AuthUpdatePasswordRequestDto();
         dto.setOriginPassword("password1234");
 
 
