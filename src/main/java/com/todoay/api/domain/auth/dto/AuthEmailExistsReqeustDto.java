@@ -1,10 +1,10 @@
 package com.todoay.api.domain.auth.dto;
 
-import com.todoay.api.global.customValidation.annotation.CEmail;
+import com.todoay.api.global.customValidation.annotation.ValidationEmail;
 import lombok.Data;
 
 @Data
 public class AuthEmailExistsReqeustDto {
-    @CEmail
+    @ValidationEmail
     private String email;
 }

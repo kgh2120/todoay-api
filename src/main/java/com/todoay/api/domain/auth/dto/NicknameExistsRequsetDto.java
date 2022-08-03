@@ -1,11 +1,11 @@
 package com.todoay.api.domain.auth.dto;
 
-import com.todoay.api.global.customValidation.annotation.CNickname;
+import com.todoay.api.global.customValidation.annotation.ValidationNickname;
 import lombok.Data;
 
 @Data
 public class NicknameExistsRequsetDto {
 
-    @CNickname
+    @ValidationNickname
     private String nickname;
 }

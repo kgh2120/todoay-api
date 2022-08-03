@@ -1,6 +1,6 @@
 package com.todoay.api.global.customValidation.annotation;
 
-import com.todoay.api.global.customValidation.validator.EmailValidator;
+import com.todoay.api.global.customValidation.validator.NicknameValidator;
 
 import javax.validation.Constraint;
 import java.lang.annotation.ElementType;
@@ -10,9 +10,9 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = EmailValidator.class)
-public @interface CEmail {
-    String message() default "이메일은 null이거나 공백일 수 없으며 이메일 형식을 따라야 합니다.";
+@Constraint(validatedBy = NicknameValidator.class)
+public @interface ValidationNickname {
+    String message() default "닉네임은 null 또는 공백일 수 없습니다.";
     Class[] groups() default {};
     Class[] payload() default {};
 }

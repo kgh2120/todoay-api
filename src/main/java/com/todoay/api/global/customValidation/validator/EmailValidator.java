@@ -1,11 +1,11 @@
 package com.todoay.api.global.customValidation.validator;
 
-import com.todoay.api.global.customValidation.annotation.CEmail;
+import com.todoay.api.global.customValidation.annotation.ValidationEmail;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-public class EmailValidator implements ConstraintValidator<CEmail, String> {
+public class EmailValidator implements ConstraintValidator<ValidationEmail, String> {
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
         return value != null &&

@@ -2,9 +2,9 @@ package com.todoay.api.domain.auth.dto;
 
 import com.todoay.api.domain.auth.entity.Auth;
 import com.todoay.api.domain.profile.entity.Profile;
-import com.todoay.api.global.customValidation.annotation.CEmail;
-import com.todoay.api.global.customValidation.annotation.CNickname;
-import com.todoay.api.global.customValidation.annotation.CPassword;
+import com.todoay.api.global.customValidation.annotation.ValidationEmail;
+import com.todoay.api.global.customValidation.annotation.ValidationNickname;
+import com.todoay.api.global.customValidation.annotation.ValidationPassword;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,13 +15,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class AuthSaveDto {
     @Schema(required = true)
-    @CEmail
+    @ValidationEmail
     private String email;
 
-    @CPassword
+    @ValidationPassword
     private String password;
 
-    @CNickname
+    @ValidationNickname
     private String nickname;
 
     public Auth toAuthEntity() {

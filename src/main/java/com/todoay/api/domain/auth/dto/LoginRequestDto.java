@@ -1,7 +1,7 @@
 package com.todoay.api.domain.auth.dto;
 
-import com.todoay.api.global.customValidation.annotation.CEmail;
-import com.todoay.api.global.customValidation.annotation.CPassword;
+import com.todoay.api.global.customValidation.annotation.ValidationEmail;
+import com.todoay.api.global.customValidation.annotation.ValidationPassword;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,10 +12,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class LoginRequestDto {
     @Schema(required = true)  // swagger에 설명을 추가해주는
-    @CEmail
+    @ValidationEmail
     private String email;
 
-    @CPassword
+    @ValidationPassword
     private String password;
 
 }
