@@ -16,7 +16,6 @@ public class DueDateTodo extends Todo{
 
     @Column(nullable = false)
     private LocalDate dueDate;
-    private String description;
     @Column(nullable = false)
     @Enumerated(value = EnumType.ORDINAL) // 0 : High, 1 : Middle, 2 : LOW
     private Importance importance;

@@ -21,6 +21,9 @@ public abstract class Todo {
     @Column(nullable = false)
     protected String title;
 
+    @Column(columnDefinition = "TEXT")
+    protected String description;
+
     @Column(nullable = false)
     protected boolean isPublic = false;
 
