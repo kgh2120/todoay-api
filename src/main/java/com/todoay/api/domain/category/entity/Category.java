@@ -3,7 +3,6 @@ package com.todoay.api.domain.category.entity;
 import com.todoay.api.domain.auth.entity.Auth;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 
@@ -21,6 +20,7 @@ public class Category {
     private String color;
 
 
+    @Column(nullable = false)
     private Integer orderIndex;
 
     @Column(nullable = false)
