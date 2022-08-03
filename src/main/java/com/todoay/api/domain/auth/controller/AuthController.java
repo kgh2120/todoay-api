@@ -31,7 +31,7 @@ public class AuthController {
             responses = {
                     @ApiResponse(responseCode = "201", description = "성공"),
                     @ApiResponse(responseCode = "400", description = "올바른 이메일/패스워드/닉네임 양식을 입력하지 않음.", content = @Content(schema = @Schema(implementation = ValidErrorResponse.class))),
-                    @ApiResponse(responseCode = "409", description = "입력한 이메일 혹은 닉네임이 이미 존재한다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+                    @ApiResponse(responseCode = "403", description = "허용되지 않은 접근", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
             }
     )
     @PostMapping("/sign-up")
