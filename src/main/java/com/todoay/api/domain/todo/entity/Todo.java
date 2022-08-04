@@ -31,8 +31,7 @@ public abstract class Todo {
     protected boolean isFinished = false;
 
     @ManyToOne
-    @Column(nullable = false)
-    @JoinColumn(name = "auth_id")
+    @JoinColumn(name = "auth_id", nullable = false)
     private Auth auth;
 
     @OneToMany(mappedBy = "todo", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
