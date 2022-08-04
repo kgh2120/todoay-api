@@ -27,6 +27,9 @@ public abstract class Todo {
     @Column(nullable = false)
     protected boolean isPublic = false;
 
+    @Column(nullable = false)
+    protected boolean isFinished = false;
+
     @ManyToOne
     @Column(nullable = false)
     @JoinColumn(name = "auth_id")
