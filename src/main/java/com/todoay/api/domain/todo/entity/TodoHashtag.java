@@ -16,13 +16,11 @@ public class TodoHashtag {
     private Long id;
 
     @ManyToOne
-    @Column(nullable = false)
-    @JoinColumn(name = "todo_id")
+    @JoinColumn(name = "todo_id", nullable = false)
     private Todo todo;
 
     @ManyToOne
-    @Column(nullable = false)
-    @JoinColumn(name = "hashtag_id")
+    @JoinColumn(name = "hashtag_id", nullable = false)
     private Hashtag hashTag;
 
     @Builder
