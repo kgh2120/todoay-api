@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional(readOnly = false)
 @Service
-public class HashtagServiceImpl {
+public class HashtagServiceImpl implements HashtagService{
 
     private final HashtagRepository hashtagRepository;
 }
