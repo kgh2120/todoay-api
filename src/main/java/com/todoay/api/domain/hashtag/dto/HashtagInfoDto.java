@@ -8,13 +8,12 @@ import lombok.NoArgsConstructor;
 @Data @NoArgsConstructor @AllArgsConstructor
 public class HashtagInfoDto {
 
-    private Long id;
+
     private String name;
 
 
 
     public HashtagInfoDto(Hashtag hashtag) {
-        id = hashtag.getId();
         name = hashtag.getName();
     }
 }

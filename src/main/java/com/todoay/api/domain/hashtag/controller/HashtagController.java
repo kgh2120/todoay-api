@@ -34,7 +34,7 @@ public class HashtagController {
 
     )
     @GetMapping("/auto")
-    public ResponseEntity<HashtagAutoCompleteResponseDto> searchHashtagAutoComplete(@RequestParam("name") String name) {
+    public ResponseEntity<HashtagAutoCompleteResponseDto> searchHashtagAutoComplete(@RequestParam("name")  String name) {
         HashtagAutoCompleteResponseDto dto = hashtagService.searchHashtagAutoComplete(name);
         return ResponseEntity.ok(dto);
     }
@@ -48,7 +48,7 @@ public class HashtagController {
             }
     )
     @GetMapping
-    public ResponseEntity<HashtagSearchResponseDto> searchHashtag(@RequestParam("name") String name, @RequestParam("pageNum") int pageNum) {
+    public ResponseEntity<HashtagSearchResponseDto> searchHashtag(@RequestParam("name") String name, @RequestParam("pageNum")  int pageNum) {
         HashtagSearchResponseDto dto = hashtagService.searchHashtag(name, pageNum);
         return ResponseEntity.ok(dto);
     }
