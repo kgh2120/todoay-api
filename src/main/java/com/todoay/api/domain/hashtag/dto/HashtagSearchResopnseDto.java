@@ -10,6 +10,6 @@ public class HashtagSearchResopnseDto {
 
 
     private boolean hasNext;
-    private int nextPage;
+    private int nextPageNum;
     private List<HashtagInfoDto> infos;
 }
