@@ -18,6 +18,8 @@ import java.time.LocalDateTime;
 public class DaliyTodo extends Todo{
 
     private LocalDateTime alarm;
+
+    private LocalDateTime targetTime;
     private String place;
     private String people;
     @Column(nullable = false)
@@ -29,10 +31,11 @@ public class DaliyTodo extends Todo{
 
 
     @Builder
-    public DaliyTodo(String title, boolean isPublic,String description,LocalDateTime alarm, String place, String people, LocalDate dailyDate, Category category) {
+    public DaliyTodo(String title, boolean isPublic,String description,LocalDateTime targetTime,LocalDateTime alarm, String place, String people, LocalDate dailyDate, Category category) {
         this.title = title;
         this.isPublic = isPublic;
         this.description = description;
+        this.targetTime= targetTime;
         this.alarm = alarm;
         this.place = place;
         this.people = people;
