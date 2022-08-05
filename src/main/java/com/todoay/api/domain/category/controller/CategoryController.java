@@ -1,6 +1,7 @@
 package com.todoay.api.domain.category.controller;
 
 
+import com.todoay.api.domain.category.dto.CategoryModifyRequestDto;
 import com.todoay.api.domain.category.dto.CategorySaveRequestDto;
 import com.todoay.api.domain.category.dto.CategorySaveResponseDto;
 import com.todoay.api.domain.category.service.CategoryCRUDService;
@@ -13,10 +14,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
@@ -35,8 +34,24 @@ public class CategoryController {
                     @ApiResponse(responseCode = "401", description = "Access Token 만료", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
             }
     )
-    public ResponseEntity<CategorySaveResponseDto> categorySave(@RequestBody CategorySaveRequestDto categorySaveRequestDto) {
+    public ResponseEntity<CategorySaveResponseDto> categorySave(@RequestBody @Validated CategorySaveRequestDto categorySaveRequestDto) {
         CategorySaveResponseDto categorySaveResponseDto = categoryCRUDService.addCategory(categorySaveRequestDto);
         return ResponseEntity.ok(categorySaveResponseDto);
+    }
+
+    @PutMapping("")
+    @Operation(
+            summary = "로그인 유저의 카테고리를 수정한다.",
+            responses = {
+                    @ApiResponse(responseCode = "204"),
+                    @ApiResponse(responseCode = "400", description = "올바른 양식을 입력하지 않음.", content = @Content(schema = @Schema(implementation = ValidErrorResponse.class))),
+                    @ApiResponse(responseCode = "401", description = "Access Token 만료", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+                    @ApiResponse(responseCode = "403", description = "카테고리가 로그인 유저의 것이 아님", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            }
+    )
+    public ResponseEntity<?> categoryModify(@RequestBody @Validated CategoryModifyRequestDto categoryModifyRequestDto) {
+        System.out.println(categoryModifyRequestDto);
+        categoryCRUDService.modifyCategory(categoryModifyRequestDto);
+        return ResponseEntity.noContent().build();
     }
 }

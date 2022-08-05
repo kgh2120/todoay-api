@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = CategoryColorValidator.class)
 public @interface ValidationCategoryColor {
-    String message() default "카테고리 색상은 null이거나 공백일 수 없으며 색상 형식을 따라야 합니다. #과 4 ~ 8 자리의 16진수 값";
+    String message() default "카테고리 색상은 null이거나 공백일 수 없으며 색상 형식을 따라야 합니다. {# 포함 또는 미포함}{숫자 3 또는 4 또는 6 또는 8 자리}";
     Class[] groups() default {};
     Class[] payload() default {};
 }
