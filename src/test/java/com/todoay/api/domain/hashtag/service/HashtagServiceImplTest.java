@@ -2,11 +2,10 @@ package com.todoay.api.domain.hashtag.service;
 
 import com.todoay.api.domain.hashtag.dto.HashtagAutoCompleteResponseDto;
 import com.todoay.api.domain.hashtag.dto.HashtagInfoDto;
-import com.todoay.api.domain.hashtag.dto.HashtagSearchResopnseDto;
+import com.todoay.api.domain.hashtag.dto.HashtagSearchResponseDto;
 import com.todoay.api.domain.hashtag.entity.Hashtag;
 import com.todoay.api.domain.hashtag.exception.NoMoreDataException;
 import com.todoay.api.domain.hashtag.repository.HashtagRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,7 +15,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 
 @SpringBootTest
@@ -54,9 +52,9 @@ class HashtagServiceImplTest {
     @Test
     void search_test() {
 
-        HashtagSearchResopnseDto dto = hashtagService.searchHashtag(name, 0);
+        HashtagSearchResponseDto dto = hashtagService.searchHashtag(name, 0);
         List<HashtagInfoDto> infos = dto.getInfos();
-        int nextPage = dto.getNextPage();
+        int nextPage = dto.getNextPageNum();
         boolean hasNext = dto.isHasNext();
 
         assertThat(hasNext).isTrue();

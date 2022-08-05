@@ -3,7 +3,7 @@ package com.todoay.api.domain.hashtag.service;
 
 import com.todoay.api.domain.hashtag.dto.HashtagAutoCompleteResponseDto;
 import com.todoay.api.domain.hashtag.dto.HashtagInfoDto;
-import com.todoay.api.domain.hashtag.dto.HashtagSearchResopnseDto;
+import com.todoay.api.domain.hashtag.dto.HashtagSearchResponseDto;
 import com.todoay.api.domain.hashtag.entity.Hashtag;
 import com.todoay.api.domain.hashtag.exception.NoMoreDataException;
 import com.todoay.api.domain.hashtag.repository.HashtagRepository;
@@ -35,7 +35,7 @@ public class HashtagServiceImpl implements HashtagService{
     }
 
     @Override
-    public HashtagSearchResopnseDto searchHashtag(String name, int pageNum) {
+    public HashtagSearchResponseDto searchHashtag(String name, int pageNum) {
         PageRequest pageRequest = PageRequest.of(pageNum, 5);
 
         Slice<Hashtag> page = hashtagRepository.findHashtagByNameStartsWith(name, pageRequest);
@@ -47,6 +47,6 @@ public class HashtagServiceImpl implements HashtagService{
             throw new NoMoreDataException();
 
 
-        return new HashtagSearchResopnseDto(page.hasNext(), page.getNumber()+1,infoDtos);
+        return new HashtagSearchResponseDto(page.hasNext(), page.getNumber()+1,infoDtos);
     }
 }

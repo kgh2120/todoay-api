@@ -1,7 +1,7 @@
 package com.todoay.api.domain.hashtag.service;
 
 import com.todoay.api.domain.hashtag.dto.HashtagAutoCompleteResponseDto;
-import com.todoay.api.domain.hashtag.dto.HashtagSearchResopnseDto;
+import com.todoay.api.domain.hashtag.dto.HashtagSearchResponseDto;
 
 public interface HashtagService {
 
@@ -11,7 +11,7 @@ public interface HashtagService {
 
     // 페이지로 검색하기
 
-    HashtagSearchResopnseDto searchHashtag(String name, int pageNum);
+    HashtagSearchResponseDto searchHashtag(String name, int pageNum);
 
 
 }

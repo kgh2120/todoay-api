@@ -6,7 +6,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data @AllArgsConstructor
-public class HashtagSearchResopnseDto {
+public class HashtagSearchResponseDto {
 
 
     private boolean hasNext;
