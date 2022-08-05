@@ -43,4 +43,8 @@ public class Category {
         this.orderIndex = orderIndex; this.auth = auth;
     }
 
+    public void modify(String name, String color) {
+        this.name = name;
+        this.color = color;
+    }
 }
