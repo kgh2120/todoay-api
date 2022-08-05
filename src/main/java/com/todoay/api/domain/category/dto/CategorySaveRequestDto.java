@@ -5,6 +5,8 @@ import com.todoay.api.global.customValidation.annotation.ValidationCategoryName;
 import lombok.Builder;
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
+
 @Data
 @Builder
 public class CategorySaveRequestDto {
@@ -14,5 +16,6 @@ public class CategorySaveRequestDto {
     @ValidationCategoryColor
     private String color;
 
+    @NotNull
     private Integer orderIndex;
 }
