@@ -47,4 +47,8 @@ public class Category {
         this.name = name;
         this.color = color;
     }
+
+    public void changeOrderIndex(Integer orderIndex) {
+        this.orderIndex = orderIndex;
+    }
 }

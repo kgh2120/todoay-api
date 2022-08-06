@@ -1,9 +1,7 @@
 package com.todoay.api.domain.category.controller;
 
 
-import com.todoay.api.domain.category.dto.CategoryModifyRequestDto;
-import com.todoay.api.domain.category.dto.CategorySaveRequestDto;
-import com.todoay.api.domain.category.dto.CategorySaveResponseDto;
+import com.todoay.api.domain.category.dto.*;
 import com.todoay.api.domain.category.service.CategoryCRUDService;
 import com.todoay.api.domain.category.service.CategoryService;
 import com.todoay.api.global.exception.ErrorResponse;
@@ -36,10 +34,24 @@ public class CategoryController {
     )
     public ResponseEntity<CategorySaveResponseDto> categorySave(@RequestBody @Validated CategorySaveRequestDto categorySaveRequestDto) {
         CategorySaveResponseDto categorySaveResponseDto = categoryCRUDService.addCategory(categorySaveRequestDto);
-        return ResponseEntity.ok(categorySaveResponseDto);
+        return ResponseEntity.status(201).body(categorySaveResponseDto);
     }
 
-    @PutMapping("")
+    @GetMapping("/my")
+    @Operation(
+            summary = "로그인 유저의 카테고리를 조회한다.",
+            responses = {
+                    @ApiResponse(responseCode = "200"),
+                    @ApiResponse(responseCode = "401", description = "Access Token 만료", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+                    @ApiResponse(responseCode = "403", description = "카테고리가 로그인 유저의 것이 아님", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            }
+    )
+    public ResponseEntity<CategoryListByTokenResponseDto> categoryListByToken() {
+        CategoryListByTokenResponseDto categories = categoryCRUDService.findCategoryByToken();
+        return ResponseEntity.ok(categories);
+    }
+
+    @PutMapping("/{id}")
     @Operation(
             summary = "로그인 유저의 카테고리를 수정한다.",
             responses = {
@@ -49,9 +61,24 @@ public class CategoryController {
                     @ApiResponse(responseCode = "403", description = "카테고리가 로그인 유저의 것이 아님", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             }
     )
-    public ResponseEntity<?> categoryModify(@RequestBody @Validated CategoryModifyRequestDto categoryModifyRequestDto) {
-        System.out.println(categoryModifyRequestDto);
-        categoryCRUDService.modifyCategory(categoryModifyRequestDto);
+    public ResponseEntity<Void> categoryModify(@RequestBody @Validated CategoryModifyRequestDto categoryModifyRequestDto, @PathVariable Long id) {
+        categoryCRUDService.modifyCategory(id, categoryModifyRequestDto);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Operation(
+            summary = "로그인 유저의 카테고리 순서를 변경한다.",
+            responses = {
+                    @ApiResponse(responseCode = "204"),
+                    @ApiResponse(responseCode = "400", description = "올바른 양식을 입력하지 않음.", content = @Content(schema = @Schema(implementation = ValidErrorResponse.class))),
+                    @ApiResponse(responseCode = "401", description = "Access Token 만료", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+                    @ApiResponse(responseCode = "403", description = "카테고리가 로그인 유저의 것이 아님", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+                    @ApiResponse(responseCode = "404", description = "해당 id의 리소스가 존재하지 않음", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            }
+    )
+    @PatchMapping("/order-indexes")
+    public ResponseEntity<Void> categoryOrderIndexModify(@RequestBody @Validated CategoryOrderIndexModifyDto dto) {
+        categoryCRUDService.modifyOrderIndexes(dto);
         return ResponseEntity.noContent().build();
     }
 }

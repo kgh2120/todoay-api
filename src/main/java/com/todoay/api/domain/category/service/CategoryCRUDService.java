@@ -1,11 +1,13 @@
 package com.todoay.api.domain.category.service;
 
-import com.todoay.api.domain.category.dto.CategoryModifyRequestDto;
-import com.todoay.api.domain.category.dto.CategorySaveRequestDto;
-import com.todoay.api.domain.category.dto.CategorySaveResponseDto;
+import com.todoay.api.domain.category.dto.*;
 
 public interface CategoryCRUDService {
     CategorySaveResponseDto addCategory(CategorySaveRequestDto dto);
 
-    void modifyCategory(CategoryModifyRequestDto dto);
+    void modifyCategory(Long id, CategoryModifyRequestDto dto);
+
+    CategoryListByTokenResponseDto findCategoryByToken();
+
+    void modifyOrderIndexes(CategoryOrderIndexModifyDto dto);
 }
