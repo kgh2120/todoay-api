@@ -46,7 +46,7 @@ public class CategoryCRUDServiceImpl implements CategoryCRUDService {
 
     @Override
     public CategoryListByTokenResponseDto findCategoryByToken() {
-        List<Category> categories = categoryRepository.findCategoryByAuthEmail(jwtProvider.getLoginId());
+        List<Category> categories = categoryRepository.findCategoryByAuth_Email(jwtProvider.getLoginId());
         return CategoryListByTokenResponseDto.of(categories);
     }
 
