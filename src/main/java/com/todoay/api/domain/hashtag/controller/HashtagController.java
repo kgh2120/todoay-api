@@ -10,11 +10,17 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
+@Validated
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/hashtag")
@@ -34,7 +40,7 @@ public class HashtagController {
 
     )
     @GetMapping("/auto")
-    public ResponseEntity<HashtagAutoCompleteResponseDto> searchHashtagAutoComplete(@RequestParam("name")  String name) {
+    public ResponseEntity<HashtagAutoCompleteResponseDto> searchHashtagAutoComplete(@RequestParam("name") @NotBlank String name) {
         HashtagAutoCompleteResponseDto dto = hashtagService.searchHashtagAutoComplete(name);
         return ResponseEntity.ok(dto);
     }
@@ -48,7 +54,7 @@ public class HashtagController {
             }
     )
     @GetMapping
-    public ResponseEntity<HashtagSearchResponseDto> searchHashtag(@RequestParam("name") String name, @RequestParam("pageNum")  int pageNum) {
+    public ResponseEntity<HashtagSearchResponseDto> searchHashtag(@RequestParam("name") @NotBlank String name, @RequestParam("pageNum") @Min(0) int pageNum) {
         HashtagSearchResponseDto dto = hashtagService.searchHashtag(name, pageNum);
         return ResponseEntity.ok(dto);
     }
