@@ -51,4 +51,8 @@ public class Category {
     public void changeOrderIndex(Integer orderIndex) {
         this.orderIndex = orderIndex;
     }
+
+    public void end() {
+        this.isEnded = true;
+    }
 }

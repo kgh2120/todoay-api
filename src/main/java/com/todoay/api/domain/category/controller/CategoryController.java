@@ -81,6 +81,21 @@ public class CategoryController {
         return ResponseEntity.noContent().build();
     }
 
+    @PatchMapping("/{id}/end")
+    @Operation(
+            summary = "로그인 유저의 카테고리를 종료한다.",
+            responses = {
+                    @ApiResponse(responseCode = "204"),
+                    @ApiResponse(responseCode = "401", description = "Access Token 만료", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+                    @ApiResponse(responseCode = "403", description = "리소스가 로그인 유저의 것이 아님", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+                    @ApiResponse(responseCode = "404", description = "해당 id의 리소스가 존재하지 않음", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            }
+    )
+    public ResponseEntity<Void> categoryEnd(@PathVariable Long id) {
+        categoryCRUDService.endCategory(id);
+        return ResponseEntity.noContent().build();
+    }
+
     @Operation(
             summary = "로그인 유저의 카테고리 순서를 변경한다.",
             responses = {

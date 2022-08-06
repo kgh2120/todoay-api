@@ -220,4 +220,38 @@ class CategoryCRUDServiceImplTest {
         // then
         Assertions.assertThrows(CategoryNotFoundException.class, () -> categoryCRUDService.removeCategory(9999L));
     }
+
+    @Test
+    void endCategory() {
+        // given
+        String name = "category_name";
+        String color = "#123123";
+        Integer orderIndex = 1;
+        Long categoryId1 = categoryCRUDService.addCategory(CategorySaveRequestDto.builder().name(name).color(color).orderIndex(orderIndex).build()).getId();
+
+        // when
+        categoryCRUDService.endCategory(categoryId1);
+        CategoryDto categoryDto = categoryCRUDService.findCategoryByToken().getCategories().get(0);
+
+        // then
+        Assertions.assertEquals(true, categoryDto.isEnded());
+    }
+
+    @Test
+    void endCategory_CategoryNotFoundException() {
+        Assertions.assertThrows(CategoryNotFoundException.class, () -> categoryCRUDService.endCategory(999L));
+    }
+
+    @Test
+    void endCategory_NotYourCategoryException() {
+        // given
+        String name = "category_name";
+        String color = "#123123";
+        Integer orderIndex = 1;
+        Long categoryId1 = categoryCRUDService.addCategory(CategorySaveRequestDto.builder().name(name).color(color).orderIndex(orderIndex).build()).getId();
+        login(testAuth2);
+
+        // then
+        Assertions.assertThrows(NotYourCategoryException.class, () -> categoryCRUDService.endCategory(categoryId1));
+    }
 }
