@@ -1,6 +1,7 @@
 package com.todoay.api.domain.category.controller;
 
 
+import com.todoay.api.domain.category.dto.CategoryListByTokenResponseDto;
 import com.todoay.api.domain.category.dto.CategoryModifyRequestDto;
 import com.todoay.api.domain.category.dto.CategorySaveRequestDto;
 import com.todoay.api.domain.category.dto.CategorySaveResponseDto;
@@ -36,7 +37,13 @@ public class CategoryController {
     )
     public ResponseEntity<CategorySaveResponseDto> categorySave(@RequestBody @Validated CategorySaveRequestDto categorySaveRequestDto) {
         CategorySaveResponseDto categorySaveResponseDto = categoryCRUDService.addCategory(categorySaveRequestDto);
-        return ResponseEntity.ok(categorySaveResponseDto);
+        return ResponseEntity.status(201).body(categorySaveResponseDto);
+    }
+
+    @GetMapping("/my")
+    public ResponseEntity<CategoryListByTokenResponseDto> categoryListByToken() {
+        CategoryListByTokenResponseDto categories = categoryCRUDService.findCategoryByToken();
+        return ResponseEntity.ok(categories);
     }
 
     @PutMapping("")
@@ -49,7 +56,7 @@ public class CategoryController {
                     @ApiResponse(responseCode = "403", description = "카테고리가 로그인 유저의 것이 아님", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             }
     )
-    public ResponseEntity<?> categoryModify(@RequestBody @Validated CategoryModifyRequestDto categoryModifyRequestDto) {
+    public ResponseEntity<Void> categoryModify(@RequestBody @Validated CategoryModifyRequestDto categoryModifyRequestDto) {
         System.out.println(categoryModifyRequestDto);
         categoryCRUDService.modifyCategory(categoryModifyRequestDto);
         return ResponseEntity.noContent().build();

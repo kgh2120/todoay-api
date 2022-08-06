@@ -2,6 +2,7 @@ package com.todoay.api.domain.category.service;
 
 import com.todoay.api.domain.auth.entity.Auth;
 import com.todoay.api.domain.auth.repository.AuthRepository;
+import com.todoay.api.domain.category.dto.CategoryListByTokenResponseDto;
 import com.todoay.api.domain.category.dto.CategoryModifyRequestDto;
 import com.todoay.api.domain.category.dto.CategorySaveRequestDto;
 import com.todoay.api.domain.category.dto.CategorySaveResponseDto;
@@ -13,6 +14,8 @@ import com.todoay.api.global.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -42,5 +45,11 @@ public class CategoryCRUDServiceImpl implements CategoryCRUDService {
         Category category = categoryRepository.findById(dto.getId()).orElseThrow(CategoryNotFoundException::new);
         if(!jwtProvider.getLoginId().equals(category.getAuth().getEmail())) throw new NotYourCategoryException();
         category.modify(dto.getName(), dto.getColor());
+    }
+
+    @Override
+    public CategoryListByTokenResponseDto findCategoryByToken() {
+        List<Category> categories = categoryRepository.findCategoryByAuthEmail(jwtProvider.getLoginId());
+        return CategoryListByTokenResponseDto.of(categories);
     }
 }
