@@ -60,4 +60,11 @@ public class CategoryCRUDServiceImpl implements CategoryCRUDService {
             category.changeOrderIndex(i.getOrderIndex());
         });
     }
+
+    @Override
+    public void removeCategory(Long id) {
+        Category category = categoryRepository.findById(id).orElseThrow(CategoryNotFoundException::new);
+        if(!category.getAuth().getEmail().equals(jwtProvider.getLoginId())) throw new NotYourCategoryException();
+        categoryRepository.delete(category);
+    }
 }

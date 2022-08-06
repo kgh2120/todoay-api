@@ -10,4 +10,6 @@ public interface CategoryCRUDService {
     CategoryListByTokenResponseDto findCategoryByToken();
 
     void modifyOrderIndexes(CategoryOrderIndexModifyDto dto);
+
+    void removeCategory(Long id);
 }
