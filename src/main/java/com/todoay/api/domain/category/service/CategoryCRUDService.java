@@ -8,7 +8,7 @@ import com.todoay.api.domain.category.dto.CategorySaveResponseDto;
 public interface CategoryCRUDService {
     CategorySaveResponseDto addCategory(CategorySaveRequestDto dto);
 
-    void modifyCategory(CategoryModifyRequestDto dto);
+    void modifyCategory(Long id, CategoryModifyRequestDto dto);
 
     CategoryListByTokenResponseDto findCategoryByToken();
 }

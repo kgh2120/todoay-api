@@ -46,7 +46,7 @@ public class CategoryController {
         return ResponseEntity.ok(categories);
     }
 
-    @PutMapping("")
+    @PutMapping("/{id}")
     @Operation(
             summary = "로그인 유저의 카테고리를 수정한다.",
             responses = {
@@ -56,9 +56,9 @@ public class CategoryController {
                     @ApiResponse(responseCode = "403", description = "카테고리가 로그인 유저의 것이 아님", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             }
     )
-    public ResponseEntity<Void> categoryModify(@RequestBody @Validated CategoryModifyRequestDto categoryModifyRequestDto) {
-        System.out.println(categoryModifyRequestDto);
-        categoryCRUDService.modifyCategory(categoryModifyRequestDto);
+    public ResponseEntity<Void> categoryModify(@RequestBody @Validated CategoryModifyRequestDto categoryModifyRequestDto, @PathVariable Long id) {
+        categoryCRUDService.modifyCategory(id, categoryModifyRequestDto);
         return ResponseEntity.noContent().build();
     }
+
 }

@@ -41,8 +41,8 @@ public class CategoryCRUDServiceImpl implements CategoryCRUDService {
     }
 
     @Override
-    public void modifyCategory(CategoryModifyRequestDto dto) {
-        Category category = categoryRepository.findById(dto.getId()).orElseThrow(CategoryNotFoundException::new);
+    public void modifyCategory(Long id, CategoryModifyRequestDto dto) {
+        Category category = categoryRepository.findById(id).orElseThrow(CategoryNotFoundException::new);
         if(!jwtProvider.getLoginId().equals(category.getAuth().getEmail())) throw new NotYourCategoryException();
         category.modify(dto.getName(), dto.getColor());
     }

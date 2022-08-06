@@ -19,7 +19,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
 import java.util.List;
 
@@ -82,17 +81,17 @@ class CategoryCRUDServiceImplTest {
 
         // when
         CategoryModifyRequestDto requestDto = CategoryModifyRequestDto.builder()
-                .id(testCategory.getId())
                 .name(name)
                 .color(color)
                 .build();
-        categoryCRUDService.modifyCategory(requestDto);
+        categoryCRUDService.modifyCategory(testCategory.getId(), requestDto);
         testCategory = em.find(Category.class, testCategory.getId());
 
         Assertions.assertEquals(name, testCategory.getName());
         Assertions.assertEquals(color, testCategory.getColor());
         login(testAuth2); // 유저2가 유저1의 카테고리를 변경하려고 하면 NotYourCategoryException 예외 발생
-        Assertions.assertThrows(NotYourCategoryException.class, () -> categoryCRUDService.modifyCategory(requestDto));
+        Category finalTestCategory = testCategory;
+        Assertions.assertThrows(NotYourCategoryException.class, () -> categoryCRUDService.modifyCategory(finalTestCategory.getId(), requestDto));
     }
 
     @Test
