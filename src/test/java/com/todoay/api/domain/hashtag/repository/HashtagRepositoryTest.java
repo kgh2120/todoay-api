@@ -25,7 +25,7 @@ class HashtagRepositoryTest {
     @BeforeEach
     void beforeEach() {
         for (int i = 0; i < 20; i++) {
-            Hashtag h1 = new Hashtag("#태그"+i);
+            Hashtag h1 = new Hashtag("#tag"+i);
             repository.save(h1);
         }
     }
@@ -38,7 +38,7 @@ class HashtagRepositoryTest {
 
     @Test
     void autoComplete_size_test() {
-        List<Hashtag> tags = repository.findTop5ByNameStartsWith("#태그");
+        List<Hashtag> tags = repository.findTop5ByNameStartsWith("#tag");
         assertThat(tags.size()).isSameAs(5);
     }
 
@@ -46,7 +46,7 @@ class HashtagRepositoryTest {
     void search_first_test() {
 
         PageRequest request = PageRequest.of(0,5);
-        String name = "#태그";
+        String name = "#tag";
 
         Slice<Hashtag> tags = repository.findHashtagByNameStartsWith(name, request);
         List<Hashtag> content = tags.getContent();
@@ -60,7 +60,7 @@ class HashtagRepositoryTest {
     @Test
     void search_next_test() {
         PageRequest request = PageRequest.of(1,5);
-        String name = "#태그";
+        String name = "#tag";
 
         Slice<Hashtag> tags = repository.findHashtagByNameStartsWith(name, request);
         List<Hashtag> content = tags.getContent();
@@ -73,7 +73,7 @@ class HashtagRepositoryTest {
     @Test
     void search_no_more_search_exception() {
         PageRequest request = PageRequest.of(10,5);
-        String name = "#태그";
+        String name = "#tag";
 
         Slice<Hashtag> tags = repository.findHashtagByNameStartsWith(name, request);
         List<Hashtag> content = tags.getContent();
