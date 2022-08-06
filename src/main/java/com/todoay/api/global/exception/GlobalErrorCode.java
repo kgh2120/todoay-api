@@ -14,7 +14,13 @@ public enum GlobalErrorCode implements ErrorCode{
     JWT_UNSUPPORTED(HttpStatus.FORBIDDEN, "지원하지 않는 종류의 토큰입니다."),
     JWT_HEADER_NOT_FOUND(HttpStatus.FORBIDDEN, "JWT을 담은 Request Header가 존재하지 않습니다."), // v
 
-    SQL_INTEGRITY_CONSTRAINT_VIOLATION(HttpStatus.FORBIDDEN,"DB 제약조건을 위반하였습니다.")
+    SQL_INTEGRITY_CONSTRAINT_VIOLATION(HttpStatus.FORBIDDEN,"DB 제약조건을 위반하였습니다."),
+
+    REQUEST_PARAM_CONSTRAINT_VIOLATION(HttpStatus.BAD_REQUEST, "리퀘스트 파라미터가 제약 조건을 위반하였습니다."),
+
+    REQUEST_PARAM_MISSING(HttpStatus.BAD_REQUEST,"요구되는 리퀘스트 파라미터가 존재하지 않습니다."),
+
+    REQUEST_PARAM_TYPE_MISMATCH(HttpStatus.BAD_REQUEST, "리퀘스트 파라미터의 타입이 올바르지 않습니다.")
 
 
     ;
