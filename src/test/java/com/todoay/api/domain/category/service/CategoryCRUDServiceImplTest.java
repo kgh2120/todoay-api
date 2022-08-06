@@ -2,17 +2,16 @@ package com.todoay.api.domain.category.service;
 
 import com.todoay.api.domain.auth.entity.Auth;
 import com.todoay.api.domain.auth.repository.AuthRepository;
-import com.todoay.api.domain.category.dto.CategoryListByTokenResponseDto;
+import com.todoay.api.domain.category.dto.*;
 import com.todoay.api.domain.category.dto.CategoryListByTokenResponseDto.CategoryDto;
-import com.todoay.api.domain.category.dto.CategoryModifyRequestDto;
-import com.todoay.api.domain.category.dto.CategorySaveRequestDto;
-import com.todoay.api.domain.category.dto.CategorySaveResponseDto;
 import com.todoay.api.domain.category.entity.Category;
+import com.todoay.api.domain.category.exception.CategoryNotFoundException;
 import com.todoay.api.domain.category.exception.NotYourCategoryException;
 import com.todoay.api.domain.category.repository.CategoryRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,6 +19,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.util.ArrayList;
 import java.util.List;
 
 @SpringBootTest
@@ -43,6 +43,10 @@ class CategoryCRUDServiceImplTest {
         testAuth1 = authRepository.findByEmail("test@naver.com").get();
         testAuth2 = authRepository.save(Auth.builder().email("other@gmail.com").password("asdf1234!").build());
         login(testAuth1);
+    }
+
+    void login(Auth auth) {
+        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(auth, "", auth.getAuthorities()));
     }
 
     @Test
@@ -130,7 +134,54 @@ class CategoryCRUDServiceImplTest {
         Assertions.assertEquals(0, size1);
     }
 
-    void login(Auth auth) {
-        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(auth, "", auth.getAuthorities()));
+    @Test
+    void modifyOrderIndexes() {
+        // given
+        String categoryName1 = "category1";
+        String color1 = "123123";
+        Integer orderIndex1 = 1;
+        Integer nextOrderIndex1 = 0;
+        Long categoryId1 = categoryCRUDService.addCategory(CategorySaveRequestDto.builder().name(categoryName1).color(color1).orderIndex(orderIndex1).build()).getId();
+
+        String categoryName11 = "category11";
+        String color11 = "234234";
+        Integer orderIndex11 = 2;
+        Integer nextOrderIndex11 = 1;
+        Long categoryId11 = categoryCRUDService.addCategory(CategorySaveRequestDto.builder().name(categoryName11).color(color11).orderIndex(orderIndex11).build()).getId();
+
+        ////////// 정상적인 흐름
+        // when
+        ArrayList<CategoryOrderIndexModifyDto.CategoryOrderIndexesDto> orderIndexes = new ArrayList<>();
+        orderIndexes.add(new CategoryOrderIndexModifyDto.CategoryOrderIndexesDto(categoryId1, nextOrderIndex1));
+        orderIndexes.add(new CategoryOrderIndexModifyDto.CategoryOrderIndexesDto(categoryId11, nextOrderIndex11));
+        CategoryOrderIndexModifyDto categoryOrderIndexModifyDto = new CategoryOrderIndexModifyDto(orderIndexes);
+        Executable e = () -> categoryCRUDService.modifyOrderIndexes(categoryOrderIndexModifyDto);
+
+        // then
+        Assertions.assertDoesNotThrow(e);
+        List<CategoryDto> categories = categoryCRUDService.findCategoryByToken().getCategories();
+        categories.forEach(c -> {
+            if(c.getId().equals(categoryId1)) {
+                Assertions.assertEquals(nextOrderIndex1, c.getOrderIndex());
+            } else if (c.getId().equals(categoryId11)) {
+                Assertions.assertEquals(nextOrderIndex11, c.getOrderIndex());
+            }
+        });
+        //////////
+
+        ////////// 다른 유저의 리소스에 접근하는 경우
+        // when
+        login(testAuth2);
+        // then
+        Assertions.assertThrows(NotYourCategoryException.class, e);
+        //////////
+
+        ////////// 존재하지 않는 리소스에 접근하는 경우
+        // when
+        orderIndexes.removeIf((index) -> true);
+        orderIndexes.add(new CategoryOrderIndexModifyDto.CategoryOrderIndexesDto(999L, 9999));
+        Assertions.assertThrows(CategoryNotFoundException.class, e);
+        // then
+        //////////
     }
 }

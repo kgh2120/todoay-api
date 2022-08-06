@@ -2,10 +2,7 @@ package com.todoay.api.domain.category.service;
 
 import com.todoay.api.domain.auth.entity.Auth;
 import com.todoay.api.domain.auth.repository.AuthRepository;
-import com.todoay.api.domain.category.dto.CategoryListByTokenResponseDto;
-import com.todoay.api.domain.category.dto.CategoryModifyRequestDto;
-import com.todoay.api.domain.category.dto.CategorySaveRequestDto;
-import com.todoay.api.domain.category.dto.CategorySaveResponseDto;
+import com.todoay.api.domain.category.dto.*;
 import com.todoay.api.domain.category.entity.Category;
 import com.todoay.api.domain.category.exception.CategoryNotFoundException;
 import com.todoay.api.domain.category.exception.NotYourCategoryException;
@@ -51,5 +48,16 @@ public class CategoryCRUDServiceImpl implements CategoryCRUDService {
     public CategoryListByTokenResponseDto findCategoryByToken() {
         List<Category> categories = categoryRepository.findCategoryByAuthEmail(jwtProvider.getLoginId());
         return CategoryListByTokenResponseDto.of(categories);
+    }
+
+    @Override
+    public void modifyOrderIndexes(CategoryOrderIndexModifyDto dto) {
+        String loginEmail = jwtProvider.getLoginId();
+        List<CategoryOrderIndexModifyDto.CategoryOrderIndexesDto> indexes = dto.getOrderIndexes();
+        indexes.forEach(i -> {
+            Category category = categoryRepository.findById(i.getId()).orElseThrow(CategoryNotFoundException::new);
+            if(!category.getAuth().getEmail().equals(loginEmail)) throw new NotYourCategoryException();
+            category.changeOrderIndex(i.getOrderIndex());
+        });
     }
 }

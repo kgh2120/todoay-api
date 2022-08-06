@@ -10,6 +10,7 @@ import lombok.Data;
 public class CategoryModifyRequestDto {
     @ValidationCategoryName
     private String name;
+
     @ValidationCategoryColor
     private String color;
 }
