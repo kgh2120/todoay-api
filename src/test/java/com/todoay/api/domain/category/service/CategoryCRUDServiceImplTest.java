@@ -38,18 +38,11 @@ class CategoryCRUDServiceImplTest {
 
     Auth testAuth1;
     Auth testAuth2;
-    Category testCategory;
-
-    @PostConstruct
-    void setTest() {
-        testAuth1 = authRepository.findByEmail("test@naver.com").get();
-        CategorySaveResponseDto responseDto = categoryCRUDService.addCategory(CategorySaveRequestDto.builder().name("test_category").color("#123123").orderIndex(0).build());
-        testCategory = em.find(Category.class, responseDto.getId());
-        testAuth2 = authRepository.save(Auth.builder().email("other@gmail.com").password("asdf1234!").build());
-    }
 
     @BeforeEach
     void beforeEach() {
+        testAuth1 = authRepository.findByEmail("test@naver.com").get();
+        testAuth2 = authRepository.save(Auth.builder().email("other@gmail.com").password("asdf1234!").build());
         login(testAuth1);
     }
 
@@ -84,6 +77,8 @@ class CategoryCRUDServiceImplTest {
         // given
         String name = "test_category_modified";
         String color = "432432";
+        CategorySaveResponseDto responseDto = categoryCRUDService.addCategory(CategorySaveRequestDto.builder().name("test_category").color("#123123").orderIndex(0).build());
+        Category testCategory = em.find(Category.class, responseDto.getId());
 
         // when
         CategoryModifyRequestDto requestDto = CategoryModifyRequestDto.builder()
@@ -106,8 +101,8 @@ class CategoryCRUDServiceImplTest {
         String name = "category";
         String color = "123123";
 
-        em.persist(Category.builder().name(name+0).color(color).orderIndex(0).auth(testAuth1));
-        em.persist(Category.builder().name(name+1).color(color).orderIndex(1).auth(testAuth1));
+        em.persist(Category.builder().name(name+0).color(color).orderIndex(0).auth(testAuth1).build());
+        em.persist(Category.builder().name(name+1).color(color).orderIndex(1).auth(testAuth1).build());
 
         // when
         CategoryListByTokenResponseDto responseDto0 = categoryCRUDService.findCategoryByToken();
