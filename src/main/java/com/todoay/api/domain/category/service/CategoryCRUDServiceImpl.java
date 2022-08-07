@@ -16,9 +16,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class CategoryCRUDServiceImpl implements CategoryCRUDService {
     private final CategoryRepository categoryRepository;
 
+    private final LoginAuthContext loginAuthContext;
+
     @Override
     public CategorySaveResponseDto addCategory(CategorySaveRequestDto dto) {
-        return new CategorySaveResponseDto(categoryRepository.save(new Category(dto.getName(), dto.getColor(), dto.getOrderIndex(), LoginAuthContext.getLoginAuth())).getId());
+        return new CategorySaveResponseDto(categoryRepository.save(new Category(dto.getName(), dto.getColor(), dto.getOrderIndex(), loginAuthContext.getLoginAuth())).getId());
     }
 
     @Override
@@ -28,7 +30,7 @@ public class CategoryCRUDServiceImpl implements CategoryCRUDService {
 
     @Override
     public CategoryListByTokenResponseDto findCategoryByToken() {
-        return CategoryListByTokenResponseDto.of(categoryRepository.findCategoryByAuth(LoginAuthContext.getLoginAuth()));
+        return CategoryListByTokenResponseDto.of(categoryRepository.findCategoryByAuth(loginAuthContext.getLoginAuth()));
     }
 
     @Override
@@ -53,7 +55,7 @@ public class CategoryCRUDServiceImpl implements CategoryCRUDService {
     }
 
     private void checkIsMine(Category category) {
-        if(!category.getAuth().equals(LoginAuthContext.getLoginAuth())) throw new NotYourCategoryException();
+        if(!category.getAuth().equals(loginAuthContext.getLoginAuth())) throw new NotYourCategoryException();
     }
 
     private Category checkIsPresentAndGetCategory(Long id) {
