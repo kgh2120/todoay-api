@@ -1,6 +1,5 @@
 package com.todoay.api.domain.category.service;
 
-import com.todoay.api.domain.auth.entity.Auth;
 import com.todoay.api.domain.category.dto.*;
 import com.todoay.api.domain.category.entity.Category;
 import com.todoay.api.domain.category.exception.CategoryNotFoundException;
@@ -11,8 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -21,49 +18,32 @@ public class CategoryCRUDServiceImpl implements CategoryCRUDService {
 
     @Override
     public CategorySaveResponseDto addCategory(CategorySaveRequestDto dto) {
-        Auth auth = LoginAuthContext.getLoginAuth();
-        Category category = categoryRepository.save(
-                Category.builder()
-                        .name(dto.getName())
-                        .color(dto.getColor())
-                        .orderIndex(dto.getOrderIndex())
-                        .auth(auth)
-                        .build()
-        );
-        return CategorySaveResponseDto.builder().id(category.getId()).build();
+        return new CategorySaveResponseDto(categoryRepository.save(new Category(dto.getName(), dto.getColor(), dto.getOrderIndex(), LoginAuthContext.getLoginAuth())).getId());
     }
 
     @Override
     public void modifyCategory(Long id, CategoryModifyRequestDto dto) {
-        Category category = checkIsPresentAndIsMineAndGetCategory(id);
-        category.modify(dto.getName(), dto.getColor());
+        checkIsPresentAndIsMineAndGetCategory(id).modify(dto.getName(), dto.getColor());
     }
 
     @Override
     public CategoryListByTokenResponseDto findCategoryByToken() {
-        List<Category> categories = categoryRepository.findCategoryByAuth(LoginAuthContext.getLoginAuth());
-        return CategoryListByTokenResponseDto.of(categories);
+        return CategoryListByTokenResponseDto.of(categoryRepository.findCategoryByAuth(LoginAuthContext.getLoginAuth()));
     }
 
     @Override
     public void modifyOrderIndexes(CategoryOrderIndexModifyDto dto) {
-        List<CategoryOrderIndexModifyDto.CategoryOrderIndexesDto> indexes = dto.getOrderIndexes();
-        indexes.forEach(i -> {
-            Category category = checkIsPresentAndIsMineAndGetCategory(i.getId());
-            category.changeOrderIndex(i.getOrderIndex());
-        });
+        dto.getOrderIndexes().forEach(i -> checkIsPresentAndIsMineAndGetCategory(i.getId()).changeOrderIndex(i.getOrderIndex()));
     }
 
     @Override
     public void removeCategory(Long id) {
-        Category category = checkIsPresentAndIsMineAndGetCategory(id);
-        categoryRepository.delete(category);
+        categoryRepository.delete(checkIsPresentAndIsMineAndGetCategory(id));
     }
 
     @Override
     public void endCategory(Long id) {
-        Category category = checkIsPresentAndIsMineAndGetCategory(id);
-        category.end();
+        checkIsPresentAndIsMineAndGetCategory(id).end();
     }
 
     private Category checkIsPresentAndIsMineAndGetCategory(Long id) {
