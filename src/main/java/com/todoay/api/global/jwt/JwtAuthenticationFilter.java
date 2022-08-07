@@ -38,7 +38,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (token != null && jwtTokenProvider.validateToken(token) != null) {  // (2)
             Authentication authentication = this.getAuthentication(token);
             SecurityContextHolder.getContext().setAuthentication(authentication);  // (3)
-            LoginAuthContext.setLoginAuth((Auth)authentication.getPrincipal());
             LOGGER.info("[doFilterInternal] token 값 유효성 체크 완료");
         }
 
