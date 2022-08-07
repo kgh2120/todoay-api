@@ -43,7 +43,6 @@ public class CategoryController {
             responses = {
                     @ApiResponse(responseCode = "200"),
                     @ApiResponse(responseCode = "401", description = "Access Token 만료", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-                    @ApiResponse(responseCode = "403", description = "카테고리가 로그인 유저의 것이 아님", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             }
     )
     public ResponseEntity<CategoryListByTokenResponseDto> categoryListByToken() {
@@ -59,10 +58,41 @@ public class CategoryController {
                     @ApiResponse(responseCode = "400", description = "올바른 양식을 입력하지 않음.", content = @Content(schema = @Schema(implementation = ValidErrorResponse.class))),
                     @ApiResponse(responseCode = "401", description = "Access Token 만료", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
                     @ApiResponse(responseCode = "403", description = "카테고리가 로그인 유저의 것이 아님", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+                    @ApiResponse(responseCode = "404", description = "해당 id의 리소스가 존재하지 않음", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             }
     )
     public ResponseEntity<Void> categoryModify(@RequestBody @Validated CategoryModifyRequestDto categoryModifyRequestDto, @PathVariable Long id) {
         categoryCRUDService.modifyCategory(id, categoryModifyRequestDto);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/{id}")
+    @Operation(
+            summary = "로그인 유저의 카테고리를 삭제한다. 해당 카테고리와 연결된 daily todo 또한 모두 삭제한다.",
+            responses = {
+                    @ApiResponse(responseCode = "204"),
+                    @ApiResponse(responseCode = "401", description = "Access Token 만료", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+                    @ApiResponse(responseCode = "403", description = "카테고리가 로그인 유저의 것이 아님", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+                    @ApiResponse(responseCode = "404", description = "해당 id의 리소스가 존재하지 않음", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            }
+    )
+    public ResponseEntity<Void> categoryRemove(@PathVariable Long id) {
+        categoryCRUDService.removeCategory(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{id}/end")
+    @Operation(
+            summary = "로그인 유저의 카테고리를 종료한다.",
+            responses = {
+                    @ApiResponse(responseCode = "204"),
+                    @ApiResponse(responseCode = "401", description = "Access Token 만료", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+                    @ApiResponse(responseCode = "403", description = "리소스가 로그인 유저의 것이 아님", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+                    @ApiResponse(responseCode = "404", description = "해당 id의 리소스가 존재하지 않음", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            }
+    )
+    public ResponseEntity<Void> categoryEnd(@PathVariable Long id) {
+        categoryCRUDService.endCategory(id);
         return ResponseEntity.noContent().build();
     }
 

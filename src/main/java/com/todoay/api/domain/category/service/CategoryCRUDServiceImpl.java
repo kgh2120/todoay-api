@@ -39,8 +39,7 @@ public class CategoryCRUDServiceImpl implements CategoryCRUDService {
 
     @Override
     public void modifyCategory(Long id, CategoryModifyRequestDto dto) {
-        Category category = categoryRepository.findById(id).orElseThrow(CategoryNotFoundException::new);
-        if(!jwtProvider.getLoginId().equals(category.getAuth().getEmail())) throw new NotYourCategoryException();
+        Category category = checkIsPresentAndIsMineAndGetCategory(id);
         category.modify(dto.getName(), dto.getColor());
     }
 
@@ -52,12 +51,36 @@ public class CategoryCRUDServiceImpl implements CategoryCRUDService {
 
     @Override
     public void modifyOrderIndexes(CategoryOrderIndexModifyDto dto) {
-        String loginEmail = jwtProvider.getLoginId();
         List<CategoryOrderIndexModifyDto.CategoryOrderIndexesDto> indexes = dto.getOrderIndexes();
         indexes.forEach(i -> {
-            Category category = categoryRepository.findById(i.getId()).orElseThrow(CategoryNotFoundException::new);
-            if(!category.getAuth().getEmail().equals(loginEmail)) throw new NotYourCategoryException();
+            Category category = checkIsPresentAndIsMineAndGetCategory(i.getId());
             category.changeOrderIndex(i.getOrderIndex());
         });
+    }
+
+    @Override
+    public void removeCategory(Long id) {
+        Category category = checkIsPresentAndIsMineAndGetCategory(id);
+        categoryRepository.delete(category);
+    }
+
+    @Override
+    public void endCategory(Long id) {
+        Category category = checkIsPresentAndIsMineAndGetCategory(id);
+        category.end();
+    }
+
+    private Category checkIsPresentAndIsMineAndGetCategory(Long id) {
+        Category category = checkIsPresentAndGetCategory(id);
+        checkIsMine(category);
+        return category;
+    }
+
+    private void checkIsMine(Category category) {
+        if(!category.getAuth().getEmail().equals(jwtProvider.getLoginId())) throw new NotYourCategoryException();
+    }
+
+    private Category checkIsPresentAndGetCategory(Long id) {
+        return categoryRepository.findById(id).orElseThrow(CategoryNotFoundException::new);
     }
 }
