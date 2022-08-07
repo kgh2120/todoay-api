@@ -1,13 +1,12 @@
 package com.todoay.api.domain.category.service;
 
 import com.todoay.api.domain.auth.entity.Auth;
-import com.todoay.api.domain.auth.repository.AuthRepository;
 import com.todoay.api.domain.category.dto.*;
 import com.todoay.api.domain.category.entity.Category;
 import com.todoay.api.domain.category.exception.CategoryNotFoundException;
 import com.todoay.api.domain.category.exception.NotYourCategoryException;
 import com.todoay.api.domain.category.repository.CategoryRepository;
-import com.todoay.api.global.jwt.JwtProvider;
+import com.todoay.api.global.context.LoginAuthContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,13 +18,10 @@ import java.util.List;
 @Transactional
 public class CategoryCRUDServiceImpl implements CategoryCRUDService {
     private final CategoryRepository categoryRepository;
-    private final AuthRepository authRepository;
-
-    private final JwtProvider jwtProvider;
 
     @Override
     public CategorySaveResponseDto addCategory(CategorySaveRequestDto dto) {
-        Auth auth = authRepository.findByEmail(jwtProvider.getLoginId()).get();
+        Auth auth = LoginAuthContext.getLoginAuth();
         Category category = categoryRepository.save(
                 Category.builder()
                         .name(dto.getName())
@@ -45,7 +41,7 @@ public class CategoryCRUDServiceImpl implements CategoryCRUDService {
 
     @Override
     public CategoryListByTokenResponseDto findCategoryByToken() {
-        List<Category> categories = categoryRepository.findCategoryByAuth_Email(jwtProvider.getLoginId());
+        List<Category> categories = categoryRepository.findCategoryByAuth(LoginAuthContext.getLoginAuth());
         return CategoryListByTokenResponseDto.of(categories);
     }
 
@@ -77,7 +73,7 @@ public class CategoryCRUDServiceImpl implements CategoryCRUDService {
     }
 
     private void checkIsMine(Category category) {
-        if(!category.getAuth().getEmail().equals(jwtProvider.getLoginId())) throw new NotYourCategoryException();
+        if(!category.getAuth().equals(LoginAuthContext.getLoginAuth())) throw new NotYourCategoryException();
     }
 
     private Category checkIsPresentAndGetCategory(Long id) {

@@ -1,5 +1,7 @@
 package com.todoay.api.global.jwt;
 
+import com.todoay.api.domain.auth.entity.Auth;
+import com.todoay.api.global.context.LoginAuthContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -36,6 +38,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (token != null && jwtTokenProvider.validateToken(token) != null) {  // (2)
             Authentication authentication = this.getAuthentication(token);
             SecurityContextHolder.getContext().setAuthentication(authentication);  // (3)
+            LoginAuthContext.setLoginAuth((Auth)authentication.getPrincipal());
             LOGGER.info("[doFilterInternal] token 값 유효성 체크 완료");
         }
 

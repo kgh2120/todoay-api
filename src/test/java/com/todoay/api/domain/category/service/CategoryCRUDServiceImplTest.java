@@ -8,14 +8,13 @@ import com.todoay.api.domain.category.entity.Category;
 import com.todoay.api.domain.category.exception.CategoryNotFoundException;
 import com.todoay.api.domain.category.exception.NotYourCategoryException;
 import com.todoay.api.domain.category.repository.CategoryRepository;
+import com.todoay.api.global.context.LoginAuthContext;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
@@ -46,7 +45,8 @@ class CategoryCRUDServiceImplTest {
     }
 
     void login(Auth auth) {
-        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(auth, "", auth.getAuthorities()));
+//        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(auth, "", auth.getAuthorities()));
+        LoginAuthContext.setLoginAuth(auth);
     }
 
     @Test
