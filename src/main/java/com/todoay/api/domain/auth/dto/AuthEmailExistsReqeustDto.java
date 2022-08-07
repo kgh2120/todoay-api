@@ -1,13 +1,10 @@
 package com.todoay.api.domain.auth.dto;
 
+import com.todoay.api.global.customValidation.annotation.ValidationEmail;
 import lombok.Data;
-
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
 
 @Data
 public class AuthEmailExistsReqeustDto {
-    @NotBlank
-    @Email
+    @ValidationEmail
     private String email;
 }

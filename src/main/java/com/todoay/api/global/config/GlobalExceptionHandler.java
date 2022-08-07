@@ -35,10 +35,10 @@ public class GlobalExceptionHandler {
         return ValidErrorResponse.toResponseEntity(ex, request.getRequestURI());
     }
 
-    @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
-    public ResponseEntity<ErrorResponse> handleSqlIntegrityConstraintViolationException(SQLIntegrityConstraintViolationException ex, HttpServletRequest request) {
-        return ErrorResponse.toResponseEntity(SQL_INTEGRITY_CONSTRAINT_VIOLATION, request.getRequestURI());
-    }
+//    @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
+//    public ResponseEntity<ErrorResponse> handleSqlIntegrityConstraintViolationException(SQLIntegrityConstraintViolationException ex, HttpServletRequest request) {
+//        return ErrorResponse.toResponseEntity(SQL_INTEGRITY_CONSTRAINT_VIOLATION, request.getRequestURI());
+//    }
 
     @ExceptionHandler(ExpiredJwtException.class)
     public ResponseEntity<ErrorResponse> handleExpiredJwtException(HttpServletRequest request) {

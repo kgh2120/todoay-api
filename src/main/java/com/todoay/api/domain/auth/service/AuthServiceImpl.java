@@ -2,7 +2,7 @@ package com.todoay.api.domain.auth.service;
 
 
 import com.todoay.api.domain.auth.dto.AuthSaveDto;
-import com.todoay.api.domain.auth.dto.AuthUpdatePasswordReqeustDto;
+import com.todoay.api.domain.auth.dto.AuthUpdatePasswordRequestDto;
 import com.todoay.api.domain.auth.dto.LoginRequestDto;
 import com.todoay.api.domain.auth.dto.LoginResponseDto;
 import com.todoay.api.domain.auth.entity.Auth;
@@ -10,7 +10,6 @@ import com.todoay.api.domain.auth.exception.*;
 import com.todoay.api.domain.auth.repository.AuthRepository;
 import com.todoay.api.domain.profile.exception.EmailNotFoundException;
 import com.todoay.api.domain.profile.exception.NicknameDuplicateException;
-import com.todoay.api.global.exception.AbstractApiException;
 import com.todoay.api.global.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -62,7 +61,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Transactional
     @Override
-    public void updateAuthPassword(AuthUpdatePasswordReqeustDto dto) {
+    public void updateAuthPassword(AuthUpdatePasswordRequestDto dto) {
 
 
         String email = jwtProvider.getLoginId();

@@ -4,10 +4,10 @@ import com.todoay.api.domain.auth.dto.*;
 
 public interface MailVerificationService {
     String sendVerificationMail(AuthSendEmailRequestDto authSendEmailRequestDto);
-    void verifyEmailOnSignUp(AuthVerifyEmailTokenOnSingUpDto authVerifyEmailTOkenOnSingUpDto);
+    void verifyEmailOnSignUp(AuthVerifyEmailTokenOnSignUpRequestDto authVerifyEmailTOkenOnSignUpRequestDto);
     CheckEmailVerifiedResponseDto checkEmailVerified(String email);
 
     String sendUpdatePasswordMail(AuthSendUpdatePasswordMailRequestDto dto);
 
-    String verifyEmailOnUpdatePassword(AuthVerifyEmailTokenOnUpdatePassword dto);
+    String verifyEmailOnUpdatePassword(AuthVerifyEmailTokenOnUpdatePasswordRequestDto dto);
 }
