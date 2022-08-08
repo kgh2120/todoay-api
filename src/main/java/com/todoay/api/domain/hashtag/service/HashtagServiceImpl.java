@@ -7,7 +7,7 @@ import com.todoay.api.domain.hashtag.dto.HashtagSearchResponseDto;
 import com.todoay.api.domain.hashtag.entity.Hashtag;
 import com.todoay.api.domain.hashtag.exception.NoMoreDataException;
 import com.todoay.api.domain.hashtag.repository.HashtagRepository;
-import com.todoay.api.domain.todo.entity.DaliyTodo;
+import com.todoay.api.domain.todo.entity.DailyTodo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;

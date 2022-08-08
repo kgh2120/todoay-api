@@ -48,7 +48,7 @@ public class DailyTodoCRUDServiceImpl implements DailyTodoCRUDService{
 
     @Override
     @Transactional
-    public void modifyDailyTodo(DailyTodoModifyRequestDto dto) {
+    public void modifyDailyTodo(Long id, DailyTodoModifyRequestDto dto) {
         DailyTodo dailyTodo = dailyTodoRepository.findById(dto.getId()).orElseThrow(TodoNotFoundException::new);
                 if(!jwtProvider.getLoginId().equals(dailyTodo.getAuth().getEmail())) throw new NotYourTodoException();
                 dailyTodo.modify(dto.getTitle(), dto.isPublic(), dto.isFinished(), dto.getDescription(),
