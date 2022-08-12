@@ -6,6 +6,7 @@ import com.todoay.api.domain.todo.dto.DailyTodoModifyRequestDto;
 import com.todoay.api.domain.todo.dto.DailyTodoSaveRequestDto;
 import com.todoay.api.domain.todo.dto.DailyTodoSaveResponseDto;
 import com.todoay.api.domain.todo.entity.DailyTodo;
+import com.todoay.api.domain.todo.entity.DueDateTodo;
 import com.todoay.api.domain.todo.exception.NotYourTodoException;
 import com.todoay.api.domain.todo.exception.TodoNotFoundException;
 import com.todoay.api.domain.todo.repository.DailyTodoRepository;
@@ -32,7 +33,7 @@ public class DailyTodoCRUDServiceImpl implements DailyTodoCRUDService{
                 DailyTodo.builder()
                         .title(dto.getTitle())
                         .isPublic(dto.isPublic())
-                        .isFinished(dto.isFinished())
+                        .isFinished(false)
                         .description(dto.getDescription())
                         .targetTime(dto.getTargetTime())
                         .alarm(dto.getAlarm())
@@ -49,17 +50,30 @@ public class DailyTodoCRUDServiceImpl implements DailyTodoCRUDService{
     @Override
     @Transactional
     public void modifyDailyTodo(Long id, DailyTodoModifyRequestDto dto) {
-        DailyTodo dailyTodo = dailyTodoRepository.findById(dto.getId()).orElseThrow(TodoNotFoundException::new);
-                if(!jwtProvider.getLoginId().equals(dailyTodo.getAuth().getEmail())) throw new NotYourTodoException();
-                dailyTodo.modify(dto.getTitle(), dto.isPublic(), dto.isFinished(), dto.getDescription(),
-                        dto.getTargetTime(), dto.getAlarm(), dto.getPlace(), dto.getPeople(), dto.getDailyDate(), dto.getCategory());
+       DailyTodo dailyTodo = checkIsPresentAndIsMineAndGetTodo(id);
+       dailyTodo.modify(dto.getTitle(), dto.isPublic(), dto.isFinished(), dto.getDescription(),
+               dto.getTargetTime(), dto.getAlarm(), dto.getPlace(), dto.getPeople(), dto.getDailyDate(), dto.getCategory());
     }
 
     @Override
     @Transactional
     public void deleteDailyTodo(Long id) {
-        DailyTodo dailyTodo = dailyTodoRepository.findById(id).orElseThrow(TodoNotFoundException::new);
+        DailyTodo dailyTodo = checkIsPresentAndIsMineAndGetTodo(id);
         dailyTodoRepository.delete(dailyTodo);
+    }
+
+    private DailyTodo checkIsPresentAndIsMineAndGetTodo(Long id) {
+        DailyTodo dailyTodo = checkIsPresentAndGetTodo(id);
+        checkIsMine(dailyTodo);
+        return dailyTodo;
+    }
+
+    private void checkIsMine(DailyTodo dailyTodo) {
+        if(!dailyTodo.getAuth().getEmail().equals(jwtProvider.getLoginId())) throw new NotYourTodoException();
+    }
+
+    private DailyTodo checkIsPresentAndGetTodo(Long id) {
+        return dailyTodoRepository.findById(id).orElseThrow(TodoNotFoundException::new);
     }
 }
 

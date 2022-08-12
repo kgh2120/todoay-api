@@ -26,18 +26,20 @@ public class DueDateTodo extends Todo{
     private Importance importance;
 
     @Builder
-    public DueDateTodo(String title, boolean isPublic,LocalDate dueDate, String description, Importance importance, Auth auth) {
+    public DueDateTodo(String title, boolean isPublic, boolean isFinished, LocalDate dueDate, String description, Importance importance, Auth auth) {
         this.title = title;
         this.isPublic = isPublic;
+        this.isFinished = isFinished;
         this.dueDate = dueDate;
         this.description = description;
         this.importance = importance;
         this.auth = auth;
     }
 
-    public void modify(String title, boolean isPublic,LocalDate dueDate, String description, Importance importance) {
+    public void modify(String title, boolean isPublic,boolean isFinished, LocalDate dueDate, String description, Importance importance) {
         this.title = title;
         this.isPublic = isPublic;
+        this.isFinished = isFinished;
         this.dueDate = dueDate;
         this.description = description;
         this.importance = importance;

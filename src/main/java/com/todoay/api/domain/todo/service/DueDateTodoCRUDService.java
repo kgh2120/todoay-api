@@ -7,7 +7,7 @@ import com.todoay.api.domain.todo.dto.DueDateTodoSaveResponseDto;
 
 public interface DueDateTodoCRUDService {
     DueDateTodoSaveResponseDto addTodo(DueDateTodoSaveRequestDto dto);
-    void modifyDueDateTodo(DueDateTodoModifyRequestDto dto);
+    void modifyDueDateTodo(Long id, DueDateTodoModifyRequestDto dto);
     void deleteDueDateTodo(Long id);
 
 }

@@ -13,7 +13,7 @@ public class DueDateTodoSaveRequestDto {
     // Todo 공통 속성
     @NotNull
     private String title;
-    private String description;
+    private String description = "내용 없음";
     private boolean isPublic = false;
 
     // DuedateTodo 속성

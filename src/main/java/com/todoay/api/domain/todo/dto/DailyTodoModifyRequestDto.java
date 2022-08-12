@@ -14,13 +14,8 @@ import java.time.LocalDateTime;
 public class DailyTodoModifyRequestDto {
     // Todo 공통 속성
     @NotNull
-    private Long id;
-    @NotNull
     private String title;
-    private String description;
-
-    // isPublic으로 한 경우, @Getter 사용시 제한이 있음.
-    // 따라서 isPublic -> publicBool
+    private String description = "내용 없음";
     private boolean isPublic = false;
     private boolean isFinished = false;
 

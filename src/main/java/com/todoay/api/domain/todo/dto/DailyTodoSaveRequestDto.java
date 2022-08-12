@@ -16,12 +16,8 @@ public class DailyTodoSaveRequestDto {
     // Todo 공통 속성
     @NotNull
     private String title;
-    private String description;
-
-    // isPublic으로 한 경우, @Getter 사용시 제한이 있음.
-    // 따라서 isPublic -> publicBool
+    private String description = "내용 없음";
     private boolean isPublic = false;
-    private boolean isFinished = false;
 
     // DailyTodo 속성
     private LocalDateTime alarm;

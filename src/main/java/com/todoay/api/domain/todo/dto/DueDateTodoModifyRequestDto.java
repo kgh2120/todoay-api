@@ -10,11 +10,10 @@ import java.time.LocalDate;
 @Builder
 public class DueDateTodoModifyRequestDto {
     @NotNull
-    private Long id;
-    @NotNull
     private String title;
-    private String description;
+    private String description = "내용 없음";
     private boolean isPublic = false;
+    private boolean isFinished = false;
 
     // DuedateTodo 속성
     private LocalDate dueDate;
