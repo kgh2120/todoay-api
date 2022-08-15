@@ -91,7 +91,7 @@ public class DailyTodoCRUDServiceImpl implements DailyTodoCRUDService{
     }
 
     private void checkThisCategoryIsMine(Category category) {
-        if(!category.getAuth().getEmail().equals(loginAuthContext.getLoginAuth())) throw new NotYourCategoryException();
+        if(!category.getAuth().equals(loginAuthContext.getLoginAuth())) throw new NotYourCategoryException();
     }
 
     private Category checkIsPresentAndGetCategory(Long id) {
