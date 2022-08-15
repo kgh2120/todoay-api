@@ -16,6 +16,7 @@ public class DueDateTodoModifyRequestDto {
     private boolean isFinished = false;
 
     // DuedateTodo 속성
+    @NotNull
     private LocalDate dueDate;
-    private Importance importance;
+    private String importance;
 }

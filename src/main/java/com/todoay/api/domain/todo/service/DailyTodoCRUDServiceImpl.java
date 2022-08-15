@@ -2,6 +2,10 @@ package com.todoay.api.domain.todo.service;
 
 import com.todoay.api.domain.auth.entity.Auth;
 import com.todoay.api.domain.auth.repository.AuthRepository;
+import com.todoay.api.domain.category.entity.Category;
+import com.todoay.api.domain.category.exception.CategoryNotFoundException;
+import com.todoay.api.domain.category.exception.NotYourCategoryException;
+import com.todoay.api.domain.category.repository.CategoryRepository;
 import com.todoay.api.domain.todo.dto.DailyTodoModifyRequestDto;
 import com.todoay.api.domain.todo.dto.DailyTodoSaveRequestDto;
 import com.todoay.api.domain.todo.dto.DailyTodoSaveResponseDto;
@@ -21,6 +25,7 @@ import javax.transaction.Transactional;
 public class DailyTodoCRUDServiceImpl implements DailyTodoCRUDService{
 
     private final DailyTodoRepository dailyTodoRepository;
+    private final CategoryRepository categoryRepository;
     private final AuthRepository authRepository;
     private final JwtProvider jwtProvider;
 
@@ -40,7 +45,7 @@ public class DailyTodoCRUDServiceImpl implements DailyTodoCRUDService{
                         .place(dto.getPlace())
                         .people(dto.getPeople())
                         .dailyDate(dto.getDailyDate())
-                        .category(dto.getCategory())
+                        .category(checkIsPresentAndIsMineGetCategory(dto.getCategoryId()))
                         .auth(auth)   // auth??
                         .build()
         );
@@ -52,7 +57,7 @@ public class DailyTodoCRUDServiceImpl implements DailyTodoCRUDService{
     public void modifyDailyTodo(Long id, DailyTodoModifyRequestDto dto) {
        DailyTodo dailyTodo = checkIsPresentAndIsMineAndGetTodo(id);
        dailyTodo.modify(dto.getTitle(), dto.isPublic(), dto.isFinished(), dto.getDescription(),
-               dto.getTargetTime(), dto.getAlarm(), dto.getPlace(), dto.getPeople(), dto.getDailyDate(), dto.getCategory());
+               dto.getTargetTime(), dto.getAlarm(), dto.getPlace(), dto.getPeople(), dto.getDailyDate(), checkIsPresentAndIsMineGetCategory(dto.getCategoryId()));
     }
 
     @Override
@@ -74,6 +79,20 @@ public class DailyTodoCRUDServiceImpl implements DailyTodoCRUDService{
 
     private DailyTodo checkIsPresentAndGetTodo(Long id) {
         return dailyTodoRepository.findById(id).orElseThrow(TodoNotFoundException::new);
+    }
+
+    private Category checkIsPresentAndIsMineGetCategory(Long id) {
+        Category category = checkIsPresentAndGetCategory(id);
+        checkThisCategoryIsMine(category);
+        return category;
+    }
+
+    private void checkThisCategoryIsMine(Category category) {
+        if(!category.getAuth().getEmail().equals(jwtProvider.getLoginId())) throw new NotYourCategoryException();
+    }
+
+    private Category checkIsPresentAndGetCategory(Long id) {
+        return categoryRepository.findById(id).orElseThrow(CategoryNotFoundException::new);
     }
 }
 

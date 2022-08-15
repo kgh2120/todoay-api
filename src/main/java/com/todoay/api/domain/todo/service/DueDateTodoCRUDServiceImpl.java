@@ -48,7 +48,7 @@ public class DueDateTodoCRUDServiceImpl implements DueDateTodoCRUDService {
     @Transactional
     public void modifyDueDateTodo(Long id, DueDateTodoModifyRequestDto dto) {
         DueDateTodo dueDateTodo = checkIsPresentAndIsMineAndGetTodo(id);
-        dueDateTodo.modify(dto.getTitle(), dto.isPublic(),dto.isFinished(), dto.getDueDate(), dto.getDescription(),dto.getImportance());
+        dueDateTodo.modify(dto.getTitle(), dto.isPublic(),dto.isFinished(), dto.getDueDate(), dto.getDescription(),Importance.valueOf(dto.getImportance().toUpperCase()));
     }
 
     @Transactional

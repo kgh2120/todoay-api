@@ -1,5 +1,6 @@
 package com.todoay.api.domain.todo.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.todoay.api.domain.auth.entity.Auth;
 import com.todoay.api.domain.category.entity.Category;
 import lombok.Builder;
@@ -24,6 +25,7 @@ public class DailyTodo extends Todo{
     private String place;
     private String people;
     @Column(nullable = false)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
     private LocalDate dailyDate;
 
     @ManyToOne

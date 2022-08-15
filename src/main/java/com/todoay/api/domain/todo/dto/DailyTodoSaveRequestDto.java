@@ -24,8 +24,11 @@ public class DailyTodoSaveRequestDto {
     private LocalDateTime targetTime;
     private String place;
     private String people;
+
+    @NotNull
     private LocalDate dailyDate;
-    private Category category;
+    @NotNull
+    private Long categoryId;
 
 
 }

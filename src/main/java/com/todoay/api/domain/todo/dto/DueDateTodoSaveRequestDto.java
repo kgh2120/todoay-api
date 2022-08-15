@@ -17,6 +17,7 @@ public class DueDateTodoSaveRequestDto {
     private boolean isPublic = false;
 
     // DuedateTodo 속성
+    @NotNull
     private LocalDate dueDate;
     private String importance;
 }
