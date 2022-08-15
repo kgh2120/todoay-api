@@ -1,7 +1,7 @@
 package com.todoay.api.domain.category.entity;
 
 import com.todoay.api.domain.auth.entity.Auth;
-import com.todoay.api.domain.todo.entity.DaliyTodo;
+import com.todoay.api.domain.todo.entity.DailyTodo;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -35,7 +35,7 @@ public class Category {
     private Auth auth;
 
     @OneToMany(mappedBy = "category", orphanRemoval = true) // 카테고리 삭제 시 해당 카테고리 ID를 FK로 지니고 있는 dailyTodo 삭제
-    List<DaliyTodo> dailyTodos = new ArrayList<>();
+    List<DailyTodo> dailyTodos = new ArrayList<>();
 
     @Builder
     public Category(String name, String color, Integer orderIndex, Auth auth) {

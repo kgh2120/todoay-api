@@ -1,9 +1,12 @@
 package com.todoay.api.domain.todo.service;
 
-import com.todoay.api.domain.hashtag.repository.HashtagRepository;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import com.todoay.api.domain.hashtag.repository.HashtagRepository;
 import org.springframework.transaction.annotation.Transactional;
+
+
 
 @RequiredArgsConstructor
 @Service @Transactional
@@ -11,6 +14,10 @@ public class TodoServiceImpl implements TodoService{
 
 
     private final HashtagRepository hashtagRepository;
+
+//    public TodoServiceImpl(HashtagRepository hashtagRepository) {
+//        this.hashtagRepository = hashtagRepository;
+//    }
 
     @Override
     public void save() {
@@ -26,4 +33,5 @@ public class TodoServiceImpl implements TodoService{
     public void update() {
 
     }
+
 }

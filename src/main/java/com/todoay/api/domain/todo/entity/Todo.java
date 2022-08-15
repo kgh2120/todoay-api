@@ -32,7 +32,7 @@ public abstract class Todo {
 
     @ManyToOne
     @JoinColumn(name = "auth_id", nullable = false)
-    private Auth auth;
+    protected Auth auth;
 
     @OneToMany(mappedBy = "todo", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TodoHashtag> todoHashtags = new ArrayList<>();
