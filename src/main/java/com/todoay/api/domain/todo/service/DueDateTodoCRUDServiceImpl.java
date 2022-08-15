@@ -13,6 +13,7 @@ import com.todoay.api.domain.todo.entity.Importance;
 import com.todoay.api.domain.todo.exception.NotYourTodoException;
 import com.todoay.api.domain.todo.exception.TodoNotFoundException;
 import com.todoay.api.domain.todo.repository.DueDateTodoRepository;
+import com.todoay.api.global.context.LoginAuthContext;
 import com.todoay.api.global.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,8 @@ public class DueDateTodoCRUDServiceImpl implements DueDateTodoCRUDService {
     private final DueDateTodoRepository dueDateTodoRepository;
     private final AuthRepository authRepository;
     private final JwtProvider jwtProvider;
+
+    private final LoginAuthContext loginAuthContext;
 
 
     @Override
@@ -64,7 +67,7 @@ public class DueDateTodoCRUDServiceImpl implements DueDateTodoCRUDService {
     }
 
     private void checkIsMine(DueDateTodo dueDateTodo) {
-        if(!dueDateTodo.getAuth().getEmail().equals(jwtProvider.getLoginId())) throw new NotYourTodoException();
+        if(!dueDateTodo.getAuth().equals(loginAuthContext.getLoginAuth()))throw new NotYourTodoException();
     }
 
     private DueDateTodo checkIsPresentAndGetTodo(Long id) {

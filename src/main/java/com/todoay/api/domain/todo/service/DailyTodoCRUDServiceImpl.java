@@ -14,6 +14,7 @@ import com.todoay.api.domain.todo.entity.DueDateTodo;
 import com.todoay.api.domain.todo.exception.NotYourTodoException;
 import com.todoay.api.domain.todo.exception.TodoNotFoundException;
 import com.todoay.api.domain.todo.repository.DailyTodoRepository;
+import com.todoay.api.global.context.LoginAuthContext;
 import com.todoay.api.global.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,8 @@ public class DailyTodoCRUDServiceImpl implements DailyTodoCRUDService{
     private final CategoryRepository categoryRepository;
     private final AuthRepository authRepository;
     private final JwtProvider jwtProvider;
+
+    private final LoginAuthContext loginAuthContext;
 
     @Override
     @Transactional
@@ -74,7 +77,7 @@ public class DailyTodoCRUDServiceImpl implements DailyTodoCRUDService{
     }
 
     private void checkIsMine(DailyTodo dailyTodo) {
-        if(!dailyTodo.getAuth().getEmail().equals(jwtProvider.getLoginId())) throw new NotYourTodoException();
+        if(!dailyTodo.getAuth().equals(jwtProvider.getLoginId())) throw new NotYourTodoException();
     }
 
     private DailyTodo checkIsPresentAndGetTodo(Long id) {
@@ -88,7 +91,7 @@ public class DailyTodoCRUDServiceImpl implements DailyTodoCRUDService{
     }
 
     private void checkThisCategoryIsMine(Category category) {
-        if(!category.getAuth().getEmail().equals(jwtProvider.getLoginId())) throw new NotYourCategoryException();
+        if(!category.getAuth().getEmail().equals(loginAuthContext.getLoginAuth())) throw new NotYourCategoryException();
     }
 
     private Category checkIsPresentAndGetCategory(Long id) {
