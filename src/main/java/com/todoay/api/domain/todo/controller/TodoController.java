@@ -11,10 +11,11 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
+@Slf4j
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/todo")
@@ -34,6 +35,7 @@ public class TodoController {
             }
     )
     public ResponseEntity<DailyTodoSaveResponseDto> dailyTodoSave(@RequestBody @Validated DailyTodoSaveRequestDto dailyTodoSaveRequestDto) {
+        log.info("hashtags = {}",dailyTodoSaveRequestDto.getHashtagNames());
         DailyTodoSaveResponseDto dailyTodoSaveResponseDto = dailyTodoCRUDService.addTodo(dailyTodoSaveRequestDto);
         return ResponseEntity.ok(dailyTodoSaveResponseDto);
     }

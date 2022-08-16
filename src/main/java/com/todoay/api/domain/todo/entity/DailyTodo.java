@@ -18,9 +18,9 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 public class DailyTodo extends Todo{
-
+    @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime alarm;
-
+    @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime targetTime;
     private String place;
     private String people;
@@ -60,6 +60,6 @@ public class DailyTodo extends Todo{
         this.place = place;
         this.people = people;
         this.dailyDate = dailyDate;
-        this.category = category;;
+        this.category = category;
     }
 }
