@@ -7,9 +7,10 @@ import com.todoay.api.domain.category.exception.NotYourCategoryException;
 import com.todoay.api.domain.category.repository.CategoryRepository;
 import com.todoay.api.global.context.LoginAuthContext;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -20,6 +21,7 @@ public class CategoryCRUDServiceImpl implements CategoryCRUDService {
 
     @Override
     public CategorySaveResponseDto addCategory(CategorySaveRequestDto dto) {
+        log.info("Category-addCategory - Auth = {}",loginAuthContext.getLoginAuth());
         return new CategorySaveResponseDto(categoryRepository.save(new Category(dto.getName(), dto.getColor(), dto.getOrderIndex(), loginAuthContext.getLoginAuth())).getId());
     }
 

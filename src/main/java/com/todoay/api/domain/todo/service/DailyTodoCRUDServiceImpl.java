@@ -6,21 +6,25 @@ import com.todoay.api.domain.category.entity.Category;
 import com.todoay.api.domain.category.exception.CategoryNotFoundException;
 import com.todoay.api.domain.category.exception.NotYourCategoryException;
 import com.todoay.api.domain.category.repository.CategoryRepository;
+import com.todoay.api.domain.hashtag.repository.HashtagRepository;
+import com.todoay.api.domain.profile.exception.EmailNotFoundException;
 import com.todoay.api.domain.todo.dto.DailyTodoModifyRequestDto;
 import com.todoay.api.domain.todo.dto.DailyTodoSaveRequestDto;
 import com.todoay.api.domain.todo.dto.DailyTodoSaveResponseDto;
 import com.todoay.api.domain.todo.entity.DailyTodo;
-import com.todoay.api.domain.todo.entity.DueDateTodo;
 import com.todoay.api.domain.todo.exception.NotYourTodoException;
 import com.todoay.api.domain.todo.exception.TodoNotFoundException;
 import com.todoay.api.domain.todo.repository.DailyTodoRepository;
+import com.todoay.api.domain.todo.utility.HashtagAttacher;
 import com.todoay.api.global.context.LoginAuthContext;
 import com.todoay.api.global.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class DailyTodoCRUDServiceImpl implements DailyTodoCRUDService{
@@ -28,6 +32,8 @@ public class DailyTodoCRUDServiceImpl implements DailyTodoCRUDService{
     private final DailyTodoRepository dailyTodoRepository;
     private final CategoryRepository categoryRepository;
     private final AuthRepository authRepository;
+
+    private final HashtagRepository hashtagRepository;
     private final JwtProvider jwtProvider;
 
     private final LoginAuthContext loginAuthContext;
@@ -35,25 +41,27 @@ public class DailyTodoCRUDServiceImpl implements DailyTodoCRUDService{
     @Override
     @Transactional
     public DailyTodoSaveResponseDto addTodo(DailyTodoSaveRequestDto dto) {
-        Auth auth = authRepository.findByEmail(jwtProvider.getLoginId()).get();
-        System.out.println(auth);
-        DailyTodo dailyTodo = dailyTodoRepository.save(
-                DailyTodo.builder()
-                        .title(dto.getTitle())
-                        .isPublic(dto.isPublic())
-                        .isFinished(false)
-                        .description(dto.getDescription())
-                        .targetTime(dto.getTargetTime())
-                        .alarm(dto.getAlarm())
-                        .place(dto.getPlace())
-                        .people(dto.getPeople())
-                        .dailyDate(dto.getDailyDate())
-                        .category(checkIsPresentAndIsMineGetCategory(dto.getCategoryId()))
-                        .auth(auth)   // auth??
-                        .build()
-        );
+        Auth auth = authRepository.findByEmail(jwtProvider.getLoginId()).orElseThrow(EmailNotFoundException::new);
+        DailyTodo dailyTodo = DailyTodo.builder()
+                .title(dto.getTitle())
+                .isPublic(dto.isPublic())
+                .isFinished(false)
+                .description(dto.getDescription())
+                .targetTime(dto.getTargetTime())
+                .alarm(dto.getAlarm())
+                .place(dto.getPlace())
+                .people(dto.getPeople())
+                .dailyDate(dto.getDailyDate())
+                .category(checkIsPresentAndIsMineGetCategory(dto.getCategoryId()))
+                .auth(auth)   // auth??
+                .build();
+        HashtagAttacher.attachHashtag(dailyTodo, dto.getHashtagNames(), hashtagRepository);
+       dailyTodoRepository.save(dailyTodo);
+
         return DailyTodoSaveResponseDto.builder().id(dailyTodo.getId()).build();
     }
+
+
 
     @Override
     @Transactional
@@ -61,6 +69,7 @@ public class DailyTodoCRUDServiceImpl implements DailyTodoCRUDService{
        DailyTodo dailyTodo = checkIsPresentAndIsMineAndGetTodo(id);
        dailyTodo.modify(dto.getTitle(), dto.isPublic(), dto.isFinished(), dto.getDescription(),
                dto.getTargetTime(), dto.getAlarm(), dto.getPlace(), dto.getPeople(), dto.getDailyDate(), checkIsPresentAndIsMineGetCategory(dto.getCategoryId()));
+        HashtagAttacher.attachHashtag(dailyTodo, dto.getHashtagNames(), hashtagRepository);
     }
 
     @Override
@@ -77,7 +86,7 @@ public class DailyTodoCRUDServiceImpl implements DailyTodoCRUDService{
     }
 
     private void checkIsMine(DailyTodo dailyTodo) {
-        if(!dailyTodo.getAuth().equals(jwtProvider.getLoginId())) throw new NotYourTodoException();
+        if(!dailyTodo.getAuth().equals(loginAuthContext.getLoginAuth())) throw new NotYourTodoException();
     }
 
     private DailyTodo checkIsPresentAndGetTodo(Long id) {
@@ -91,7 +100,8 @@ public class DailyTodoCRUDServiceImpl implements DailyTodoCRUDService{
     }
 
     private void checkThisCategoryIsMine(Category category) {
-        if(!category.getAuth().equals(loginAuthContext.getLoginAuth())) throw new NotYourCategoryException();
+        if(!category.getAuth().equals(loginAuthContext.getLoginAuth()))
+            throw new NotYourCategoryException();
     }
 
     private Category checkIsPresentAndGetCategory(Long id) {
