@@ -6,8 +6,6 @@ import com.todoay.api.domain.category.entity.Category;
 import com.todoay.api.domain.category.exception.CategoryNotFoundException;
 import com.todoay.api.domain.category.exception.NotYourCategoryException;
 import com.todoay.api.domain.category.repository.CategoryRepository;
-import com.todoay.api.domain.hashtag.dto.HashtagInfoDto;
-import com.todoay.api.domain.hashtag.entity.Hashtag;
 import com.todoay.api.domain.hashtag.repository.HashtagRepository;
 import com.todoay.api.domain.profile.exception.EmailNotFoundException;
 import com.todoay.api.domain.todo.dto.DailyTodoModifyRequestDto;
@@ -17,6 +15,7 @@ import com.todoay.api.domain.todo.entity.DailyTodo;
 import com.todoay.api.domain.todo.exception.NotYourTodoException;
 import com.todoay.api.domain.todo.exception.TodoNotFoundException;
 import com.todoay.api.domain.todo.repository.DailyTodoRepository;
+import com.todoay.api.domain.todo.utility.HashtagAttacher;
 import com.todoay.api.global.context.LoginAuthContext;
 import com.todoay.api.global.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
@@ -24,8 +23,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.List;
 
 @Slf4j
 @Service
@@ -58,25 +55,13 @@ public class DailyTodoCRUDServiceImpl implements DailyTodoCRUDService{
                 .category(checkIsPresentAndIsMineGetCategory(dto.getCategoryId()))
                 .auth(auth)   // auth??
                 .build();
-        dailyTodo.associateWithHashtag(getHashtagsByHashtagNames(dto.getHashtagNames()));
+        HashtagAttacher.attachHashtag(dailyTodo, dto.getHashtagNames(), hashtagRepository);
        dailyTodoRepository.save(dailyTodo);
 
         return DailyTodoSaveResponseDto.builder().id(dailyTodo.getId()).build();
     }
 
-    private List<Hashtag> getHashtagsByHashtagNames(List<HashtagInfoDto> hashtagNames) {
-        List<Hashtag> tags = new ArrayList<>(); // dailyTodo로 전달할 list객체, 연관관계 메서드를 개별 Hashtag로 변경하면
-        hashtagNames.forEach(n -> {
-            String name = n.getName();
-            hashtagRepository.findByName(name)
-                    .ifPresentOrElse(tags::add, // 검색 결과가 존재한다면 연관 관계를 맺을 리스트에 추가
-                            () ->{
-                                Hashtag save = hashtagRepository.save(new Hashtag(n.getName())); // 없다면 DB에 저장하고 저장.
-                                tags.add(save);
-                            });
-        });
-       return tags;
-    }
+
 
     @Override
     @Transactional
@@ -84,7 +69,7 @@ public class DailyTodoCRUDServiceImpl implements DailyTodoCRUDService{
        DailyTodo dailyTodo = checkIsPresentAndIsMineAndGetTodo(id);
        dailyTodo.modify(dto.getTitle(), dto.isPublic(), dto.isFinished(), dto.getDescription(),
                dto.getTargetTime(), dto.getAlarm(), dto.getPlace(), dto.getPeople(), dto.getDailyDate(), checkIsPresentAndIsMineGetCategory(dto.getCategoryId()));
-        dailyTodo.associateWithHashtag(getHashtagsByHashtagNames(dto.getHashtagNames()));
+        HashtagAttacher.attachHashtag(dailyTodo, dto.getHashtagNames(), hashtagRepository);
     }
 
     @Override
