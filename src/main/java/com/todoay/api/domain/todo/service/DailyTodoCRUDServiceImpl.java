@@ -65,11 +65,8 @@ public class DailyTodoCRUDServiceImpl implements DailyTodoCRUDService{
     }
 
     private List<Hashtag> getHashtagsByHashtagNames(List<HashtagInfoDto> hashtagNames) {
-
-        List<HashtagInfoDto> names = hashtagNames;
         List<Hashtag> tags = new ArrayList<>(); // dailyTodo로 전달할 list객체, 연관관계 메서드를 개별 Hashtag로 변경하면
-        // 아래 코드를 더 줄일 수 있음.
-        names.forEach(n -> {
+        hashtagNames.forEach(n -> {
             String name = n.getName();
             hashtagRepository.findByName(name)
                     .ifPresentOrElse(tags::add, // 검색 결과가 존재한다면 연관 관계를 맺을 리스트에 추가
