@@ -16,7 +16,8 @@ import java.util.stream.Collectors;
 @Data
 public class DailyTodoReadResponseDto {
 
-    @NotNull
+
+    private Long id;
     private String title;
     private String description = "내용 없음";
     private boolean isPublic = false;
@@ -42,24 +43,25 @@ public class DailyTodoReadResponseDto {
 
     private static DailyTodoReadResponseDto injectTodoInfo(DailyTodo dailyTodo) {
         DailyTodoReadResponseDto dto = new DailyTodoReadResponseDto();
+        dto.id = dailyTodo.getId();
         dto.title = dailyTodo.getTitle();
         String originDescription = dailyTodo.getDescription();
-        if (!isStrNull(originDescription))
+        if (isStrNotNull(originDescription))
             dto.description = originDescription;
         dto.isPublic = dailyTodo.isPublic();
         dto.isFinished = dailyTodo.isFinished();
         dto.alarm = dailyTodo.getAlarm();
         dto.targetTime = dailyTodo.getTargetTime();
-        if (!isStrNull(dailyTodo.getPeople()))
+        if (isStrNotNull(dailyTodo.getPeople()))
             dto.people = dailyTodo.getPeople();
-        if (!isStrNull(dailyTodo.getPlace()))
+        if (isStrNotNull(dailyTodo.getPlace()))
             dto.place = dailyTodo.getPlace();
         dto.dailyDate = dailyTodo.getDailyDate();
         return dto;
     }
 
-    private static boolean isStrNull(String fieldValue) {
-        return fieldValue == null || fieldValue.equals("null") || fieldValue.isBlank();
+    private static boolean isStrNotNull(String fieldValue) {
+        return fieldValue != null && !fieldValue.equals("null") && !fieldValue.isBlank();
     }
 
     private static void injectAssociatedInfo(DailyTodoReadResponseDto dto, DailyTodo dailyTodo) {
