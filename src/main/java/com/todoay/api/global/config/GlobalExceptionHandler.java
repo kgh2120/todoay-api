@@ -1,13 +1,16 @@
 package com.todoay.api.global.config;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.todoay.api.global.exception.AbstractApiException;
 import com.todoay.api.global.exception.ErrorResponse;
+import com.todoay.api.global.exception.GlobalErrorCode;
 import com.todoay.api.global.exception.ValidErrorResponse;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.UnsupportedJwtException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.MethodParameter;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -17,9 +20,11 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolationException;
+import java.lang.reflect.Method;
 import java.sql.SQLIntegrityConstraintViolationException;
 
 import static com.todoay.api.global.exception.GlobalErrorCode.*;
+import static com.todoay.api.global.exception.GlobalErrorCode.SQL_INTEGRITY_CONSTRAINT_VIOLATION;
 
 @Slf4j
 @RestControllerAdvice
@@ -73,6 +78,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UnsupportedJwtException.class)
     public ResponseEntity<ErrorResponse> handleUnsupportedJwtException(HttpServletRequest request) {
         return ErrorResponse.toResponseEntity(JWT_UNSUPPORTED, request.getRequestURI());
+    }
+
+    @ExceptionHandler(JsonParseException.class)
+    public ResponseEntity<ErrorResponse> handleJsonParseException(HttpServletRequest request) {
+        return ErrorResponse.toResponseEntity(JSON_PARSE_ERROR, request.getRequestURI());
     }
 
 }
