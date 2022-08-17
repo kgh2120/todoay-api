@@ -1,8 +1,8 @@
-package com.todoay.api.domain.todo.utility.inter.repeat;
+package com.todoay.api.domain.todo.utility.repeat.impl.repeator;
 
 
 
-import com.todoay.api.domain.todo.utility.inter.DateRepeator;
+import com.todoay.api.domain.todo.utility.repeat.DateRepeator;
 
 import java.time.LocalDate;
 

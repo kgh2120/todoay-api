@@ -1,4 +1,4 @@
-package com.todoay.api.domain.todo.utility.inter;
+package com.todoay.api.domain.todo.utility.repeat;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
