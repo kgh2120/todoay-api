@@ -7,6 +7,7 @@ import com.todoay.api.domain.category.repository.CategoryRepository;
 import com.todoay.api.domain.hashtag.entity.Hashtag;
 import com.todoay.api.domain.hashtag.repository.HashtagRepository;
 import com.todoay.api.domain.todo.dto.DailyTodoReadResponseDto;
+import com.todoay.api.domain.todo.dto.DailyTodoRepeatRequestDto;
 import com.todoay.api.domain.todo.entity.DailyTodo;
 import com.todoay.api.domain.todo.repository.DailyTodoRepository;
 import org.assertj.core.api.Assertions;
@@ -16,6 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -24,6 +27,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+@Transactional
 @SpringBootTest
 class DailyTodoCRUDServiceImplTest {
 
@@ -91,6 +95,21 @@ class DailyTodoCRUDServiceImplTest {
         DailyTodoReadResponseDto dto = dailyTodoCRUDService.readDailyTodoById(id);
         System.out.println(dto);
         assertThat(dto.getTitle()).isEqualTo("title");
+    }
+
+
+    @Test
+    void repeatTest() {
+        DailyTodoRepeatRequestDto dto = new DailyTodoRepeatRequestDto();
+        dto.setRepeat(5);
+        dto.setSelect("custom_number");
+        dto.setType("weeks");
+
+        dailyTodoCRUDService.repeatDailyTodo(id,dto);
+
+        long count = repository.count();
+        assertThat(count).isSameAs(6L);
+
     }
     
 

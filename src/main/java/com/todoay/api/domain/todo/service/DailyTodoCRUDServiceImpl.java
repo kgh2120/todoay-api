@@ -6,17 +6,18 @@ import com.todoay.api.domain.category.entity.Category;
 import com.todoay.api.domain.category.exception.CategoryNotFoundException;
 import com.todoay.api.domain.category.exception.NotYourCategoryException;
 import com.todoay.api.domain.category.repository.CategoryRepository;
+import com.todoay.api.domain.hashtag.entity.Hashtag;
 import com.todoay.api.domain.hashtag.repository.HashtagRepository;
 import com.todoay.api.domain.profile.exception.EmailNotFoundException;
-import com.todoay.api.domain.todo.dto.DailyTodoModifyRequestDto;
-import com.todoay.api.domain.todo.dto.DailyTodoReadResponseDto;
-import com.todoay.api.domain.todo.dto.DailyTodoSaveRequestDto;
-import com.todoay.api.domain.todo.dto.DailyTodoSaveResponseDto;
+import com.todoay.api.domain.todo.dto.*;
 import com.todoay.api.domain.todo.entity.DailyTodo;
+import com.todoay.api.domain.todo.entity.TodoHashtag;
 import com.todoay.api.domain.todo.exception.NotYourTodoException;
 import com.todoay.api.domain.todo.exception.TodoNotFoundException;
 import com.todoay.api.domain.todo.repository.DailyTodoRepository;
 import com.todoay.api.domain.todo.utility.HashtagAttacher;
+import com.todoay.api.domain.todo.utility.RepeatOption;
+import com.todoay.api.domain.todo.utility.SelectOption;
 import com.todoay.api.global.context.LoginAuthContext;
 import com.todoay.api.global.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
@@ -87,15 +88,51 @@ public class DailyTodoCRUDServiceImpl implements DailyTodoCRUDService{
     public List<DailyTodoReadResponseDto> readDailyTodosByDate(LocalDate date) {
         Auth loginedAuth = loginAuthContext.getLoginAuth();
         List<DailyTodo> dailyTodos = dailyTodoRepository.findDailyTodoOfUserByDate(date, loginedAuth);
-        return dailyTodos.stream().map(
-                DailyTodoReadResponseDto::createReadResponseDto
-        ).collect(Collectors.toList());
+        return dailyTodos.stream()
+                .map(DailyTodoReadResponseDto::createReadResponseDto)
+                .collect(Collectors.toList());
     }
 
     @Override
     public DailyTodoReadResponseDto readDailyTodoById(Long id) {
         DailyTodo dailyTodo = checkIsPresentAndIsMineAndGetTodo(id);
         return DailyTodoReadResponseDto.createReadResponseDto(dailyTodo);
+    }
+
+    @Override
+    public void repeatDailyTodo(Long id, DailyTodoRepeatRequestDto dto) {
+        DailyTodo source = checkIsPresentAndIsMineAndGetTodo(id);
+        List<LocalDate> repeatedDate = getRepeatedDate(dto);
+        createDailyTodoByRepeatedDate(source,repeatedDate);
+    }
+
+    private void createDailyTodoByRepeatedDate(DailyTodo source, List<LocalDate> repeatedDate) {
+        repeatedDate.forEach(d ->{
+            DailyTodo repeated = (DailyTodo) source.clone();
+            repeated.changeDateForRepeat(d);
+            List<Hashtag> hashtags = source.getTodoHashtags().stream().map(TodoHashtag::getHashTag)
+                    .collect(Collectors.toList());
+            repeated.associateWithHashtag(hashtags);
+            dailyTodoRepository.save(repeated);
+        });
+    }
+
+    private List<LocalDate> getRepeatedDate(DailyTodoRepeatRequestDto dto) {
+        RepeatOption repeatOption = getRepeatOption(dto);
+        SelectOption selectOption = getSelectOption(dto);
+        return selectOption.select(repeatOption.getDateRepeator(), dto.getRepeat(), LocalDate.now());
+    }
+
+    // 매일 매주 매월 매년 ...
+    private RepeatOption getRepeatOption(DailyTodoRepeatRequestDto dto) {
+        String typ = dto.getType().toUpperCase();
+        return RepeatOption.valueOf(typ);
+    }
+
+    // 이번달 1개월 커스텀개월 커스텀횟수
+    private SelectOption getSelectOption(DailyTodoRepeatRequestDto dto) {
+        String select = dto.getSelect().toUpperCase();
+        return SelectOption.valueOf(select);
     }
 
 

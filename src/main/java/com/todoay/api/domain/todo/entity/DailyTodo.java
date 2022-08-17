@@ -13,11 +13,13 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.List;
 
 @Entity
 @Getter
 @NoArgsConstructor
-public class DailyTodo extends Todo{
+public class DailyTodo extends Todo implements Cloneable{
     @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime alarm;
     @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
@@ -81,4 +83,34 @@ public class DailyTodo extends Todo{
                 ", todoHashtags=" + todoHashtags +
                 '}';
     }
+
+    @Override
+    public Object clone()  {
+        DailyTodoBuilder builder = DailyTodo.builder()
+                .title(this.title)
+                .description(this.description)
+                .isFinished(this.isFinished)
+                .isPublic(this.isPublic)
+                .auth(auth)
+                .category(category);
+
+        if(alarm != null)
+            builder.alarm(LocalDateTime.of(dailyDate,LocalTime.of(alarm.getHour(),alarm.getMinute())));
+        if (targetTime!= null)
+            builder.targetTime(LocalDateTime.of(dailyDate,LocalTime.of(targetTime.getHour(),targetTime.getMinute())));
+        return builder.build();
+    }
+
+    public void changeDailyDate(LocalDate dailyDate) {
+        this.dailyDate = dailyDate;
+    }
+    public void changeDateForRepeat(LocalDate dailyDate) {
+        this.dailyDate = dailyDate;
+        if(this.alarm != null)
+            this.alarm = LocalDateTime.of(dailyDate, LocalTime.of(this.alarm.getHour(),alarm.getMinute()));
+        if (this.targetTime != null) {
+            this.targetTime = LocalDateTime.of(dailyDate, LocalTime.of(this.targetTime.getHour(),targetTime.getMinute()));
+        }
+    }
+
 }

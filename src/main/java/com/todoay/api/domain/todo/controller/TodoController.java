@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.Response;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -76,6 +77,12 @@ public class TodoController {
     public ResponseEntity<List<DailyTodoReadResponseDto>> readDailyTodosByDate(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate localDate) {
         List<DailyTodoReadResponseDto> dtos = dailyTodoCRUDService.readDailyTodosByDate(localDate);
         return ResponseEntity.ok(dtos);
+    }
+
+    @PostMapping("/daily/{id}/repeat")
+    public ResponseEntity<Void> repeatDailyTodoByCondition(@PathVariable("id") long id, @RequestBody DailyTodoRepeatRequestDto dto) {
+        dailyTodoCRUDService.repeatDailyTodo(id,dto);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
 
