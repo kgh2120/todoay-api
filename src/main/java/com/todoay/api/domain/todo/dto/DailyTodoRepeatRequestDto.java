@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class DailyTodoRepeatRequestDto {
 
-    private String type;
-    private String select;
+    private String repeatType;
+    private String duration;
     int repeat;
 }

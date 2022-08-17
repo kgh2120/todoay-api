@@ -16,8 +16,8 @@ import com.todoay.api.domain.todo.exception.NotYourTodoException;
 import com.todoay.api.domain.todo.exception.TodoNotFoundException;
 import com.todoay.api.domain.todo.repository.DailyTodoRepository;
 import com.todoay.api.domain.todo.utility.HashtagAttacher;
-import com.todoay.api.domain.todo.utility.RepeatOption;
-import com.todoay.api.domain.todo.utility.SelectOption;
+import com.todoay.api.domain.todo.utility.RepeatType;
+import com.todoay.api.domain.todo.utility.Duration;
 import com.todoay.api.global.context.LoginAuthContext;
 import com.todoay.api.global.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
@@ -102,7 +102,7 @@ public class DailyTodoCRUDServiceImpl implements DailyTodoCRUDService{
     @Override
     public void repeatDailyTodo(Long id, DailyTodoRepeatRequestDto dto) {
         DailyTodo source = checkIsPresentAndIsMineAndGetTodo(id);
-        List<LocalDate> repeatedDate = getRepeatedDate(dto);
+        List<LocalDate> repeatedDate = getRepeatedDate(dto,source.getDailyDate());
         createDailyTodoByRepeatedDate(source,repeatedDate);
     }
 
@@ -117,22 +117,22 @@ public class DailyTodoCRUDServiceImpl implements DailyTodoCRUDService{
         });
     }
 
-    private List<LocalDate> getRepeatedDate(DailyTodoRepeatRequestDto dto) {
-        RepeatOption repeatOption = getRepeatOption(dto);
-        SelectOption selectOption = getSelectOption(dto);
-        return selectOption.select(repeatOption.getDateRepeator(), dto.getRepeat(), LocalDate.now());
+    private List<LocalDate> getRepeatedDate(DailyTodoRepeatRequestDto dto, LocalDate targetDate) {
+        RepeatType repeatType = getRepeatOption(dto);
+        Duration duration = getSelectOption(dto);
+        return duration.select(repeatType.getDateRepeator(), dto.getRepeat(), targetDate);
     }
 
     // 매일 매주 매월 매년 ...
-    private RepeatOption getRepeatOption(DailyTodoRepeatRequestDto dto) {
-        String typ = dto.getType().toUpperCase();
-        return RepeatOption.valueOf(typ);
+    private RepeatType getRepeatOption(DailyTodoRepeatRequestDto dto) {
+        String typ = dto.getRepeatType().toUpperCase();
+        return RepeatType.valueOf(typ);
     }
 
     // 이번달 1개월 커스텀개월 커스텀횟수
-    private SelectOption getSelectOption(DailyTodoRepeatRequestDto dto) {
-        String select = dto.getSelect().toUpperCase();
-        return SelectOption.valueOf(select);
+    private Duration getSelectOption(DailyTodoRepeatRequestDto dto) {
+        String select = dto.getDuration().toUpperCase();
+        return Duration.valueOf(select);
     }
 
 

@@ -10,14 +10,12 @@ import com.todoay.api.domain.todo.dto.DailyTodoReadResponseDto;
 import com.todoay.api.domain.todo.dto.DailyTodoRepeatRequestDto;
 import com.todoay.api.domain.todo.entity.DailyTodo;
 import com.todoay.api.domain.todo.repository.DailyTodoRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
@@ -25,7 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 @Transactional
 @SpringBootTest
@@ -102,8 +99,8 @@ class DailyTodoCRUDServiceImplTest {
     void repeatTest() {
         DailyTodoRepeatRequestDto dto = new DailyTodoRepeatRequestDto();
         dto.setRepeat(5);
-        dto.setSelect("custom_number");
-        dto.setType("weeks");
+        dto.setDuration("custom_number");
+        dto.setRepeatType("weeks");
 
         dailyTodoCRUDService.repeatDailyTodo(id,dto);
 

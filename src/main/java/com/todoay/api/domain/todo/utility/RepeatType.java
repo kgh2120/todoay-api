@@ -11,12 +11,11 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Getter
-public enum RepeatOption {
+public enum RepeatType {
     DAILY(new DailyDateRepeator()),
     WEEKS(new WeeksDateRepeator()),
     MONTH(new MonthDateRepeator()),
-    YEARS(new YearDateRepeator()),
-    CUSTOM(null)
+    YEARS(new YearDateRepeator())
 ;
     private final DateRepeator dateRepeator;
 
