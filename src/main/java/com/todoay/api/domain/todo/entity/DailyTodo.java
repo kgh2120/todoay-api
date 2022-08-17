@@ -91,6 +91,8 @@ public class DailyTodo extends Todo implements Cloneable{
                 .description(this.description)
                 .isFinished(this.isFinished)
                 .isPublic(this.isPublic)
+                .place(this.place)
+                .people(this.people)
                 .auth(auth)
                 .category(category);
 

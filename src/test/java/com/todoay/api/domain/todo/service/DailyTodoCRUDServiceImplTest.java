@@ -10,6 +10,7 @@ import com.todoay.api.domain.todo.dto.DailyTodoReadResponseDto;
 import com.todoay.api.domain.todo.dto.DailyTodoRepeatRequestDto;
 import com.todoay.api.domain.todo.entity.DailyTodo;
 import com.todoay.api.domain.todo.repository.DailyTodoRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,6 +75,11 @@ class DailyTodoCRUDServiceImplTest {
         id = save.getId();
         System.out.println(save);
 
+    }
+
+    @AfterEach
+    void afterEach() {
+        repository.deleteAll();
     }
 
     @Test

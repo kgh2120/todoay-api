@@ -5,6 +5,7 @@ import com.todoay.api.domain.auth.repository.AuthRepository;
 import com.todoay.api.domain.hashtag.entity.Hashtag;
 import com.todoay.api.domain.hashtag.repository.HashtagRepository;
 import com.todoay.api.domain.todo.entity.DailyTodo;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,6 +54,10 @@ class DailyTodoRepositoryTest {
         id = save.getId();
         System.out.println(save);
 
+    }
+    @AfterEach
+    void afterEach() {
+        repository.deleteAll();
     }
 
     @Test
