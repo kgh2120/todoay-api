@@ -40,7 +40,7 @@ public class DueDateTodoCRUDServiceImpl implements DueDateTodoCRUDService {
                 .isFinished(false)
                 .dueDate(dto.getDueDate())
                 .description(dto.getDescription())
-                .importance(Importance.valueOf(dto.getImportance().toUpperCase()))
+                .importance((Importance) EnumTransfomer.valueOfEnum(Importance.class,dto.getImportance()))
                 .auth(auth)
                 .build();
 
