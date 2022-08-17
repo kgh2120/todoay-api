@@ -44,9 +44,7 @@ public class TodoController {
         return ResponseEntity.ok(dailyTodoSaveResponseDto);
     }
 
-
-
-    @PostMapping("/duedate")
+    @PostMapping("/due-date")
     @Operation(
             summary = "DuedateTodo를 추가한다.",
             responses = {
@@ -59,5 +57,4 @@ public class TodoController {
         DueDateTodoSaveResponseDto dueDateTodoSaveResponseDto = dueDateTodoCRUDService.addTodo(dueDateTodoSaveRequestDto);
         return ResponseEntity.ok(dueDateTodoSaveResponseDto);
     }
-
 }
