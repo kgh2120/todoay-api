@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.Objects;
 import java.util.UUID;
 
 @Entity
@@ -65,6 +66,19 @@ public class Auth implements UserDetails {
         this.deletedAt = LocalDateTime.now();
         email = UUID.randomUUID().toString();
         profile.delete();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Auth auth = (Auth) o;
+        return id.equals(auth.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 
     @Override // 계정이 가지고 있는 권한 목록 리턴

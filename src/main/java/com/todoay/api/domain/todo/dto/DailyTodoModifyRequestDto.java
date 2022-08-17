@@ -1,26 +1,22 @@
 package com.todoay.api.domain.todo.dto;
 
-import com.todoay.api.domain.auth.entity.Auth;
-import com.todoay.api.domain.category.entity.Category;
+import com.todoay.api.domain.hashtag.dto.HashtagInfoDto;
 import lombok.Builder;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Builder
 public class DailyTodoModifyRequestDto {
-    // Todo 공통 속성
-    @NotNull
-    private Long id;
+    // 투두 공통 속성
     @NotNull
     private String title;
-    private String description;
-
-    // isPublic으로 한 경우, @Getter 사용시 제한이 있음.
-    // 따라서 isPublic -> publicBool
+    private String description = "내용 없음";
     private boolean isPublic = false;
     private boolean isFinished = false;
 
@@ -29,6 +25,9 @@ public class DailyTodoModifyRequestDto {
     private LocalDateTime targetTime;
     private String place;
     private String people;
+    @NotNull
     private LocalDate dailyDate;
-    private Category category;
+    private Long categoryId;
+
+    private List<HashtagInfoDto> hashtagNames = new ArrayList<>();
 }

@@ -1,5 +1,7 @@
 package com.todoay.api.global.jwt;
 
+import com.todoay.api.domain.auth.entity.Auth;
+import com.todoay.api.global.context.LoginAuthContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

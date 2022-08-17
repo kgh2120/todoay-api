@@ -8,6 +8,7 @@ import com.todoay.api.domain.category.entity.Category;
 import com.todoay.api.domain.category.exception.CategoryNotFoundException;
 import com.todoay.api.domain.category.exception.NotYourCategoryException;
 import com.todoay.api.domain.category.repository.CategoryRepository;
+import com.todoay.api.global.context.LoginAuthContext;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,6 +16,7 @@ import org.junit.jupiter.api.function.Executable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,6 +34,8 @@ class CategoryCRUDServiceImplTest {
 
     @Autowired CategoryCRUDService categoryCRUDService;
 
+
+    @Autowired LoginAuthContext context;
     @Autowired
     EntityManager em;
 
@@ -47,6 +51,17 @@ class CategoryCRUDServiceImplTest {
 
     void login(Auth auth) {
         SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(auth, "", auth.getAuthorities()));
+        System.out.println(testAuth1);
+        Auth p = (Auth)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        System.out.println(p);
+
+
+    }
+
+    void login2(Auth auth) {
+        Auth auth2 = authRepository.findById(auth.getId()).get();
+        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(auth2, "", auth2.getAuthorities()));
+
     }
 
     @Test
@@ -253,5 +268,34 @@ class CategoryCRUDServiceImplTest {
 
         // then
         Assertions.assertThrows(NotYourCategoryException.class, () -> categoryCRUDService.endCategory(categoryId1));
+    }
+
+    @Test
+    void categoryAuthEqualLoginAuth() {
+        String name = "category_name";
+        String color = "#123123";
+        Integer orderIndex = 1;
+        Long categoryId1 = categoryCRUDService.addCategory(CategorySaveRequestDto.builder().name(name).color(color).orderIndex(orderIndex).build()).getId();
+//        em.flush();
+//        em.clear();
+        Category findedCategory = categoryRepository.findById(categoryId1).get();
+
+
+
+
+
+//        login2(testAuth1);
+//
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        Auth auth = (Auth) authentication.getPrincipal();
+        Auth p = (Auth)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        System.out.println("testAuth1 = " + testAuth1);
+        System.out.println("p = " + p);
+        System.out.println("findedCategory.getAuth() = " + findedCategory.getAuth());
+        org.assertj.core.api.Assertions.assertThat(testAuth1).isEqualTo(findedCategory.getAuth());
+
+//        System.out.println(auth);
+//        System.out.println(findedCategory.getAuth());
+
     }
 }

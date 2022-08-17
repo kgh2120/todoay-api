@@ -40,6 +40,7 @@ public abstract class Todo {
     // 연관관계 메소드
     public void associateWithHashtag(List<Hashtag> hashtags) {
         // hashtag를 받아와서 todohashtag를 만들고 이걸 설정해준다.
+        this.todoHashtags.clear();
         for (Hashtag hashtag : hashtags) {
             TodoHashtag todoHashtag = TodoHashtag.builder()
                     .todo(this)

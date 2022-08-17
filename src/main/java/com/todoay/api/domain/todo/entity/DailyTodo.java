@@ -1,5 +1,6 @@
 package com.todoay.api.domain.todo.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.todoay.api.domain.auth.entity.Auth;
 import com.todoay.api.domain.category.entity.Category;
 import lombok.Builder;
@@ -17,13 +18,14 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 public class DailyTodo extends Todo{
-
+    @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime alarm;
-
+    @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime targetTime;
     private String place;
     private String people;
     @Column(nullable = false)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
     private LocalDate dailyDate;
 
     @ManyToOne
@@ -58,6 +60,6 @@ public class DailyTodo extends Todo{
         this.place = place;
         this.people = people;
         this.dailyDate = dailyDate;
-        this.category = category;;
+        this.category = category;
     }
 }

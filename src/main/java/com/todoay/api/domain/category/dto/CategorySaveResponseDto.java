@@ -1,10 +1,10 @@
 package com.todoay.api.domain.category.dto;
 
-import lombok.Builder;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
-@Builder
+@AllArgsConstructor
 public class CategorySaveResponseDto {
     private Long id;
 }
