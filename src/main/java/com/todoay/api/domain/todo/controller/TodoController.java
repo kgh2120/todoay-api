@@ -47,16 +47,12 @@ public class TodoController {
         return ResponseEntity.ok(dailyTodoSaveResponseDto);
     }
 
-
-    // 단건조회
     @GetMapping("/daily/my/{id}")
     public ResponseEntity<DailyTodoReadResponseDto> readDailyTodoById(@PathVariable("id") long id) {
         DailyTodoReadResponseDto dto = dailyTodoCRUDService.readDailyTodoById(id);
         return ResponseEntity.ok(dto);
     }
 
-
-    // 복수 조회
     @GetMapping("/daily/my")
     public ResponseEntity<List<DailyTodoReadResponseDto>> readDailyTodosByDate(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate localDate) {
         List<DailyTodoReadResponseDto> dtos = dailyTodoCRUDService.readDailyTodosByDate(localDate);
