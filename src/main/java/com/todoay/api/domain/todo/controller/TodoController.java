@@ -47,13 +47,32 @@ public class TodoController {
         return ResponseEntity.ok(dailyTodoSaveResponseDto);
     }
 
+
     @GetMapping("/daily/my/{id}")
+    @Operation(
+            summary = "DailyTodo 단건 조회",
+            description = "ID로 DailyTodo를 조회한다.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = DailyTodoReadResponseDto.class))),
+                    @ApiResponse(responseCode = "401", description = "Access Token 만료", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+                    @ApiResponse(responseCode = "403", description = "id에 해당하는 TODO가 본인 것이 아니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+                    @ApiResponse(responseCode = "404", description = "id에 해당하는 TODO가 존재하지 않는다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+            }
+    )
     public ResponseEntity<DailyTodoReadResponseDto> readDailyTodoById(@PathVariable("id") long id) {
         DailyTodoReadResponseDto dto = dailyTodoCRUDService.readDailyTodoById(id);
         return ResponseEntity.ok(dto);
     }
 
     @GetMapping("/daily/my")
+    @Operation(
+            summary = "DailyTodo 복수 조회",
+            description = "특정 날짜에 대한 DailyTodo들을 조회한다.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = DailyTodoReadResponseDto.class))),
+                    @ApiResponse(responseCode = "401", description = "Access Token 만료", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+            }
+    )
     public ResponseEntity<List<DailyTodoReadResponseDto>> readDailyTodosByDate(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate localDate) {
         List<DailyTodoReadResponseDto> dtos = dailyTodoCRUDService.readDailyTodosByDate(localDate);
         return ResponseEntity.ok(dtos);
