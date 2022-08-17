@@ -1,6 +1,7 @@
 package com.todoay.api.domain.todo.utility.repeat.impl.selector;
 
 
+import com.todoay.api.domain.todo.exception.BadRepeatConditionException;
 import com.todoay.api.domain.todo.utility.repeat.DateRepeator;
 import com.todoay.api.domain.todo.utility.repeat.DateSelector;
 
@@ -16,6 +17,8 @@ public class CustomNumberDateSelector implements DateSelector {
             repeatStandardDate = dateRepeator.plus(repeatStandardDate);
             selectedDates.add(repeatStandardDate);
         }
+        if(selectedDates.isEmpty())
+            throw new BadRepeatConditionException();
         return selectedDates;
     }
 

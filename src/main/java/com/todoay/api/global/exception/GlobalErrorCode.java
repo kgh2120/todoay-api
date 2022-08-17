@@ -20,7 +20,9 @@ public enum GlobalErrorCode implements ErrorCode{
 
     REQUEST_PARAM_MISSING(HttpStatus.BAD_REQUEST,"요구되는 리퀘스트 파라미터가 존재하지 않습니다."),
 
-    REQUEST_PARAM_TYPE_MISMATCH(HttpStatus.BAD_REQUEST, "리퀘스트 파라미터의 타입이 올바르지 않습니다.")
+    REQUEST_PARAM_TYPE_MISMATCH(HttpStatus.BAD_REQUEST, "리퀘스트 파라미터의 타입이 올바르지 않습니다."),
+
+
 
 
     ;

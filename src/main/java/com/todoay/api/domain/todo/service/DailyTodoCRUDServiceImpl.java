@@ -15,9 +15,10 @@ import com.todoay.api.domain.todo.entity.TodoHashtag;
 import com.todoay.api.domain.todo.exception.NotYourTodoException;
 import com.todoay.api.domain.todo.exception.TodoNotFoundException;
 import com.todoay.api.domain.todo.repository.DailyTodoRepository;
+import com.todoay.api.domain.todo.utility.EnumTransfomer;
 import com.todoay.api.domain.todo.utility.HashtagAttacher;
-import com.todoay.api.domain.todo.utility.repeat.RepeatType;
 import com.todoay.api.domain.todo.utility.repeat.Duration;
+import com.todoay.api.domain.todo.utility.repeat.RepeatType;
 import com.todoay.api.global.context.LoginAuthContext;
 import com.todoay.api.global.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
@@ -118,22 +119,11 @@ public class DailyTodoCRUDServiceImpl implements DailyTodoCRUDService{
     }
 
     private List<LocalDate> getRepeatedDate(DailyTodoRepeatRequestDto dto, LocalDate targetDate) {
-        RepeatType repeatType = getRepeatOption(dto);
-        Duration duration = getSelectOption(dto);
+        RepeatType repeatType = (RepeatType) EnumTransfomer.valueOfEnum(RepeatType.class, dto.getRepeatType());
+        Duration duration = (Duration) EnumTransfomer.valueOfEnum(Duration.class, dto.getDuration());
         return duration.select(repeatType.getDateRepeator(), dto.getRepeat(), targetDate);
     }
 
-    // 매일 매주 매월 매년 ...
-    private RepeatType getRepeatOption(DailyTodoRepeatRequestDto dto) {
-        String typ = dto.getRepeatType().toUpperCase();
-        return RepeatType.valueOf(typ);
-    }
-
-    // 이번달 1개월 커스텀개월 커스텀횟수
-    private Duration getSelectOption(DailyTodoRepeatRequestDto dto) {
-        String select = dto.getDuration().toUpperCase();
-        return Duration.valueOf(select);
-    }
 
 
     private DailyTodo checkIsPresentAndIsMineAndGetTodo(Long id) {

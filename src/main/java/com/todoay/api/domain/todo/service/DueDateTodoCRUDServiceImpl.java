@@ -11,6 +11,7 @@ import com.todoay.api.domain.todo.entity.Importance;
 import com.todoay.api.domain.todo.exception.NotYourTodoException;
 import com.todoay.api.domain.todo.exception.TodoNotFoundException;
 import com.todoay.api.domain.todo.repository.DueDateTodoRepository;
+import com.todoay.api.domain.todo.utility.EnumTransfomer;
 import com.todoay.api.domain.todo.utility.HashtagAttacher;
 import com.todoay.api.global.context.LoginAuthContext;
 import com.todoay.api.global.jwt.JwtProvider;
@@ -52,7 +53,8 @@ public class DueDateTodoCRUDServiceImpl implements DueDateTodoCRUDService {
     @Transactional
     public void modifyDueDateTodo(Long id, DueDateTodoModifyRequestDto dto) {
         DueDateTodo dueDateTodo = checkIsPresentAndIsMineAndGetTodo(id);
-        dueDateTodo.modify(dto.getTitle(), dto.isPublic(),dto.isFinished(), dto.getDueDate(), dto.getDescription(),Importance.valueOf(dto.getImportance().toUpperCase()));
+        dueDateTodo.modify(dto.getTitle(), dto.isPublic(),dto.isFinished(), dto.getDueDate(), dto.getDescription(),
+                (Importance) EnumTransfomer.valueOfEnum(Importance.class,dto.getImportance()));
         HashtagAttacher.attachHashtag(dueDateTodo, dto.getHashtagNames(), hashtagRepository);
     }
 

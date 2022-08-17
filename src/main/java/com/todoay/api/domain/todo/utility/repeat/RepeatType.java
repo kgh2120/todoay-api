@@ -18,5 +18,4 @@ public enum RepeatType {
 ;
     private final DateRepeator dateRepeator;
 
-
 }
