@@ -30,4 +30,11 @@ public class TodoHashtag {
     }
 
 
+    @Override
+    public String toString() {
+        return "TodoHashtag{" +
+                "id=" + id +
+                ", hashTag=" + hashTag +
+                '}';
+    }
 }

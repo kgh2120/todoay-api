@@ -62,4 +62,23 @@ public class DailyTodo extends Todo{
         this.dailyDate = dailyDate;
         this.category = category;
     }
+
+    @Override
+    public String toString() {
+        return "DailyTodo{" +
+                "alarm=" + alarm +
+                ", targetTime=" + targetTime +
+                ", place='" + place + '\'' +
+                ", people='" + people + '\'' +
+                ", dailyDate=" + dailyDate +
+                ", category=" + category +
+                ", id=" + id +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", isPublic=" + isPublic +
+                ", isFinished=" + isFinished +
+                ", auth=" + auth +
+                ", todoHashtags=" + todoHashtags +
+                '}';
+    }
 }

@@ -12,9 +12,15 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.coyote.Response;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
+import java.util.List;
+
 @Slf4j
 @RequiredArgsConstructor
 @RestController
@@ -40,6 +46,26 @@ public class TodoController {
         DailyTodoSaveResponseDto dailyTodoSaveResponseDto = dailyTodoCRUDService.addTodo(dailyTodoSaveRequestDto);
         return ResponseEntity.ok(dailyTodoSaveResponseDto);
     }
+
+
+    // 단건조회
+    @GetMapping("/daily/my/{id}")
+    public ResponseEntity<DailyTodoReadResponseDto> readDailyTodoById(@PathVariable("id") long id) {
+        DailyTodoReadResponseDto dto = dailyTodoCRUDService.readDailyTodoById(id);
+        return ResponseEntity.ok(dto);
+    }
+
+
+    // 복수 조회
+    @GetMapping("/daily/my")
+    public ResponseEntity<List<DailyTodoReadResponseDto>> readDailyTodosByDate(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate localDate) {
+        List<DailyTodoReadResponseDto> dtos = dailyTodoCRUDService.readDailyTodosByDate(localDate);
+        return ResponseEntity.ok(dtos);
+    }
+
+
+
+
 
     @PutMapping("/daily/{id}")
     @Operation(

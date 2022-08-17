@@ -9,6 +9,7 @@ import com.todoay.api.domain.category.repository.CategoryRepository;
 import com.todoay.api.domain.hashtag.repository.HashtagRepository;
 import com.todoay.api.domain.profile.exception.EmailNotFoundException;
 import com.todoay.api.domain.todo.dto.DailyTodoModifyRequestDto;
+import com.todoay.api.domain.todo.dto.DailyTodoReadResponseDto;
 import com.todoay.api.domain.todo.dto.DailyTodoSaveRequestDto;
 import com.todoay.api.domain.todo.dto.DailyTodoSaveResponseDto;
 import com.todoay.api.domain.todo.entity.DailyTodo;
@@ -23,6 +24,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -79,6 +83,22 @@ public class DailyTodoCRUDServiceImpl implements DailyTodoCRUDService{
         dailyTodoRepository.delete(dailyTodo);
     }
 
+    @Override
+    public List<DailyTodoReadResponseDto> readDailyTodosByDate(LocalDate date) {
+        Auth loginedAuth = loginAuthContext.getLoginAuth();
+        List<DailyTodo> dailyTodos = dailyTodoRepository.findDailyTodoOfUserByDate(date, loginedAuth);
+        return dailyTodos.stream().map(
+                DailyTodoReadResponseDto::createReadResponseDto
+        ).collect(Collectors.toList());
+    }
+
+    @Override
+    public DailyTodoReadResponseDto readDailyTodoById(Long id) {
+        DailyTodo dailyTodo = checkIsPresentAndIsMineAndGetTodo(id);
+        return DailyTodoReadResponseDto.createReadResponseDto(dailyTodo);
+    }
+
+
     private DailyTodo checkIsPresentAndIsMineAndGetTodo(Long id) {
         DailyTodo dailyTodo = checkIsPresentAndGetTodo(id);
         checkIsMine(dailyTodo);
@@ -90,7 +110,7 @@ public class DailyTodoCRUDServiceImpl implements DailyTodoCRUDService{
     }
 
     private DailyTodo checkIsPresentAndGetTodo(Long id) {
-        return dailyTodoRepository.findById(id).orElseThrow(TodoNotFoundException::new);
+        return dailyTodoRepository.findDailyTodoById(id).orElseThrow(TodoNotFoundException::new);
     }
 
     private Category checkIsPresentAndIsMineGetCategory(Long id) {
