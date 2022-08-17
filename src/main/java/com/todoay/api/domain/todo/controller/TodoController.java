@@ -79,8 +79,21 @@ public class TodoController {
         return ResponseEntity.ok(dtos);
     }
 
+
     @PostMapping("/daily/{id}/repeat")
-    public ResponseEntity<Void> repeatDailyTodoByCondition(@PathVariable("id") long id, @RequestBody DailyTodoRepeatRequestDto dto) {
+    @Operation(
+            summary = "dailyTodo 반복 생성",
+            description = "DailyTodo를 반복 타입, 기간을 설정하여 타겟 Todo의 날짜를 기준으로 반복해서 생성한다.",
+            responses = {
+                    @ApiResponse(responseCode = "201", description = "반복 생성 성공"),
+                    @ApiResponse(responseCode = "400", description = "1. 반복 조건 오류 \t\n 2. 올바른 양식 입력 X", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+                    @ApiResponse(responseCode = "401", description = "Access Token 만료", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+                    @ApiResponse(responseCode = "403", description = "1. 내 TODO가 아닌 TODO에 접근 \t\n 2. ENUM 변환 실패", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+                    @ApiResponse(responseCode = "404", description = "해당 ID에 리소스가 존재하지 않음", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+            }
+
+    )
+    public ResponseEntity<Void> repeatDailyTodoByCondition(@PathVariable("id") long id, @RequestBody @Validated DailyTodoRepeatRequestDto dto) {
         dailyTodoCRUDService.repeatDailyTodo(id,dto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }

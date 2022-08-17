@@ -2,14 +2,12 @@ package com.todoay.api.global.config;
 
 import com.todoay.api.global.exception.AbstractApiException;
 import com.todoay.api.global.exception.ErrorResponse;
-import com.todoay.api.global.exception.GlobalErrorCode;
 import com.todoay.api.global.exception.ValidErrorResponse;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.UnsupportedJwtException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.MethodParameter;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -19,11 +17,9 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolationException;
-import java.lang.reflect.Method;
 import java.sql.SQLIntegrityConstraintViolationException;
 
 import static com.todoay.api.global.exception.GlobalErrorCode.*;
-import static com.todoay.api.global.exception.GlobalErrorCode.SQL_INTEGRITY_CONSTRAINT_VIOLATION;
 
 @Slf4j
 @RestControllerAdvice
