@@ -15,7 +15,7 @@ import com.todoay.api.domain.todo.entity.TodoHashtag;
 import com.todoay.api.domain.todo.exception.NotYourTodoException;
 import com.todoay.api.domain.todo.exception.TodoNotFoundException;
 import com.todoay.api.domain.todo.repository.DailyTodoRepository;
-import com.todoay.api.domain.todo.utility.EnumTransfomer;
+import com.todoay.api.domain.todo.utility.EnumTransformer;
 import com.todoay.api.domain.todo.utility.HashtagAttacher;
 import com.todoay.api.domain.todo.utility.repeat.Duration;
 import com.todoay.api.domain.todo.utility.repeat.RepeatType;
@@ -119,8 +119,8 @@ public class DailyTodoCRUDServiceImpl implements DailyTodoCRUDService{
     }
 
     private List<LocalDate> getRepeatedDate(DailyTodoRepeatRequestDto dto, LocalDate targetDate) {
-        RepeatType repeatType = (RepeatType) EnumTransfomer.valueOfEnum(RepeatType.class, dto.getRepeatType());
-        Duration duration = (Duration) EnumTransfomer.valueOfEnum(Duration.class, dto.getDuration());
+        RepeatType repeatType = (RepeatType) EnumTransformer.valueOfEnum(RepeatType.class, dto.getRepeatType());
+        Duration duration = (Duration) EnumTransformer.valueOfEnum(Duration.class, dto.getDuration());
         return duration.select(repeatType.getDateRepeator(), dto.getRepeat(), targetDate);
     }
 

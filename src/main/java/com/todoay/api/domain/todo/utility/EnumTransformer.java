@@ -2,7 +2,7 @@ package com.todoay.api.domain.todo.utility;
 
 import com.todoay.api.domain.todo.exception.EnumMismatchException;
 
-public interface EnumTransfomer {
+public interface EnumTransformer {
     static Enum valueOfEnum(Class clazz, String name) {
         try {
             return Enum.valueOf(clazz, name.toUpperCase());

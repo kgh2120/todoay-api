@@ -30,7 +30,7 @@ public class DailyTodoReadResponseDto {
     private String people;
     @NotNull
     private LocalDate dailyDate;
-    private CategoryInfoDto categoryInfoDto;
+    private CategoryInfoDto category;
 
     private List<HashtagInfoDto> hashtagNames = new ArrayList<>();
 
@@ -70,7 +70,7 @@ public class DailyTodoReadResponseDto {
     }
 
     private static void injectCategoryInfo(DailyTodoReadResponseDto dto, Category category) {
-        dto.categoryInfoDto = CategoryInfoDto.create(category);
+        dto.category = CategoryInfoDto.create(category);
     }
 
     private static void injectHashtagInfo(DailyTodoReadResponseDto dto, List<TodoHashtag> hashtags) {
