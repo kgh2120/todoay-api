@@ -6,16 +6,19 @@ import com.todoay.api.domain.category.entity.Category;
 import com.todoay.api.domain.category.exception.CategoryNotFoundException;
 import com.todoay.api.domain.category.exception.NotYourCategoryException;
 import com.todoay.api.domain.category.repository.CategoryRepository;
+import com.todoay.api.domain.hashtag.entity.Hashtag;
 import com.todoay.api.domain.hashtag.repository.HashtagRepository;
 import com.todoay.api.domain.profile.exception.EmailNotFoundException;
-import com.todoay.api.domain.todo.dto.DailyTodoModifyRequestDto;
-import com.todoay.api.domain.todo.dto.DailyTodoSaveRequestDto;
-import com.todoay.api.domain.todo.dto.DailyTodoSaveResponseDto;
+import com.todoay.api.domain.todo.dto.*;
 import com.todoay.api.domain.todo.entity.DailyTodo;
+import com.todoay.api.domain.todo.entity.TodoHashtag;
 import com.todoay.api.domain.todo.exception.NotYourTodoException;
 import com.todoay.api.domain.todo.exception.TodoNotFoundException;
 import com.todoay.api.domain.todo.repository.DailyTodoRepository;
+import com.todoay.api.domain.todo.utility.EnumTransformer;
 import com.todoay.api.domain.todo.utility.HashtagAttacher;
+import com.todoay.api.domain.todo.utility.repeat.Duration;
+import com.todoay.api.domain.todo.utility.repeat.RepeatType;
 import com.todoay.api.global.context.LoginAuthContext;
 import com.todoay.api.global.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +26,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -79,6 +85,47 @@ public class DailyTodoCRUDServiceImpl implements DailyTodoCRUDService{
         dailyTodoRepository.delete(dailyTodo);
     }
 
+    @Override
+    public List<DailyTodoReadResponseDto> readDailyTodosByDate(LocalDate date) {
+        Auth loginedAuth = loginAuthContext.getLoginAuth();
+        List<DailyTodo> dailyTodos = dailyTodoRepository.findDailyTodoOfUserByDate(date, loginedAuth);
+        return dailyTodos.stream()
+                .map(DailyTodoReadResponseDto::createReadResponseDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public DailyTodoReadResponseDto readDailyTodoById(Long id) {
+        DailyTodo dailyTodo = checkIsPresentAndIsMineAndGetTodo(id);
+        return DailyTodoReadResponseDto.createReadResponseDto(dailyTodo);
+    }
+
+    @Override
+    public void repeatDailyTodo(Long id, DailyTodoRepeatRequestDto dto) {
+        DailyTodo source = checkIsPresentAndIsMineAndGetTodo(id);
+        List<LocalDate> repeatedDate = getRepeatedDate(dto,source.getDailyDate());
+        createDailyTodoByRepeatedDate(source,repeatedDate);
+    }
+
+    private void createDailyTodoByRepeatedDate(DailyTodo source, List<LocalDate> repeatedDate) {
+        repeatedDate.forEach(d ->{
+            DailyTodo repeated = (DailyTodo) source.clone();
+            repeated.changeDateForRepeat(d);
+            List<Hashtag> hashtags = source.getTodoHashtags().stream().map(TodoHashtag::getHashTag)
+                    .collect(Collectors.toList());
+            repeated.associateWithHashtag(hashtags);
+            dailyTodoRepository.save(repeated);
+        });
+    }
+
+    private List<LocalDate> getRepeatedDate(DailyTodoRepeatRequestDto dto, LocalDate targetDate) {
+        RepeatType repeatType = (RepeatType) EnumTransformer.valueOfEnum(RepeatType.class, dto.getRepeatType());
+        Duration duration = (Duration) EnumTransformer.valueOfEnum(Duration.class, dto.getDuration());
+        return duration.select(repeatType.getDateRepeator(), dto.getRepeat(), targetDate);
+    }
+
+
+
     private DailyTodo checkIsPresentAndIsMineAndGetTodo(Long id) {
         DailyTodo dailyTodo = checkIsPresentAndGetTodo(id);
         checkIsMine(dailyTodo);
@@ -90,7 +137,7 @@ public class DailyTodoCRUDServiceImpl implements DailyTodoCRUDService{
     }
 
     private DailyTodo checkIsPresentAndGetTodo(Long id) {
-        return dailyTodoRepository.findById(id).orElseThrow(TodoNotFoundException::new);
+        return dailyTodoRepository.findDailyTodoById(id).orElseThrow(TodoNotFoundException::new);
     }
 
     private Category checkIsPresentAndIsMineGetCategory(Long id) {

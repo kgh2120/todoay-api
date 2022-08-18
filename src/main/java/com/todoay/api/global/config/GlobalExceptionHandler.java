@@ -1,5 +1,6 @@
 package com.todoay.api.global.config;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.todoay.api.global.exception.AbstractApiException;
 import com.todoay.api.global.exception.ErrorResponse;
 import com.todoay.api.global.exception.GlobalErrorCode;
@@ -77,6 +78,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UnsupportedJwtException.class)
     public ResponseEntity<ErrorResponse> handleUnsupportedJwtException(HttpServletRequest request) {
         return ErrorResponse.toResponseEntity(JWT_UNSUPPORTED, request.getRequestURI());
+    }
+
+    @ExceptionHandler(JsonParseException.class)
+    public ResponseEntity<ErrorResponse> handleJsonParseException(HttpServletRequest request) {
+        return ErrorResponse.toResponseEntity(JSON_PARSE_ERROR, request.getRequestURI());
     }
 
 }

@@ -35,7 +35,7 @@ public abstract class Todo {
     protected Auth auth;
 
     @OneToMany(mappedBy = "todo", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<TodoHashtag> todoHashtags = new ArrayList<>();
+    protected List<TodoHashtag> todoHashtags = new ArrayList<>();
 
     // 연관관계 메소드
     public void associateWithHashtag(List<Hashtag> hashtags) {

@@ -16,4 +16,12 @@ public class Hashtag {
     public Hashtag(String name) {
         this.name = name;
     }
+
+    @Override
+    public String toString() {
+        return "Hashtag{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
+    }
 }
