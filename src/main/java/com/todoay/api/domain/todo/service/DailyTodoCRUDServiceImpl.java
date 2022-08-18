@@ -128,11 +128,11 @@ public class DailyTodoCRUDServiceImpl implements DailyTodoCRUDService{
 
     private DailyTodo checkIsPresentAndIsMineAndGetTodo(Long id) {
         DailyTodo dailyTodo = checkIsPresentAndGetTodo(id);
-        checkIsMine(dailyTodo);
+        checkThisTodoIsMine(dailyTodo);
         return dailyTodo;
     }
 
-    private void checkIsMine(DailyTodo dailyTodo) {
+    private void checkThisTodoIsMine(DailyTodo dailyTodo) {
         if(!dailyTodo.getAuth().equals(loginAuthContext.getLoginAuth())) throw new NotYourTodoException();
     }
 

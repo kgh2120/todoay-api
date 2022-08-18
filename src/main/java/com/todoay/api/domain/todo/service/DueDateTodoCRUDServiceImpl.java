@@ -66,11 +66,11 @@ public class DueDateTodoCRUDServiceImpl implements DueDateTodoCRUDService {
 
     private DueDateTodo checkIsPresentAndIsMineAndGetTodo(Long id) {
         DueDateTodo dueDateTodo = checkIsPresentAndGetTodo(id);
-        checkIsMine(dueDateTodo);
+        checkThisTodoIsMine(dueDateTodo);
         return dueDateTodo;
     }
 
-    private void checkIsMine(DueDateTodo dueDateTodo) {
+    private void checkThisTodoIsMine(DueDateTodo dueDateTodo) {
         if(!dueDateTodo.getAuth().equals(loginAuthContext.getLoginAuth()))throw new NotYourTodoException();
     }
 
