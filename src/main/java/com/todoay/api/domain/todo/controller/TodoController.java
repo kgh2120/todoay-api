@@ -12,7 +12,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.coyote.Response;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -99,9 +98,6 @@ public class TodoController {
     }
 
 
-
-
-
     @PutMapping("/daily/{id}")
     @Operation(
             summary = "로그인 유저의 DailyTodo를 수정한다.",
@@ -115,6 +111,12 @@ public class TodoController {
     )
     public ResponseEntity<DailyTodoSaveResponseDto> dailyTodoModify(@RequestBody @Validated DailyTodoModifyRequestDto dailyTodoModifyRequestDto, @PathVariable Long id) {
         dailyTodoCRUDService.modifyDailyTodo(id, dailyTodoModifyRequestDto);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/daily/{id}/daily-date")
+    public ResponseEntity<Void> dailyTodoDailyDateModify(@PathVariable Long id, @RequestBody @Validated DailyTodoDailyDateModifyRequestDto dto) {
+        dailyTodoCRUDService.modifyDailyDate(id, dto);
         return ResponseEntity.noContent().build();
     }
 

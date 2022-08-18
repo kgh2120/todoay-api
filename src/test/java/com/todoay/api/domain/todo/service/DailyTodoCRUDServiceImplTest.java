@@ -6,6 +6,7 @@ import com.todoay.api.domain.category.entity.Category;
 import com.todoay.api.domain.category.repository.CategoryRepository;
 import com.todoay.api.domain.hashtag.entity.Hashtag;
 import com.todoay.api.domain.hashtag.repository.HashtagRepository;
+import com.todoay.api.domain.todo.dto.DailyTodoDailyDateModifyRequestDto;
 import com.todoay.api.domain.todo.dto.DailyTodoReadResponseDto;
 import com.todoay.api.domain.todo.dto.DailyTodoRepeatRequestDto;
 import com.todoay.api.domain.todo.entity.DailyTodo;
@@ -114,8 +115,15 @@ class DailyTodoCRUDServiceImplTest {
         assertThat(count).isSameAs(6L);
 
     }
-    
 
+    @Test
+    void modifyDailyDate() {
+        DailyTodoDailyDateModifyRequestDto dto = new DailyTodoDailyDateModifyRequestDto();
+        dto.setDailyDate(LocalDate.now());
+        dailyTodoCRUDService.modifyDailyDate(id, dto);
+        DailyTodoReadResponseDto responseDto = dailyTodoCRUDService.readDailyTodoById(id);
+        assertThat(responseDto.getDailyDate()).isEqualTo(LocalDate.now());
+    }
     
     
 

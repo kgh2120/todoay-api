@@ -101,10 +101,18 @@ public class DailyTodoCRUDServiceImpl implements DailyTodoCRUDService{
     }
 
     @Override
+    @Transactional
     public void repeatDailyTodo(Long id, DailyTodoRepeatRequestDto dto) {
         DailyTodo source = checkIsPresentAndIsMineAndGetTodo(id);
         List<LocalDate> repeatedDate = getRepeatedDate(dto,source.getDailyDate());
         createDailyTodoByRepeatedDate(source,repeatedDate);
+    }
+
+    @Override
+    @Transactional
+    public void modifyDailyDate(Long id, DailyTodoDailyDateModifyRequestDto dto) {
+        DailyTodo dailyTodo = checkIsPresentAndIsMineAndGetTodo(id);
+        dailyTodo.changeDailyDate(dto.getDailyDate());
     }
 
     private void createDailyTodoByRepeatedDate(DailyTodo source, List<LocalDate> repeatedDate) {
