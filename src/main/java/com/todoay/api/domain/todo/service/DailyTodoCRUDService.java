@@ -17,4 +17,5 @@ public interface DailyTodoCRUDService {
     // 반복 생성
     void repeatDailyTodo(Long id, DailyTodoRepeatRequestDto dto);
 
+    void modifyDailyDate(Long id, DailyTodoDailyDateModifyRequestDto dto);
 }
