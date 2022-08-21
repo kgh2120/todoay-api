@@ -10,10 +10,13 @@ import java.util.stream.Collectors;
 
 public interface HashtagAttacher {
 
-     static Todo attachHashtag(Todo todo, List<HashtagInfoDto> hashtagNames, HashtagRepository hashtagRepository){
+     static void attachHashtag(Todo todo, List<HashtagInfoDto> hashtagNames, HashtagRepository hashtagRepository){
+         if(hashtagNames==null || hashtagNames.isEmpty())
+             return;
         List<Hashtag> hashtags = getHashtagsByHashtagNames(hashtagNames, hashtagRepository);
         todo.associateWithHashtag(hashtags);
-        return todo;
+
+
     }
 
     private static List<Hashtag> getHashtagsByHashtagNames(List<HashtagInfoDto> hashtagNames, HashtagRepository hashtagRepository) {
