@@ -1,18 +1,15 @@
 package com.todoay.api.domain.todo.entity;
 
 import com.todoay.api.domain.auth.entity.Auth;
-import com.todoay.api.domain.category.entity.Category;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -44,5 +41,18 @@ public class DueDateTodo extends Todo{
         this.description = description;
         this.importance = importance;
 
+    }
+
+    @Override
+    public String toString() {
+        return "DueDateTodo{" +
+                "dueDate=" + dueDate +
+                ", importance=" + importance +
+                ", id=" + id +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", isPublic=" + isPublic +
+                ", isFinished=" + isFinished +
+                '}';
     }
 }

@@ -161,6 +161,18 @@ public class TodoController {
         return ResponseEntity.ok(dueDateTodoSaveResponseDto);
     }
 
+    @GetMapping("/due-date/my")
+    public ResponseEntity<List<DueDateTodoReadResponseDto>> readDueDateTodoOrderByQueryString(@RequestParam("order") String order) {
+        List<DueDateTodoReadResponseDto> dtos = null;
+        if(order.equalsIgnoreCase("duedate")) {
+            dtos = dueDateTodoCRUDService.readTodosOrderByDueDate();
+        }else if(order.equalsIgnoreCase("importance"))
+            dtos = dueDateTodoCRUDService.readTodosOrderByImportance();
+        else
+            throw new IllegalArgumentException();
+        return ResponseEntity.ok(dtos);
+    }
+
     @PutMapping("/due-date/{id}")
     @Operation(
             summary = "로그인 유저의 due-dateTodo를 수정한다.",

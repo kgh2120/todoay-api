@@ -4,6 +4,7 @@ import com.todoay.api.domain.auth.entity.Auth;
 import com.todoay.api.domain.auth.repository.AuthRepository;
 import com.todoay.api.domain.hashtag.repository.HashtagRepository;
 import com.todoay.api.domain.todo.dto.DueDateTodoModifyRequestDto;
+import com.todoay.api.domain.todo.dto.DueDateTodoReadResponseDto;
 import com.todoay.api.domain.todo.dto.DueDateTodoSaveRequestDto;
 import com.todoay.api.domain.todo.dto.DueDateTodoSaveResponseDto;
 import com.todoay.api.domain.todo.entity.DueDateTodo;
@@ -19,6 +20,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -64,6 +68,20 @@ public class DueDateTodoCRUDServiceImpl implements DueDateTodoCRUDService {
         dueDateTodoRepository.delete(dueDateTodo);
     }
 
+    @Override
+    public List<DueDateTodoReadResponseDto> readTodosOrderByDueDate() {
+        Auth loginedAuth = loginAuthContext.getLoginAuth();
+        List<DueDateTodo> todos = dueDateTodoRepository.findAllByAuth(loginedAuth);
+        return sortDueDateTodoByDueDate(todos);
+    }
+
+    @Override
+    public List<DueDateTodoReadResponseDto> readTodosOrderByImportance() {
+        Auth loginedAuth = loginAuthContext.getLoginAuth();
+        List<DueDateTodo> todos = dueDateTodoRepository.findAllByAuth(loginedAuth);
+        return sortDueDateTodoByImportance(todos);
+    }
+
     private DueDateTodo checkIsPresentAndIsMineAndGetTodo(Long id) {
         DueDateTodo dueDateTodo = checkIsPresentAndGetTodo(id);
         checkThisTodoIsMine(dueDateTodo);
@@ -76,5 +94,19 @@ public class DueDateTodoCRUDServiceImpl implements DueDateTodoCRUDService {
 
     private DueDateTodo checkIsPresentAndGetTodo(Long id) {
         return dueDateTodoRepository.findById(id).orElseThrow(TodoNotFoundException::new);
+    }
+
+    private List<DueDateTodoReadResponseDto> sortDueDateTodoByDueDate(List<DueDateTodo> todos) {
+        return todos.stream()
+                .sorted(Comparator.comparing(DueDateTodo::getDueDate))
+                .map(DueDateTodoReadResponseDto::createDto)
+                .collect(Collectors.toList());
+    }
+
+    private List<DueDateTodoReadResponseDto> sortDueDateTodoByImportance(List<DueDateTodo> todos){
+        return todos.stream()
+                .sorted(Comparator.comparing(DueDateTodo::getImportance))
+                .map(DueDateTodoReadResponseDto::createDto)
+                .collect(Collectors.toList());
     }
 }
