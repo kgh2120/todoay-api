@@ -13,4 +13,6 @@ public interface DueDateTodoCRUDService {
 
     DueDateTodoReadDetailResponseDto readDueDateTodoDetail(Long id);
 
+    List<DueDateTodoReadResponseDto> readFinishedTodos();
+
 }

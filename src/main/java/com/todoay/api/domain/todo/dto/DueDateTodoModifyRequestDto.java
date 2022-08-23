@@ -1,9 +1,10 @@
 package com.todoay.api.domain.todo.dto;
 
 import com.todoay.api.domain.hashtag.dto.HashtagInfoDto;
-import com.todoay.api.domain.todo.entity.Importance;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
@@ -11,13 +12,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-@Builder
+@Builder @NoArgsConstructor @AllArgsConstructor
 public class DueDateTodoModifyRequestDto {
     @NotNull
     private String title;
     private String description = "내용 없음";
-    private boolean isPublic = false;
-    private boolean isFinished = false;
+    private boolean publicBool = false;
+    private boolean finishedBool = false;
 
     // DuedateTodo 속성
     @NotNull

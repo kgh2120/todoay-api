@@ -10,6 +10,8 @@ import java.util.List;
 
 public interface DueDateTodoRepository extends JpaRepository<DueDateTodo, Long> {
 
-    @Query("select t from DueDateTodo t join fetch t.todoHashtags h where t.auth = :auth")
-    List<DueDateTodo> findAllByAuth(@Param("auth") Auth auth);
+    @Query("select distinct t from DueDateTodo t join fetch t.todoHashtags h where t.auth = :auth and t.isFinished = false")
+    List<DueDateTodo> findNotFinishedDueDateTodoByAuth(@Param("auth") Auth auth);
+    @Query("select distinct t from DueDateTodo t join fetch t.todoHashtags h where t.auth = :auth and t.isFinished = true ")
+    List<DueDateTodo> findFinishedDueDateTodoByAuth(@Param("auth")Auth auth);
 }

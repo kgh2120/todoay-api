@@ -5,6 +5,7 @@ import com.todoay.api.domain.todo.dto.DueDateTodoReadDetailResponseDto;
 import com.todoay.api.domain.todo.dto.DueDateTodoReadResponseDto;
 import com.todoay.api.domain.todo.entity.DueDateTodo;
 import com.todoay.api.domain.todo.entity.Importance;
+import com.todoay.api.domain.todo.entity.Todo;
 import com.todoay.api.domain.todo.exception.EnumMismatchException;
 import com.todoay.api.domain.todo.exception.TodoNotFoundException;
 import com.todoay.api.domain.todo.repository.DueDateTodoRepository;
@@ -23,6 +24,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -70,9 +72,9 @@ class DueDateTodoCRUDServiceImplTest {
         //then
         SoftAssertions.assertSoftly(softAssertions-> {
             softAssertions.assertThat(dtos.get(0).getImportance()).isEqualTo(Importance.HIGH);
-            softAssertions.assertThat(dtos.get(1).getImportance()).isEqualTo(Importance.MIDDLE);
-            softAssertions.assertThat(dtos.get(2).getImportance()).isEqualTo(Importance.LOW);
-            softAssertions.assertThat(dtos.get(3).getImportance()).isEqualTo(Importance.LOW);
+            softAssertions.assertThat(dtos.get(1).getImportance()).isEqualTo(Importance.HIGH);
+            softAssertions.assertThat(dtos.get(3).getImportance()).isEqualTo(Importance.MIDDLE);
+            softAssertions.assertThat(dtos.get(6).getImportance()).isEqualTo(Importance.LOW);
         });
     }
 
@@ -93,7 +95,7 @@ class DueDateTodoCRUDServiceImplTest {
         // given
         setMockObjectMethodForReadMultiObj();
         Auth loginAuth = loginAuthContext.getLoginAuth();
-        List<DueDateTodo> todos = dueDateTodoRepository.findAllByAuth(loginAuth);
+        List<DueDateTodo> todos = dueDateTodoRepository.findNotFinishedDueDateTodoByAuth(loginAuth);
         Method sortTodosOrderByDueDate = service.getClass().getDeclaredMethod("sortTodosOrderByDueDate",List.class);
         sortTodosOrderByDueDate.setAccessible(true);
 
@@ -120,7 +122,7 @@ class DueDateTodoCRUDServiceImplTest {
         //given
         setMockObjectMethodForReadMultiObj();
         Auth loginAuth = loginAuthContext.getLoginAuth();
-        List<DueDateTodo> todos = dueDateTodoRepository.findAllByAuth(loginAuth);
+        List<DueDateTodo> todos = dueDateTodoRepository.findNotFinishedDueDateTodoByAuth(loginAuth);
         Method sortTodosOrderByImportance = service.getClass().getDeclaredMethod("sortTodosOrderByImportance",List.class);
         sortTodosOrderByImportance.setAccessible(true);
         //when
@@ -129,9 +131,9 @@ class DueDateTodoCRUDServiceImplTest {
         //then
         SoftAssertions.assertSoftly(softAssertions-> {
             softAssertions.assertThat(dtos.get(0).getImportance()).isEqualTo(Importance.HIGH);
-            softAssertions.assertThat(dtos.get(1).getImportance()).isEqualTo(Importance.MIDDLE);
-            softAssertions.assertThat(dtos.get(2).getImportance()).isEqualTo(Importance.LOW);
-            softAssertions.assertThat(dtos.get(3).getImportance()).isEqualTo(Importance.LOW);
+            softAssertions.assertThat(dtos.get(1).getImportance()).isEqualTo(Importance.HIGH);
+            softAssertions.assertThat(dtos.get(3).getImportance()).isEqualTo(Importance.MIDDLE);
+            softAssertions.assertThat(dtos.get(6).getImportance()).isEqualTo(Importance.LOW);
         });
     }
 
@@ -159,19 +161,45 @@ class DueDateTodoCRUDServiceImplTest {
         assertThatThrownBy(() -> service.readDueDateTodoDetail(id))
                 .isInstanceOf(TodoNotFoundException.class);
     }
+    
+    @Test
+    void readFinishedDueDate () throws Exception{
+        //given
+        setMockObjectMethodForReadFinishedObj();
+        //when
+
+        List<DueDateTodo> data = createData();
+        List<DueDateTodoReadResponseDto> dtos = service.readFinishedTodos();
+        //then
+
+        SoftAssertions.assertSoftly(sa -> {
+            for (int i = 0; i < dtos.size()-1; i++) {
+                sa.assertThat(compareDueDate(dtos.get(i),dtos.get(i+1))).isTrue();
+            }
+            sa.assertThat(data.size()).isNotSameAs(dtos.size());
+        });
+        
+    
+    }
 
     private void setMockObjectMethodForDetailObj() throws Exception {
         given(dueDateTodoRepository.findById(any()))
-                .willReturn(Optional.ofNullable(createDueDateTodoData().get(0)));
+                .willReturn(Optional.ofNullable(filterNotFinishedData().get(0)));
+        given(loginAuthContext.getLoginAuth())
+                .willReturn(createAuthData());
+    }
+
+    private void setMockObjectMethodForReadFinishedObj() throws Exception {
+        given(dueDateTodoRepository.findFinishedDueDateTodoByAuth(any()))
+                .willReturn(filterFinishedData());
         given(loginAuthContext.getLoginAuth())
                 .willReturn(createAuthData());
     }
 
 
-
     private void setMockObjectMethodForReadMultiObj() throws Exception {
-        given(dueDateTodoRepository.findAllByAuth(any()))
-                .willReturn(createDueDateTodoData());
+        given(dueDateTodoRepository.findNotFinishedDueDateTodoByAuth(any()))
+                .willReturn(filterNotFinishedData());
         given(loginAuthContext.getLoginAuth())
                 .willReturn(createAuthData());
     }
@@ -187,25 +215,43 @@ class DueDateTodoCRUDServiceImplTest {
         id.set(auth,1L);
         return auth;
     }
-    private List<DueDateTodo> createDueDateTodoData() throws Exception{
+
+    private List<DueDateTodo> filterNotFinishedData() throws Exception {
+        List<DueDateTodo> data = createData();
+        return data.stream().filter(todo -> !todo.isFinished())
+                .collect(Collectors.toList());
+    }
+
+    private List<DueDateTodo> filterFinishedData() throws Exception {
+        List<DueDateTodo> data = createData();
+        return data.stream().filter(Todo::isFinished)
+                .collect(Collectors.toList());
+    }
+    private List<DueDateTodo> createData() throws Exception{
         List<DueDateTodo> list = new ArrayList<>();
         Auth auth = createAuthData();
-        for (int i = 1; i < 5; i++) {
+        for (int i = 1; i < 10; i++) {
             DueDateTodo.DueDateTodoBuilder builder = DueDateTodo.builder()
                     .auth(null)
                     .dueDate(LocalDate.of(2022, 8, i))
                     .title("테스트" + i)
                     .description("테스트입니당" + i)
                     .isPublic(true)
-                    .auth(auth)
-                    .isFinished(false);
+                    .auth(auth);
 
-            if(i<3)
+
+            if(i<4)
                 builder.importance(Importance.LOW);
-            else if(i==3)
+            else if(i<6)
                 builder.importance(Importance.MIDDLE);
             else
                 builder.importance(Importance.HIGH);
+
+            if(i>8)
+                builder.isFinished(true);
+            else
+                builder.isFinished(false);
+
 
             DueDateTodo todo = builder.build();
 

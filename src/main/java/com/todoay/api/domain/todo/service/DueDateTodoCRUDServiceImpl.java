@@ -15,6 +15,7 @@ import com.todoay.api.global.context.LoginAuthContext;
 import com.todoay.api.global.jwt.JwtProvider;
 import java.util.Collections;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -22,6 +23,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class DueDateTodoCRUDServiceImpl implements DueDateTodoCRUDService {
@@ -55,7 +57,7 @@ public class DueDateTodoCRUDServiceImpl implements DueDateTodoCRUDService {
     @Transactional
     public void modifyDueDateTodo(Long id, DueDateTodoModifyRequestDto dto) {
         DueDateTodo dueDateTodo = checkIsPresentAndIsMineAndGetTodo(id);
-        dueDateTodo.modify(dto.getTitle(), dto.isPublic(),dto.isFinished(), dto.getDueDate(), dto.getDescription(),
+        dueDateTodo.modify(dto.getTitle(), dto.isPublicBool(),dto.isFinishedBool(), dto.getDueDate(), dto.getDescription(),
                 (Importance) EnumTransformer.valueOfEnum(Importance.class,dto.getImportance()));
         HashtagAttacher.attachHashtag(dueDateTodo, dto.getHashtagNames(), hashtagRepository);
     }
@@ -71,14 +73,27 @@ public class DueDateTodoCRUDServiceImpl implements DueDateTodoCRUDService {
     @Override
     public List<DueDateTodoReadResponseDto> readTodosOrderByCondition(String condition) {
         Auth loginedAuth = loginAuthContext.getLoginAuth();
-        List<DueDateTodo> todos = dueDateTodoRepository.findAllByAuth(loginedAuth);
-        return sortDueDateTodoByCondition(condition, todos);
+        List<DueDateTodo> todos = dueDateTodoRepository.findNotFinishedDueDateTodoByAuth(loginedAuth);
+        log.info("origin todos = {}", todos);
+        List<DueDateTodoReadResponseDto> dtos = sortDueDateTodoByCondition(condition, todos);
+        log.info("dtos = {}", dtos);
+        return dtos;
     }
 
     @Override
     public DueDateTodoReadDetailResponseDto readDueDateTodoDetail(Long id) {
         DueDateTodo todo = checkIsPresentAndIsMineAndGetTodo(id);
         return DueDateTodoReadDetailResponseDto.createDto(todo);
+    }
+
+    @Override
+    public List<DueDateTodoReadResponseDto> readFinishedTodos() {
+        Auth loginAuth = loginAuthContext.getLoginAuth();
+        List<DueDateTodo> finishedTodos = dueDateTodoRepository.findFinishedDueDateTodoByAuth(loginAuth);
+        log.info("origin todos = {}", finishedTodos);
+        List<DueDateTodoReadResponseDto> dtos = sortTodosOrderByDueDate(finishedTodos);
+        log.info("dtos = {}", dtos);
+        return dtos;
     }
 
     private List<DueDateTodoReadResponseDto> sortDueDateTodoByCondition(String condition, List<DueDateTodo> todos) {
