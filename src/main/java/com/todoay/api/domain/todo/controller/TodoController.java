@@ -163,14 +163,14 @@ public class TodoController {
 
     @GetMapping("/due-date/my")
     public ResponseEntity<List<DueDateTodoReadResponseDto>> readDueDateTodoOrderByQueryString(@RequestParam("order") String order) {
-        List<DueDateTodoReadResponseDto> dtos = null;
-        if(order.equalsIgnoreCase("duedate")) {
-            dtos = dueDateTodoCRUDService.readTodosOrderByDueDate();
-        }else if(order.equalsIgnoreCase("importance"))
-            dtos = dueDateTodoCRUDService.readTodosOrderByImportance();
-        else
-            throw new IllegalArgumentException();
+        List<DueDateTodoReadResponseDto> dtos = dueDateTodoCRUDService.readTodosOrderByCondition(order);
         return ResponseEntity.ok(dtos);
+    }
+
+    @GetMapping("/due-date/my/{id}")
+    public ResponseEntity<DueDateTodoReadDetailResponseDto> readDueDateTodoDetails(@PathVariable("id")Long id) {
+        DueDateTodoReadDetailResponseDto dto = dueDateTodoCRUDService.readDueDateTodoDetail(id);
+        return ResponseEntity.ok(dto);
     }
 
     @PutMapping("/due-date/{id}")
