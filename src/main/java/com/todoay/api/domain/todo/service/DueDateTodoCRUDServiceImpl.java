@@ -74,10 +74,7 @@ public class DueDateTodoCRUDServiceImpl implements DueDateTodoCRUDService {
     public List<DueDateTodoReadResponseDto> readTodosOrderByCondition(String condition) {
         Auth loginedAuth = loginAuthContext.getLoginAuth();
         List<DueDateTodo> todos = dueDateTodoRepository.findNotFinishedDueDateTodoByAuth(loginedAuth);
-        log.info("origin todos = {}", todos);
-        List<DueDateTodoReadResponseDto> dtos = sortDueDateTodoByCondition(condition, todos);
-        log.info("dtos = {}", dtos);
-        return dtos;
+        return sortDueDateTodoByCondition(condition, todos);
     }
 
     @Override
@@ -90,10 +87,7 @@ public class DueDateTodoCRUDServiceImpl implements DueDateTodoCRUDService {
     public List<DueDateTodoReadResponseDto> readFinishedTodos() {
         Auth loginAuth = loginAuthContext.getLoginAuth();
         List<DueDateTodo> finishedTodos = dueDateTodoRepository.findFinishedDueDateTodoByAuth(loginAuth);
-        log.info("origin todos = {}", finishedTodos);
-        List<DueDateTodoReadResponseDto> dtos = sortTodosOrderByDueDate(finishedTodos);
-        log.info("dtos = {}", dtos);
-        return dtos;
+        return sortTodosOrderByDueDate(finishedTodos);
     }
 
     private List<DueDateTodoReadResponseDto> sortDueDateTodoByCondition(String condition, List<DueDateTodo> todos) {
