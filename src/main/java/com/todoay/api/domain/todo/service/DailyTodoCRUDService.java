@@ -12,7 +12,7 @@ public interface DailyTodoCRUDService {
 
     List<DailyTodoReadResponseDto> readDailyTodosByDate(LocalDate date);
 
-    DailyTodoReadResponseDto readDailyTodoById(Long id);
+    DailyTodoReadDetailResponseDto readDailyTodoDetailById(Long id);
 
     // 반복 생성
     void repeatDailyTodo(Long id, DailyTodoRepeatRequestDto dto);

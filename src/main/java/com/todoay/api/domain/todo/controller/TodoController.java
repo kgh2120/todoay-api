@@ -26,8 +26,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/todo")
 public class TodoController {
-
-    private final TodoService todoService;
     private final DailyTodoCRUDService dailyTodoCRUDService;
     private final DueDateTodoCRUDService dueDateTodoCRUDService;
 
@@ -53,14 +51,14 @@ public class TodoController {
             summary = "DailyTodo 단건 조회",
             description = "ID로 DailyTodo를 조회한다.",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = DailyTodoReadResponseDto.class))),
+                    @ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = DailyTodoReadDetailResponseDto.class))),
                     @ApiResponse(responseCode = "401", description = "Access Token 만료", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
                     @ApiResponse(responseCode = "403", description = "id에 해당하는 TODO가 본인 것이 아니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
                     @ApiResponse(responseCode = "404", description = "id에 해당하는 TODO가 존재하지 않는다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
             }
     )
-    public ResponseEntity<DailyTodoReadResponseDto> readDailyTodoById(@PathVariable("id") long id) {
-        DailyTodoReadResponseDto dto = dailyTodoCRUDService.readDailyTodoById(id);
+    public ResponseEntity<DailyTodoReadDetailResponseDto> readDailyTodoById(@PathVariable("id") long id) {
+        DailyTodoReadDetailResponseDto dto = dailyTodoCRUDService.readDailyTodoDetailById(id);
         return ResponseEntity.ok(dto);
     }
 
@@ -159,6 +157,49 @@ public class TodoController {
     public ResponseEntity<DueDateTodoSaveResponseDto> dueDateTodoSave(@RequestBody @Validated DueDateTodoSaveRequestDto dueDateTodoSaveRequestDto) {
         DueDateTodoSaveResponseDto dueDateTodoSaveResponseDto = dueDateTodoCRUDService.addTodo(dueDateTodoSaveRequestDto);
         return ResponseEntity.ok(dueDateTodoSaveResponseDto);
+    }
+
+    @Operation(
+            summary = "조건에 맞는 내 due-date Todo를 정렬해서 본다.",
+            description = "마감일, 중요도 중에서 선택해서 Due-Date TODO를 정렬하여 확인한다.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = DueDateTodoReadResponseDto.class))),
+                    @ApiResponse(responseCode = "401", description = "Access Token 만료", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+                    @ApiResponse(responseCode = "403", description = "올바르지 않은 ENUM값이 들어왔습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+            }
+    )
+    @GetMapping("/due-date/my")
+    public ResponseEntity<List<DueDateTodoReadResponseDto>> readDueDateTodoOrderByQueryString(@RequestParam("order") String order) {
+        List<DueDateTodoReadResponseDto> dtos = dueDateTodoCRUDService.readTodosOrderByCondition(order);
+        return ResponseEntity.ok(dtos);
+    }
+    @Operation(
+            summary = "Due-Date Todo를 디테일하게 본다.",
+            description = "ID에 해당하는 Due-Date Todo의 상세정보를 조회한다.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = DueDateTodoReadDetailResponseDto.class))),
+                    @ApiResponse(responseCode = "401", description = "Access Token 만료", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+                    @ApiResponse(responseCode = "403", description = "올바르지 않은 ENUM값이 들어왔습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+                    @ApiResponse(responseCode = "404", description = "해당 id의 리소스가 존재하지 않음", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+            }
+    )
+    @GetMapping("/due-date/my/{id}")
+    public ResponseEntity<DueDateTodoReadDetailResponseDto> readDueDateTodoDetails(@PathVariable("id")Long id) {
+        DueDateTodoReadDetailResponseDto dto = dueDateTodoCRUDService.readDueDateTodoDetail(id);
+        return ResponseEntity.ok(dto);
+    }
+    @Operation(
+            summary = "완료한 Due-Date Todo를 조회한다.",
+            description = "완료한 Due-Date Todo를 조회한다.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = DueDateTodoReadResponseDto.class))),
+                    @ApiResponse(responseCode = "401", description = "Access Token 만료", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+            }
+    )
+    @GetMapping("/due-date/my/finished")
+    public ResponseEntity<List<DueDateTodoReadResponseDto>> readFinishedDueDateTodo() {
+        List<DueDateTodoReadResponseDto> dtos = dueDateTodoCRUDService.readFinishedTodos();
+        return ResponseEntity.ok(dtos);
     }
 
     @PutMapping("/due-date/{id}")

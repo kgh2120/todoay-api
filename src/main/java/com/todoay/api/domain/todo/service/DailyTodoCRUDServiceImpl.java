@@ -90,14 +90,14 @@ public class DailyTodoCRUDServiceImpl implements DailyTodoCRUDService{
         Auth loginedAuth = loginAuthContext.getLoginAuth();
         List<DailyTodo> dailyTodos = dailyTodoRepository.findDailyTodoOfUserByDate(date, loginedAuth);
         return dailyTodos.stream()
-                .map(DailyTodoReadResponseDto::createReadResponseDto)
+                .map(DailyTodoReadResponseDto::createDto)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public DailyTodoReadResponseDto readDailyTodoById(Long id) {
+    public DailyTodoReadDetailResponseDto readDailyTodoDetailById(Long id) {
         DailyTodo dailyTodo = checkIsPresentAndIsMineAndGetTodo(id);
-        return DailyTodoReadResponseDto.createReadResponseDto(dailyTodo);
+        return DailyTodoReadDetailResponseDto.createReadResponseDto(dailyTodo);
     }
 
     @Override

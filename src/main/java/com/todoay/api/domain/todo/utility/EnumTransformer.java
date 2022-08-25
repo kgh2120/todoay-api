@@ -9,6 +9,5 @@ public interface EnumTransformer {
         } catch (IllegalArgumentException e) {
             throw new EnumMismatchException();
         }
-
     }
 }

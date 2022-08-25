@@ -1,8 +1,10 @@
 package com.todoay.api.domain.todo.dto;
 
 import com.todoay.api.domain.hashtag.dto.HashtagInfoDto;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
@@ -12,7 +14,8 @@ import java.util.List;
 
 
 @Data
-@Builder
+@Builder @NoArgsConstructor
+@AllArgsConstructor
 public class DailyTodoSaveRequestDto {
     // 투두 공통 속성
     @NotNull

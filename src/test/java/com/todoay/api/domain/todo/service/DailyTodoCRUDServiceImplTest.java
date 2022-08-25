@@ -7,6 +7,7 @@ import com.todoay.api.domain.category.repository.CategoryRepository;
 import com.todoay.api.domain.hashtag.entity.Hashtag;
 import com.todoay.api.domain.hashtag.repository.HashtagRepository;
 import com.todoay.api.domain.todo.dto.DailyTodoDailyDateModifyRequestDto;
+import com.todoay.api.domain.todo.dto.DailyTodoReadDetailResponseDto;
 import com.todoay.api.domain.todo.dto.DailyTodoReadResponseDto;
 import com.todoay.api.domain.todo.dto.DailyTodoRepeatRequestDto;
 import com.todoay.api.domain.todo.entity.DailyTodo;
@@ -96,7 +97,7 @@ class DailyTodoCRUDServiceImplTest {
     @Test
     void readDailyDateById() {
 
-        DailyTodoReadResponseDto dto = dailyTodoCRUDService.readDailyTodoById(id);
+        DailyTodoReadDetailResponseDto dto = dailyTodoCRUDService.readDailyTodoDetailById(id);
         System.out.println(dto);
         assertThat(dto.getTitle()).isEqualTo("title");
     }
@@ -121,7 +122,7 @@ class DailyTodoCRUDServiceImplTest {
         DailyTodoDailyDateModifyRequestDto dto = new DailyTodoDailyDateModifyRequestDto();
         dto.setDailyDate(LocalDate.now());
         dailyTodoCRUDService.modifyDailyDate(id, dto);
-        DailyTodoReadResponseDto responseDto = dailyTodoCRUDService.readDailyTodoById(id);
+        DailyTodoReadDetailResponseDto responseDto = dailyTodoCRUDService.readDailyTodoDetailById(id);
         assertThat(responseDto.getDailyDate()).isEqualTo(LocalDate.now());
     }
     
