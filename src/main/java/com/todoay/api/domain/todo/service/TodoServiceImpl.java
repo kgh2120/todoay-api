@@ -31,8 +31,8 @@ public class TodoServiceImpl implements TodoService{
         return todo;
     }
 
-    private void checkThisTodoIsMine(Todo dueDateTodo) {
-        if(!dueDateTodo.getAuth().equals(loginAuthContext.getLoginAuth()))throw new NotYourTodoException();
+    private void checkThisTodoIsMine(Todo todo) {
+        if(!todo.getAuth().equals(loginAuthContext.getLoginAuth()))throw new NotYourTodoException();
     }
 
     private Todo checkIsPresentAndGetTodo(Long id) {
