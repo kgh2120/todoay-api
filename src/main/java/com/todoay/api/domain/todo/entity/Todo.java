@@ -48,4 +48,7 @@ public abstract class Todo {
             this.todoHashtags.add(todoHashtag); // cascade로 인해 생성됨.
         }
     }
+    public void switchFinishState() {
+        isFinished = !isFinished;
+    }
 }

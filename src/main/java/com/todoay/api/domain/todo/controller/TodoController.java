@@ -1,6 +1,7 @@
 package com.todoay.api.domain.todo.controller;
 
 import com.todoay.api.domain.todo.dto.*;
+import com.todoay.api.domain.todo.repository.TodoRepository;
 import com.todoay.api.domain.todo.service.DailyTodoCRUDService;
 import com.todoay.api.domain.todo.service.DueDateTodoCRUDService;
 import com.todoay.api.domain.todo.service.TodoService;
@@ -26,6 +27,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/todo")
 public class TodoController {
+
+    private final TodoService todoService;
     private final DailyTodoCRUDService dailyTodoCRUDService;
     private final DueDateTodoCRUDService dueDateTodoCRUDService;
 
@@ -230,6 +233,13 @@ public class TodoController {
     public ResponseEntity<DueDateTodoSaveResponseDto> deleteDueDateTodo(@PathVariable Long id) {
         dueDateTodoCRUDService.deleteDueDateTodo(id);
         return ResponseEntity.noContent().build();
+    }
+
+
+    @PatchMapping("/{id}/switch")
+    public ResponseEntity<Void> switchTodoFinishState(@PathVariable("id") Long id) {
+        todoService.switchFinishState(id);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
 }

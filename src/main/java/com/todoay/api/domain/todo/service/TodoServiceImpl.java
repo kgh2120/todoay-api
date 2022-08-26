@@ -1,9 +1,13 @@
 package com.todoay.api.domain.todo.service;
 
 
+import com.todoay.api.domain.todo.entity.Todo;
+import com.todoay.api.domain.todo.exception.NotYourTodoException;
+import com.todoay.api.domain.todo.exception.TodoNotFoundException;
+import com.todoay.api.domain.todo.repository.TodoRepository;
+import com.todoay.api.global.context.LoginAuthContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import com.todoay.api.domain.hashtag.repository.HashtagRepository;
 import org.springframework.transaction.annotation.Transactional;
 
 
@@ -12,26 +16,26 @@ import org.springframework.transaction.annotation.Transactional;
 @Service @Transactional
 public class TodoServiceImpl implements TodoService{
 
-
-    private final HashtagRepository hashtagRepository;
-
-//    public TodoServiceImpl(HashtagRepository hashtagRepository) {
-//        this.hashtagRepository = hashtagRepository;
-//    }
+    private final TodoRepository todoRepository;
+    private final LoginAuthContext loginAuthContext;
 
     @Override
-    public void save() {
-
-        // 해시 태그 names 리스트로 추출
-        // 존재하는지 체크.
-        // 존재 안한다면 생성. 및 association 걸기.
-
-
+    public void switchFinishState(Long id) {
+        Todo todo = checkIsPresentAndIsMineAndGetTodo(id);
+        todo.switchFinishState();
     }
 
-    @Override
-    public void update() {
-
+    private Todo checkIsPresentAndIsMineAndGetTodo(Long id) {
+        Todo todo = checkIsPresentAndGetTodo(id);
+        checkThisTodoIsMine(todo);
+        return todo;
     }
 
+    private void checkThisTodoIsMine(Todo dueDateTodo) {
+        if(!dueDateTodo.getAuth().equals(loginAuthContext.getLoginAuth()))throw new NotYourTodoException();
+    }
+
+    private Todo checkIsPresentAndGetTodo(Long id) {
+        return todoRepository.findById(id).orElseThrow(TodoNotFoundException::new);
+    }
 }
