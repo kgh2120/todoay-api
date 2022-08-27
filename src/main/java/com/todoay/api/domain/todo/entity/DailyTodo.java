@@ -3,6 +3,7 @@ package com.todoay.api.domain.todo.entity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.todoay.api.domain.auth.entity.Auth;
 import com.todoay.api.domain.category.entity.Category;
+import com.todoay.api.domain.todo.dto.daily.DailyTodoModifyRequestDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -51,17 +52,16 @@ public class DailyTodo extends Todo implements Cloneable{
 
         // finished? 1. 누락되어 있었는데 이유가 있는건지
     }
-
-    public void modify(String title, boolean isPublic, boolean isFinished, String description,LocalDateTime targetTime,LocalDateTime alarm, String place, String people, LocalDate dailyDate, Category category) {
-        this.title = title;
-        this.isPublic = isPublic;
-        this.isFinished = isFinished;
-        this.description = description;
-        this.targetTime= targetTime;
-        this.alarm = alarm;
-        this.place = place;
-        this.people = people;
-        this.dailyDate = dailyDate;
+    public void modify(DailyTodoModifyRequestDto dto,Category category) {
+        this.title = dto.getTitle();
+        this.isPublic = dto.isPublic();
+        this.isFinished = dto.isFinished();
+        this.description = dto.getDescription();
+        this.targetTime= dto.getTargetTime();
+        this.alarm = dto.getAlarm();
+        this.place = dto.getPlace();
+        this.people = dto.getPeople();
+        this.dailyDate = dto.getDailyDate();
         this.category = category;
     }
 

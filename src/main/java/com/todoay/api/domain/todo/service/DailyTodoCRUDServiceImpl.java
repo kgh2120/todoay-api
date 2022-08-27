@@ -65,15 +65,11 @@ public class DailyTodoCRUDServiceImpl implements DailyTodoCRUDService{
 
         return DailyTodoSaveResponseDto.builder().id(dailyTodo.getId()).build();
     }
-
-
-
     @Override
     @Transactional
     public void modifyDailyTodo(Long id, DailyTodoModifyRequestDto dto) {
-       DailyTodo dailyTodo = checkIsPresentAndIsMineAndGetTodo(id);
-       dailyTodo.modify(dto.getTitle(), dto.isPublic(), dto.isFinished(), dto.getDescription(),
-               dto.getTargetTime(), dto.getAlarm(), dto.getPlace(), dto.getPeople(), dto.getDailyDate(), checkIsPresentAndIsMineGetCategory(dto.getCategoryId()));
+        DailyTodo dailyTodo = checkIsPresentAndIsMineAndGetTodo(id);
+        dailyTodo.modify(dto, checkIsPresentAndIsMineGetCategory(dto.getCategoryId()));
         HashtagAttacher.attachHashtag(dailyTodo, dto.getHashtagNames(), hashtagRepository);
     }
 
