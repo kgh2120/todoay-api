@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -36,7 +37,7 @@ public class DueDateTodoController {
     )
     public ResponseEntity<DueDateTodoSaveResponseDto> dueDateTodoSave(@RequestBody @Validated DueDateTodoSaveRequestDto dueDateTodoSaveRequestDto) {
         DueDateTodoSaveResponseDto dueDateTodoSaveResponseDto = dueDateTodoCRUDService.addTodo(dueDateTodoSaveRequestDto);
-        return ResponseEntity.ok(dueDateTodoSaveResponseDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(dueDateTodoSaveResponseDto);
     }
 
     @Operation(
@@ -59,7 +60,6 @@ public class DueDateTodoController {
             responses = {
                     @ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = DueDateTodoReadDetailResponseDto.class))),
                     @ApiResponse(responseCode = "401", description = "Access Token 만료", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-                    @ApiResponse(responseCode = "403", description = "올바르지 않은 ENUM값이 들어왔습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
                     @ApiResponse(responseCode = "404", description = "해당 id의 리소스가 존재하지 않음", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
             }
     )
@@ -86,7 +86,7 @@ public class DueDateTodoController {
     @Operation(
             summary = "로그인 유저의 due-dateTodo를 수정한다.",
             responses = {
-                    @ApiResponse(responseCode = "201"),  // 요청이 수용되어 리소스가 만들어졌을 때
+                    @ApiResponse(responseCode = "204"),
                     @ApiResponse(responseCode = "400", description = "올바른 양식을 입력하지 않음.", content = @Content(schema = @Schema(implementation = ValidErrorResponse.class))),
                     @ApiResponse(responseCode = "401", description = "Access Token 만료", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
                     @ApiResponse(responseCode = "403", description = "1. Todo가 로그인 유저의 것이 아님 \t\n 2. 올바르지 않은 ENUM값이 들어왔습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),

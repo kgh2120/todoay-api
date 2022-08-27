@@ -40,7 +40,7 @@ public class DailyTodoController {
     public ResponseEntity<DailyTodoSaveResponseDto> dailyTodoSave(@RequestBody @Validated DailyTodoSaveRequestDto dailyTodoSaveRequestDto) {
         log.info("hashtags = {}",dailyTodoSaveRequestDto.getHashtagNames());
         DailyTodoSaveResponseDto dailyTodoSaveResponseDto = dailyTodoCRUDService.addTodo(dailyTodoSaveRequestDto);
-        return ResponseEntity.ok(dailyTodoSaveResponseDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(dailyTodoSaveResponseDto);
     }
 
 
@@ -98,7 +98,7 @@ public class DailyTodoController {
     @Operation(
             summary = "로그인 유저의 DailyTodo를 수정한다.",
             responses = {
-                    @ApiResponse(responseCode = "201"),  // 요청이 수용되어 리소스가 만들어졌을 때
+                    @ApiResponse(responseCode = "204"),
                     @ApiResponse(responseCode = "400", description = "올바른 양식을 입력하지 않음.", content = @Content(schema = @Schema(implementation = ValidErrorResponse.class))),
                     @ApiResponse(responseCode = "401", description = "Access Token 만료", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
                     @ApiResponse(responseCode = "403", description = "카테고리가 로그인 유저의 것이 아님", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
