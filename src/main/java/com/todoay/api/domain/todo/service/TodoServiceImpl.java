@@ -25,6 +25,12 @@ public class TodoServiceImpl implements TodoService{
         todo.switchFinishState();
     }
 
+    @Override
+    public void deleteTodo(Long id) {
+        Todo todo = checkIsPresentAndIsMineAndGetTodo(id);
+        todoRepository.delete(todo);
+    }
+
     private Todo checkIsPresentAndIsMineAndGetTodo(Long id) {
         Todo todo = checkIsPresentAndGetTodo(id);
         checkThisTodoIsMine(todo);

@@ -4,4 +4,6 @@ public interface TodoService {
 
 
     void switchFinishState(Long id);
+
+    void deleteTodo(Long id);
 }
