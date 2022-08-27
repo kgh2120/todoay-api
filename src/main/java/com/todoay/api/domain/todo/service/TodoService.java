@@ -1,6 +1,8 @@
 package com.todoay.api.domain.todo.service;
 
-public interface TodoService {
+import com.todoay.api.domain.todo.utility.TodoValidator;
+
+public interface TodoService extends TodoValidator {
 
 
     void switchFinishState(Long id);
