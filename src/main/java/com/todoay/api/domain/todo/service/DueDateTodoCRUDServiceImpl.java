@@ -3,7 +3,7 @@ package com.todoay.api.domain.todo.service;
 import com.todoay.api.domain.auth.entity.Auth;
 import com.todoay.api.domain.auth.repository.AuthRepository;
 import com.todoay.api.domain.hashtag.repository.HashtagRepository;
-import com.todoay.api.domain.todo.dto.*;
+import com.todoay.api.domain.todo.dto.duedate.*;
 import com.todoay.api.domain.todo.entity.DueDateTodo;
 import com.todoay.api.domain.todo.entity.Importance;
 import com.todoay.api.domain.todo.exception.NotYourTodoException;

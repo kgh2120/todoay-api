@@ -1,4 +1,4 @@
-package com.todoay.api.domain.todo.dto;
+package com.todoay.api.domain.todo.dto.duedate;
 
 import com.todoay.api.domain.hashtag.dto.HashtagInfoDto;
 import com.todoay.api.domain.todo.entity.DueDateTodo;

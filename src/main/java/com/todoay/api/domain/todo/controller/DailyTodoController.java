@@ -1,6 +1,6 @@
 package com.todoay.api.domain.todo.controller;
 
-import com.todoay.api.domain.todo.dto.*;
+import com.todoay.api.domain.todo.dto.daily.*;
 import com.todoay.api.domain.todo.service.DailyTodoCRUDService;
 import com.todoay.api.global.exception.ErrorResponse;
 import com.todoay.api.global.exception.ValidErrorResponse;

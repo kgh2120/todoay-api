@@ -1,4 +1,4 @@
-package com.todoay.api.domain.todo.dto;
+package com.todoay.api.domain.todo.dto.daily;
 
 import com.todoay.api.domain.category.entity.Category;
 import lombok.Data;

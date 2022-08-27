@@ -1,6 +1,6 @@
 package com.todoay.api.domain.todo.controller;
 
-import com.todoay.api.domain.todo.dto.DailyTodoSaveResponseDto;
+import com.todoay.api.domain.todo.dto.daily.DailyTodoSaveResponseDto;
 import com.todoay.api.domain.todo.service.TodoService;
 import com.todoay.api.global.exception.ErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;

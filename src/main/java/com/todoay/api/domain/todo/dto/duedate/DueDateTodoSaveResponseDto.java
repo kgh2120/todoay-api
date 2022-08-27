@@ -1,4 +1,4 @@
-package com.todoay.api.domain.todo.dto;
+package com.todoay.api.domain.todo.dto.duedate;
 
 import lombok.Builder;
 import lombok.Data;

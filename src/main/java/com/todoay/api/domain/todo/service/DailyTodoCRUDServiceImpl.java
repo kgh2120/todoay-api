@@ -9,7 +9,7 @@ import com.todoay.api.domain.category.repository.CategoryRepository;
 import com.todoay.api.domain.hashtag.entity.Hashtag;
 import com.todoay.api.domain.hashtag.repository.HashtagRepository;
 import com.todoay.api.domain.profile.exception.EmailNotFoundException;
-import com.todoay.api.domain.todo.dto.*;
+import com.todoay.api.domain.todo.dto.daily.*;
 import com.todoay.api.domain.todo.entity.DailyTodo;
 import com.todoay.api.domain.todo.entity.TodoHashtag;
 import com.todoay.api.domain.todo.exception.NotYourTodoException;

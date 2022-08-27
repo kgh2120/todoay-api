@@ -1,4 +1,4 @@
-package com.todoay.api.domain.todo.dto;
+package com.todoay.api.domain.todo.dto.duedate;
 
 import com.todoay.api.domain.hashtag.dto.HashtagInfoDto;
 import lombok.AllArgsConstructor;
@@ -8,34 +8,23 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-
 @Data
-@Builder @NoArgsConstructor
-@AllArgsConstructor
-public class DailyTodoSaveRequestDto {
-    // 투두 공통 속성
+@Builder @NoArgsConstructor @AllArgsConstructor
+public class DueDateTodoSaveRequestDto {
+    // Todo 공통 속성
     @NotNull
     private String title;
     private String description = "내용 없음";
-    private boolean isPublic = false;
+    private boolean publicBool = false;
 
-    // DailyTodo 속성
-    private LocalDateTime alarm;
-    private LocalDateTime targetTime;
-    private String place;
-    private String people;
-
+    // DuedateTodo 속성
     @NotNull
-    private LocalDate dailyDate;
-    @NotNull
-    private Long categoryId;
+    private LocalDate dueDate;
+    private String importance;
 
     // hashtag
     private List<HashtagInfoDto> hashtagNames = new ArrayList<>();
-
-
 }

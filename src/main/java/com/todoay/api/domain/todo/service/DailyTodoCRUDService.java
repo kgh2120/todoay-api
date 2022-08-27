@@ -1,6 +1,6 @@
 package com.todoay.api.domain.todo.service;
 
-import com.todoay.api.domain.todo.dto.*;
+import com.todoay.api.domain.todo.dto.daily.*;
 
 import java.time.LocalDate;
 import java.util.List;
