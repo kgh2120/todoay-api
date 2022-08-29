@@ -1,12 +1,10 @@
-package com.todoay.api.domain.todo.dto;
+package com.todoay.api.domain.todo.dto.duedate;
 
 import com.todoay.api.domain.hashtag.dto.HashtagInfoDto;
 import com.todoay.api.domain.todo.entity.DueDateTodo;
 import com.todoay.api.domain.todo.entity.Importance;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.ArrayList;

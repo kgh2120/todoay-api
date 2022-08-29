@@ -2,7 +2,6 @@ package com.todoay.api.domain.todo.service;
 
 
 import com.todoay.api.domain.todo.entity.Todo;
-import com.todoay.api.domain.todo.exception.NotYourTodoException;
 import com.todoay.api.domain.todo.exception.TodoNotFoundException;
 import com.todoay.api.domain.todo.repository.TodoRepository;
 import com.todoay.api.global.context.LoginAuthContext;
@@ -25,17 +24,16 @@ public class TodoServiceImpl implements TodoService{
         todo.switchFinishState();
     }
 
+    @Override
+    public void deleteTodo(Long id) {
+        Todo todo = checkIsPresentAndIsMineAndGetTodo(id);
+        todoRepository.delete(todo);
+    }
+
     private Todo checkIsPresentAndIsMineAndGetTodo(Long id) {
-        Todo todo = checkIsPresentAndGetTodo(id);
-        checkThisTodoIsMine(todo);
-        return todo;
+        return checkIsPresentAndIsMineAndGetTodo(id,loginAuthContext);
     }
-
-    private void checkThisTodoIsMine(Todo todo) {
-        if(!todo.getAuth().equals(loginAuthContext.getLoginAuth()))throw new NotYourTodoException();
-    }
-
-    private Todo checkIsPresentAndGetTodo(Long id) {
+    public Todo checkIsPresentAndGetTodo(Long id) {
         return todoRepository.findById(id).orElseThrow(TodoNotFoundException::new);
     }
 }

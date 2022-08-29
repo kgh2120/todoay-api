@@ -9,10 +9,9 @@ import com.todoay.api.domain.category.repository.CategoryRepository;
 import com.todoay.api.domain.hashtag.entity.Hashtag;
 import com.todoay.api.domain.hashtag.repository.HashtagRepository;
 import com.todoay.api.domain.profile.exception.EmailNotFoundException;
-import com.todoay.api.domain.todo.dto.*;
+import com.todoay.api.domain.todo.dto.daily.*;
 import com.todoay.api.domain.todo.entity.DailyTodo;
 import com.todoay.api.domain.todo.entity.TodoHashtag;
-import com.todoay.api.domain.todo.exception.NotYourTodoException;
 import com.todoay.api.domain.todo.exception.TodoNotFoundException;
 import com.todoay.api.domain.todo.repository.DailyTodoRepository;
 import com.todoay.api.domain.todo.utility.EnumTransformer;
@@ -66,15 +65,11 @@ public class DailyTodoCRUDServiceImpl implements DailyTodoCRUDService{
 
         return DailyTodoSaveResponseDto.builder().id(dailyTodo.getId()).build();
     }
-
-
-
     @Override
     @Transactional
     public void modifyDailyTodo(Long id, DailyTodoModifyRequestDto dto) {
-       DailyTodo dailyTodo = checkIsPresentAndIsMineAndGetTodo(id);
-       dailyTodo.modify(dto.getTitle(), dto.isPublic(), dto.isFinished(), dto.getDescription(),
-               dto.getTargetTime(), dto.getAlarm(), dto.getPlace(), dto.getPeople(), dto.getDailyDate(), checkIsPresentAndIsMineGetCategory(dto.getCategoryId()));
+        DailyTodo dailyTodo = checkIsPresentAndIsMineAndGetTodo(id);
+        dailyTodo.modify(dto, checkIsPresentAndIsMineGetCategory(dto.getCategoryId()));
         HashtagAttacher.attachHashtag(dailyTodo, dto.getHashtagNames(), hashtagRepository);
     }
 
@@ -135,19 +130,8 @@ public class DailyTodoCRUDServiceImpl implements DailyTodoCRUDService{
 
 
     private DailyTodo checkIsPresentAndIsMineAndGetTodo(Long id) {
-        DailyTodo dailyTodo = checkIsPresentAndGetTodo(id);
-        checkThisTodoIsMine(dailyTodo);
-        return dailyTodo;
+        return (DailyTodo) checkIsPresentAndIsMineAndGetTodo(id,loginAuthContext);
     }
-
-    private void checkThisTodoIsMine(DailyTodo dailyTodo) {
-        if(!dailyTodo.getAuth().equals(loginAuthContext.getLoginAuth())) throw new NotYourTodoException();
-    }
-
-    private DailyTodo checkIsPresentAndGetTodo(Long id) {
-        return dailyTodoRepository.findDailyTodoById(id).orElseThrow(TodoNotFoundException::new);
-    }
-
     private Category checkIsPresentAndIsMineGetCategory(Long id) {
         Category category = checkIsPresentAndGetCategory(id);
         checkThisCategoryIsMine(category);
@@ -161,6 +145,11 @@ public class DailyTodoCRUDServiceImpl implements DailyTodoCRUDService{
 
     private Category checkIsPresentAndGetCategory(Long id) {
         return categoryRepository.findById(id).orElseThrow(CategoryNotFoundException::new);
+    }
+
+    @Override
+    public DailyTodo checkIsPresentAndGetTodo(Long id) {
+        return dailyTodoRepository.findDailyTodoById(id).orElseThrow(TodoNotFoundException::new);
     }
 }
 

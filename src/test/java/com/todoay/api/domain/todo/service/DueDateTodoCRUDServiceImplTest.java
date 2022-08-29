@@ -1,8 +1,8 @@
 package com.todoay.api.domain.todo.service;
 
 import com.todoay.api.domain.auth.entity.Auth;
-import com.todoay.api.domain.todo.dto.DueDateTodoReadDetailResponseDto;
-import com.todoay.api.domain.todo.dto.DueDateTodoReadResponseDto;
+import com.todoay.api.domain.todo.dto.duedate.DueDateTodoReadDetailResponseDto;
+import com.todoay.api.domain.todo.dto.duedate.DueDateTodoReadResponseDto;
 import com.todoay.api.domain.todo.entity.DueDateTodo;
 import com.todoay.api.domain.todo.entity.Importance;
 import com.todoay.api.domain.todo.entity.Todo;

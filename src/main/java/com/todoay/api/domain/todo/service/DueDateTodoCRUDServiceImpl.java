@@ -3,22 +3,21 @@ package com.todoay.api.domain.todo.service;
 import com.todoay.api.domain.auth.entity.Auth;
 import com.todoay.api.domain.auth.repository.AuthRepository;
 import com.todoay.api.domain.hashtag.repository.HashtagRepository;
-import com.todoay.api.domain.todo.dto.*;
+import com.todoay.api.domain.todo.dto.duedate.*;
 import com.todoay.api.domain.todo.entity.DueDateTodo;
 import com.todoay.api.domain.todo.entity.Importance;
-import com.todoay.api.domain.todo.exception.NotYourTodoException;
 import com.todoay.api.domain.todo.exception.TodoNotFoundException;
 import com.todoay.api.domain.todo.repository.DueDateTodoRepository;
 import com.todoay.api.domain.todo.utility.EnumTransformer;
 import com.todoay.api.domain.todo.utility.HashtagAttacher;
 import com.todoay.api.global.context.LoginAuthContext;
 import com.todoay.api.global.jwt.JwtProvider;
-import java.util.Collections;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -99,16 +98,9 @@ public class DueDateTodoCRUDServiceImpl implements DueDateTodoCRUDService {
     }
 
     private DueDateTodo checkIsPresentAndIsMineAndGetTodo(Long id) {
-        DueDateTodo dueDateTodo = checkIsPresentAndGetTodo(id);
-        checkThisTodoIsMine(dueDateTodo);
-        return dueDateTodo;
+        return (DueDateTodo) checkIsPresentAndIsMineAndGetTodo(id, loginAuthContext);
     }
-
-    private void checkThisTodoIsMine(DueDateTodo dueDateTodo) {
-        if(!dueDateTodo.getAuth().equals(loginAuthContext.getLoginAuth()))throw new NotYourTodoException();
-    }
-
-    private DueDateTodo checkIsPresentAndGetTodo(Long id) {
+    public DueDateTodo checkIsPresentAndGetTodo(Long id) {
         return dueDateTodoRepository.findById(id).orElseThrow(TodoNotFoundException::new);
     }
 
