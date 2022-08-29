@@ -31,7 +31,7 @@ public class AuthController {
             responses = {
                     @ApiResponse(responseCode = "201", description = "성공"),
                     @ApiResponse(responseCode = "400", description = "올바른 이메일/패스워드/닉네임 양식을 입력하지 않음.", content = @Content(schema = @Schema(implementation = ValidErrorResponse.class))),
-                    @ApiResponse(responseCode = "409", description = "입력한 이메일 혹은 닉네임이 이미 존재한다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+                    @ApiResponse(responseCode = "403", description = "허용되지 않은 접근", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
             }
     )
     @PostMapping("/sign-up")
@@ -67,12 +67,13 @@ public class AuthController {
             responses = {
                     @ApiResponse(responseCode = "204", description = "성공"),
                     @ApiResponse(responseCode = "400", description = "올바른 비밀번호 양식을 입력하지 않음",content = @Content(schema = @Schema(implementation = ValidErrorResponse.class))) ,
-                    @ApiResponse(responseCode = "401", description = "JWT 토큰 에러 ",content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+                    @ApiResponse(responseCode = "401", description = "AccessToken 만료 ",content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+                    @ApiResponse(responseCode = "403",description = "허락되지 않은 접근",content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
                     @ApiResponse(responseCode = "404", description = "Origin password가 저장된 값과 일치하지 않을 때 ",content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
             }
     )
     @PatchMapping("/password")
-    public ResponseEntity<Void> changePassword(@RequestBody @Validated AuthUpdatePasswordReqeustDto dto) {
+    public ResponseEntity<Void> changePassword(@RequestBody @Validated AuthUpdatePasswordRequestDto dto) {
 
         authService.updateAuthPassword(dto);
 
@@ -84,7 +85,8 @@ public class AuthController {
             description = "토큰을 통해 얻은 email에 해당하는 계정의 상태를 삭제함으로 변경한다. 토큰에 관련되어 문제가 생길 경우 오류를 발생한다.",
             responses = {
                     @ApiResponse(responseCode = "204", description = "성공"),
-                    @ApiResponse(responseCode = "401", description = "JWT 토큰 에러" ,content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+                    @ApiResponse(responseCode = "401", description = "AccessToken 만료 ",content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+                    @ApiResponse(responseCode = "403",description = "허락되지 않은 접근",content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
             }
     )
     @DeleteMapping("/my")
@@ -130,7 +132,8 @@ public class AuthController {
             description = "accessToken을 재발급 받기 위해 refreshToken을 전달한다. refreshToken에 대한 유효성 검사 이후 이를 통과하면 새로운 토큰을 발급해준다.",
             responses = {
                     @ApiResponse(responseCode = "201", description = "새로운 토큰을 발급한다.", content = @Content(schema = @Schema(implementation = RefreshResponseDto.class))),
-                    @ApiResponse(responseCode = "401", description = "JWT 관련 에러",content = @Content(schema = @Schema(implementation = ErrorResponse.class)) ),
+                    @ApiResponse(responseCode = "400", description = "RefreshToken이 만료됨", content = @Content(schema = @Schema(implementation = ErrorResponse.class)) ),
+                    @ApiResponse(responseCode = "403",description = "허락되지 않은 접근",content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
                     @ApiResponse(responseCode = "404", description = "전달받은 refreshToken이 존재하지 않음.",content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
             }
 

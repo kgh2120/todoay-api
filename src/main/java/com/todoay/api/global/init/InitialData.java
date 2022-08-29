@@ -1,6 +1,7 @@
 package com.todoay.api.global.init;
 
 import com.todoay.api.domain.auth.entity.Auth;
+import com.todoay.api.domain.hashtag.entity.Hashtag;
 import com.todoay.api.domain.profile.entity.Profile;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
@@ -42,6 +43,14 @@ public class InitialData {
         testAuth.completeEmailVerification();
 
         em.persist(testAuth);
+
+
+        for (int i = 0; i < 10; i++) {
+            Hashtag hashtag = new Hashtag("#태그" + i);
+            em.persist(hashtag);
+        }
+
+
         tx.commit();
 
     }

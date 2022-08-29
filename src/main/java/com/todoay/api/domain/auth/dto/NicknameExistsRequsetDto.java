@@ -1,12 +1,11 @@
 package com.todoay.api.domain.auth.dto;
 
+import com.todoay.api.global.customValidation.annotation.ValidationNickname;
 import lombok.Data;
-
-import javax.validation.constraints.NotBlank;
 
 @Data
 public class NicknameExistsRequsetDto {
 
-    @NotBlank
+    @ValidationNickname
     private String nickname;
 }
