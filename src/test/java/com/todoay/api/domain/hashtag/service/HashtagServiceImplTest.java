@@ -28,6 +28,7 @@ class HashtagServiceImplTest {
 
     @BeforeEach
     void beforeEach() {
+        repository.deleteAll();
         for (int i = 0; i < 20; i++) {
             Hashtag h1 = new Hashtag("#태그"+i);
             repository.save(h1);
@@ -36,7 +37,7 @@ class HashtagServiceImplTest {
 
     @AfterEach
     void afterEach() {
-        repository.deleteAll();
+
     }
 
 

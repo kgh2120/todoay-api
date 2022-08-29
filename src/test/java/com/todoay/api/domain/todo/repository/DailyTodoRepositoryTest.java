@@ -17,11 +17,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest @Transactional
 class DailyTodoRepositoryTest {
@@ -37,7 +38,7 @@ class DailyTodoRepositoryTest {
 
     Long id;
 
-    @BeforeEach @Transactional
+    @BeforeEach
     void beforeEach() {
 
         Category ca = Category.builder()
@@ -48,9 +49,6 @@ class DailyTodoRepositoryTest {
         categoryRepository.save(ca);
 
         Auth auth = authRepository.findByEmail("test@naver.com").get();
-        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(auth, null, new ArrayList<>()));
-
-
         DailyTodo todo = DailyTodo.builder()
                 .title("title")
                 .auth(auth)
@@ -68,15 +66,14 @@ class DailyTodoRepositoryTest {
         System.out.println("[TODO-SAVE]"+save);
 
     }
-    @AfterEach
-    void afterEach() {
-        repository.deleteAll();
-    }
+//    @AfterEach
+//    void afterEach() {
+//        repository.deleteAll();
+//    }
 
     @Test
     void findByDailyDate() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Auth auth = (Auth) authentication.getPrincipal();
+        Auth auth = authRepository.findByEmail("test@naver.com").get();
         List<DailyTodo> todos = repository.findDailyTodoOfUserByDate(LocalDate.now(),auth);
 
         for (DailyTodo todo : todos) {
@@ -86,14 +83,9 @@ class DailyTodoRepositoryTest {
         assertThat(todos.size()).isSameAs(1);
     }
 
-    @Test @Transactional
+    @Test
     void findById() {
         System.out.println("[ID]"+id);
-        List<DailyTodo> all = repository.findAll();
-        for (DailyTodo dailyTodo : all) {
-            System.out.println("[ITER]");
-            System.out.println(dailyTodo);
-        }
         DailyTodo dailyTodo = repository.findDailyTodoById(id).get();
         assertThat(dailyTodo.getTitle()).isEqualTo("title");
     }
