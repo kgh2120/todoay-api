@@ -66,7 +66,7 @@ class TodoServiceImplSpringBootTest {
 
     @AfterEach
     void after_each() {
-        todoRepository.deleteAll();
+//        todoRepository.deleteAll();
     }
 
     @Test

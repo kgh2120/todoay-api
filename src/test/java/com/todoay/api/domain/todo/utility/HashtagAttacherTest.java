@@ -2,16 +2,15 @@ package com.todoay.api.domain.todo.utility;
 
 import com.todoay.api.domain.hashtag.entity.Hashtag;
 import com.todoay.api.domain.hashtag.repository.HashtagRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicLong;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class HashtagAttacherTest {
@@ -51,18 +50,22 @@ class HashtagAttacherTest {
         names.add(t3);
 
 
-
-
-        System.out.println("before : " + repository.count());
+        AtomicLong count = new AtomicLong(0L);
+        long before = repository.count();
+        System.out.println("before : " + before);
         for (String name : names) {
             boolean present = repository.findByName(name).isPresent();
             System.out.println("present = " + present);
-            Hashtag hashtag = repository.findByName(name).orElseGet(() -> repository.save(new Hashtag(name)));
+            Hashtag hashtag = repository.findByName(name).orElseGet(() -> {
+                count.getAndIncrement();
+                return repository.save(new Hashtag(name));
+            });
             System.out.println(String.format("hashtag id : %d, name : %s", hashtag.getId(),hashtag.getName()));
+
         }
 
-        System.out.println("after : " + repository.count());
-        assertThat(repository.count()).isSameAs(10L);
+
+        assertThat(repository.count()).isSameAs(count.addAndGet(before));
 
     }
 
