@@ -4,6 +4,7 @@ import com.todoay.api.domain.hashtag.dto.HashtagInfoDto;
 import lombok.Builder;
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -14,7 +15,7 @@ import java.util.List;
 @Builder
 public class DailyTodoModifyRequestDto {
     // 투두 공통 속성
-    @NotNull
+    @NotBlank
     private String title;
     private String description = "내용 없음";
     private boolean isPublic = false;
