@@ -46,7 +46,7 @@ public class InitialData {
 
 
         for (int i = 0; i < 10; i++) {
-            Hashtag hashtag = new Hashtag("#태그" + i);
+            Hashtag hashtag = new Hashtag("태그" + i);
             em.persist(hashtag);
         }
 
