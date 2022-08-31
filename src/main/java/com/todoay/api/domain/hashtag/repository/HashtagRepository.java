@@ -17,5 +17,5 @@ public interface HashtagRepository extends JpaRepository<Hashtag,Long> {
     List<Hashtag> findTop5ByNameStartsWith(String name);
 
     // 페이지로 검색하기
-    Slice<Hashtag> findHashtagByNameStartsWith(String name, Pageable pageable);
+    Slice<Hashtag> findHashtagByNameContaining(String name, Pageable pageable);
 }

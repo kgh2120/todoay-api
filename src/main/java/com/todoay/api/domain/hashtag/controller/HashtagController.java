@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 @Validated
 @RequiredArgsConstructor
@@ -54,8 +53,9 @@ public class HashtagController {
             }
     )
     @GetMapping
-    public ResponseEntity<HashtagSearchResponseDto> searchHashtag(@RequestParam("name") @NotBlank String name, @RequestParam("pageNum") @Min(0) int pageNum) {
-        HashtagSearchResponseDto dto = hashtagService.searchHashtag(name, pageNum);
+    public ResponseEntity<HashtagSearchResponseDto> searchHashtag(@RequestParam("name") @NotBlank String name
+            , @RequestParam("pageNum") @Min(0) int pageNum, @RequestParam("quantity") int quantity) {
+        HashtagSearchResponseDto dto = hashtagService.searchHashtag(name, pageNum, quantity);
         return ResponseEntity.ok(dto);
     }
 

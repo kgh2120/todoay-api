@@ -1,7 +1,6 @@
 package com.todoay.api.domain.hashtag.repository;
 
 import com.todoay.api.domain.hashtag.entity.Hashtag;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,7 +12,6 @@ import org.springframework.data.domain.Slice;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class HashtagRepositoryTest {
@@ -48,7 +46,7 @@ class HashtagRepositoryTest {
         PageRequest request = PageRequest.of(0,5);
         String name = "#tag";
 
-        Slice<Hashtag> tags = repository.findHashtagByNameStartsWith(name, request);
+        Slice<Hashtag> tags = repository.findHashtagByNameContaining(name, request);
         List<Hashtag> content = tags.getContent();
 
         assertThat(tags.hasNext()).isTrue();
@@ -62,7 +60,7 @@ class HashtagRepositoryTest {
         PageRequest request = PageRequest.of(1,5);
         String name = "#tag";
 
-        Slice<Hashtag> tags = repository.findHashtagByNameStartsWith(name, request);
+        Slice<Hashtag> tags = repository.findHashtagByNameContaining(name, request);
         List<Hashtag> content = tags.getContent();
 
         assertThat(tags.hasNext()).isTrue();
@@ -75,7 +73,7 @@ class HashtagRepositoryTest {
         PageRequest request = PageRequest.of(10,5);
         String name = "#tag";
 
-        Slice<Hashtag> tags = repository.findHashtagByNameStartsWith(name, request);
+        Slice<Hashtag> tags = repository.findHashtagByNameContaining(name, request);
         List<Hashtag> content = tags.getContent();
         assertThat(tags.hasNext()).isFalse();
         assertThat(tags.getNumber()).isNotSameAs(1);

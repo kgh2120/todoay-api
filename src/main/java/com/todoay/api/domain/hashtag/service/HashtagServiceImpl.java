@@ -7,7 +7,6 @@ import com.todoay.api.domain.hashtag.dto.HashtagSearchResponseDto;
 import com.todoay.api.domain.hashtag.entity.Hashtag;
 import com.todoay.api.domain.hashtag.exception.NoMoreDataException;
 import com.todoay.api.domain.hashtag.repository.HashtagRepository;
-import com.todoay.api.domain.todo.entity.DailyTodo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -15,7 +14,6 @@ import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 @Slf4j
@@ -37,10 +35,10 @@ public class HashtagServiceImpl implements HashtagService{
     }
 
     @Override
-    public HashtagSearchResponseDto searchHashtag(String name, int pageNum) {
-        PageRequest pageRequest = PageRequest.of(pageNum, 5);
+    public HashtagSearchResponseDto searchHashtag(String name, int pageNum, int quantity) {
+        PageRequest pageRequest = PageRequest.of(pageNum, quantity);
 
-        Slice<Hashtag> page = hashtagRepository.findHashtagByNameStartsWith(name, pageRequest);
+        Slice<Hashtag> page = hashtagRepository.findHashtagByNameContaining(name, pageRequest);
         List<HashtagInfoDto> infoDtos = page.getContent().stream()
                 .map(HashtagInfoDto::new)
                 .collect(Collectors.toList());

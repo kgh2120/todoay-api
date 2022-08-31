@@ -11,7 +11,7 @@ public interface HashtagService {
 
     // 페이지로 검색하기
 
-    HashtagSearchResponseDto searchHashtag(String name, int pageNum);
+    HashtagSearchResponseDto searchHashtag(String name, int pageNum, int quantity);
 
 
 }

@@ -53,7 +53,7 @@ class HashtagServiceImplTest {
     @Test
     void search_test() {
 
-        HashtagSearchResponseDto dto = hashtagService.searchHashtag(name, 0);
+        HashtagSearchResponseDto dto = hashtagService.searchHashtag(name, 0, 5);
         List<HashtagInfoDto> infos = dto.getInfos();
         int nextPage = dto.getNextPageNum();
         boolean hasNext = dto.isHasNext();
@@ -66,13 +66,13 @@ class HashtagServiceImplTest {
 
     @Test
     void search_test_exception_page() {
-        assertThatThrownBy(() -> hashtagService.searchHashtag(name, 1000))
+        assertThatThrownBy(() -> hashtagService.searchHashtag(name, 1000, 5))
                 .isInstanceOf(NoMoreDataException.class);
     }
 
     @Test
     void search_test_exception_name() {
-        assertThatThrownBy(() -> hashtagService.searchHashtag("qwecqwceqwecqwec", 0))
+        assertThatThrownBy(() -> hashtagService.searchHashtag("qwecqwceqwecqwec", 0, 5))
                 .isInstanceOf(NoMoreDataException.class);
     }
 
