@@ -8,7 +8,7 @@ import javax.persistence.*;
 @Entity @Getter @NoArgsConstructor
 public class Hashtag {
 
-    @Id @GeneratedValue(strategy = GenerationType.AUTO)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(nullable = false, unique = true)
     private String name;

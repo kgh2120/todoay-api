@@ -2,7 +2,11 @@ spring:
   config:
     import: classpath:mailSender.yml
   jpa:
+    hibernate:
+      ddl-auto: create-drop
     show-sql: true
+    generate-ddl: true
+    defer-datasource-initialization: true
   h2:
     console:
       enabled: true
