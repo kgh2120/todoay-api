@@ -54,7 +54,7 @@ public class HashtagController {
     )
     @GetMapping
     public ResponseEntity<HashtagSearchResponseDto> searchHashtag(@RequestParam("name") @NotBlank String name
-            , @RequestParam("pageNum") @Min(0) int pageNum, @RequestParam("quantity") int quantity) {
+            , @RequestParam("pageNum") @Min(0) int pageNum, @RequestParam("quantity") @Min(1) int quantity) {
         HashtagSearchResponseDto dto = hashtagService.searchHashtag(name, pageNum, quantity);
         return ResponseEntity.ok(dto);
     }
