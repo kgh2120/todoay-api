@@ -5,7 +5,6 @@ import com.todoay.api.domain.profile.dto.ProfileUpdateReqeustDto;
 import com.todoay.api.domain.profile.service.ProfileService;
 import com.todoay.api.global.exception.ErrorResponse;
 import com.todoay.api.global.exception.ValidErrorResponse;
-import com.todoay.api.global.jwt.JwtProvider;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -16,10 +15,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.servlet.http.HttpServletRequest;
+import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @RestController
@@ -58,8 +56,8 @@ public class ProfileController {
             }
     )
     @PutMapping("/profile/my")
-    public ResponseEntity<Void> updateProfile(@RequestBody @Validated ProfileUpdateReqeustDto dto) {
-        profileService.updateMyProfile(dto);
+    public ResponseEntity<Void> updateProfile(@RequestPart("image") MultipartFile multipartFile, @RequestPart("profile") @Validated ProfileUpdateReqeustDto dto) {
+        profileService.updateMyProfile(multipartFile,dto);
 
         return ResponseEntity.status(204).build();
     }

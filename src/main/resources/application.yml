@@ -1,6 +1,7 @@
 spring:
   config:
-    import: classpath:mailSender.yml
+    import:
+      - classpath:mailSender.yml
   jpa:
     hibernate:
       ddl-auto: create-drop

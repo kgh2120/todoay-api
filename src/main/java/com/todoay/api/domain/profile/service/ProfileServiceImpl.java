@@ -10,6 +10,7 @@ import com.todoay.api.global.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor @Transactional(readOnly = true)
@@ -17,6 +18,8 @@ public class ProfileServiceImpl implements ProfileService {
 
     private final ProfileRepository profileRepository;
     private final JwtProvider jwtProvider;
+
+    private final AmazonS3Service amazonS3Service;
 
 
     @Override
@@ -30,7 +33,7 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Transactional
     @Override
-    public void updateMyProfile(ProfileUpdateReqeustDto dto) {
+    public void updateMyProfile(MultipartFile multipartFile, ProfileUpdateReqeustDto dto) {
         String email = jwtProvider.getLoginId();
         Profile profile = getProfileByEmailOrElseThrowEmailNotFoundException(email);
 
@@ -41,7 +44,11 @@ public class ProfileServiceImpl implements ProfileService {
                         throw new NicknameDuplicateException();
                     }
             );
+        String uploadImageUrl = amazonS3Service.uploadImage(multipartFile, dto.getImageUrl());
+        if(uploadImageUrl!=null)
+            dto.setImageUrl(uploadImageUrl);
         profile.updateProfile(dto);
+
     }
 
     @Override
