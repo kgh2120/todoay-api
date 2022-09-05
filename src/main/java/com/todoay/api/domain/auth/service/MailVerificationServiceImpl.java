@@ -4,6 +4,8 @@ import com.todoay.api.domain.auth.dto.*;
 import com.todoay.api.domain.auth.entity.Auth;
 import com.todoay.api.domain.auth.repository.AuthRepository;
 import com.todoay.api.domain.auth.utility.MailHandler;
+import com.todoay.api.domain.category.entity.Category;
+import com.todoay.api.domain.category.repository.CategoryRepository;
 import com.todoay.api.domain.profile.exception.EmailNotFoundException;
 import com.todoay.api.global.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +21,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class MailVerificationServiceImpl implements MailVerificationService {
     private final AuthRepository authRepository;
+    private final CategoryRepository categoryRepository;
 
     private final JavaMailSender mailSender;
     private final JwtProvider jwtProvider;
@@ -43,6 +46,23 @@ public class MailVerificationServiceImpl implements MailVerificationService {
         return null;
     }
 
+    private enum DefaultCategory {
+        NAME("일반"), COLOR("000000"), ORDER_INDEX(0)
+        ;
+        private Object attributeValue;
+        DefaultCategory(Object attributeValue) {
+            this.attributeValue = attributeValue;
+        }
+        public static Category getDefaultCategory(Auth auth) {
+            return Category.builder()
+                    .name((String) NAME.attributeValue)
+                    .color((String) COLOR.attributeValue)
+                    .auth(auth)
+                    .orderIndex((int) ORDER_INDEX.attributeValue)
+                    .build();
+        }
+    }
+
     @Override
     @Transactional
     public void verifyEmailOnSignUp(AuthVerifyEmailTokenOnSignUpRequestDto authVerifyEmailTokenOnSignUpRequestDto) {
@@ -52,7 +72,10 @@ public class MailVerificationServiceImpl implements MailVerificationService {
 //         io.jsonwebtoken.ExpiredJwtException – if the specified JWT is a Claims JWT and the Claims has an expiration time before the time this method is invoked.
 //         IllegalArgumentException – if the claimsJws string is null or empty or only whitespace
         Auth auth = this.verifyEmailToken(authVerifyEmailTokenOnSignUpRequestDto.getEmailToken());
-        auth.completeEmailVerification();
+        if (auth.getEmailVerifiedAt() == null) {
+            auth.completeEmailVerification();
+            categoryRepository.save(DefaultCategory.getDefaultCategory(auth));
+        }
     }
 
     @Override
