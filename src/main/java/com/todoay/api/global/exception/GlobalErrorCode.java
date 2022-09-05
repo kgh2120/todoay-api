@@ -22,7 +22,9 @@ public enum GlobalErrorCode implements ErrorCode{
 
     REQUEST_PARAM_TYPE_MISMATCH(HttpStatus.BAD_REQUEST, "리퀘스트 파라미터의 타입이 올바르지 않습니다."),
 
-    JSON_PARSE_ERROR(HttpStatus.FORBIDDEN, "JSON을 파싱하는 과정에서 문제가 발생했습니다.")
+    JSON_PARSE_ERROR(HttpStatus.FORBIDDEN, "JSON을 파싱하는 과정에서 문제가 발생했습니다."),
+
+    MISSING_REQUEST_PART(HttpStatus.BAD_REQUEST, "전달해야 하는 RequestPart를 전달하지 않았습니다.")
 
 
     ;

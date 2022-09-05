@@ -4,6 +4,8 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.AmazonS3Exception;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.todoay.api.domain.profile.exception.FileTypeMismatchException;
+import com.todoay.api.domain.profile.exception.FileUploadErrorException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -28,6 +30,8 @@ public class AmazonS3ServiceImpl implements AmazonS3Service {
     public String uploadImage(MultipartFile multipartFile, String prevImgUrl) {
         if(multipartFile.isEmpty())
             return null;
+        if(!multipartFile.getContentType().contains("image"))
+            throw new FileTypeMismatchException();
 
         try {
 
@@ -42,7 +46,7 @@ public class AmazonS3ServiceImpl implements AmazonS3Service {
             removeFile(file);
             return imageUrl;
         } catch (IOException e) {
-            throw new RuntimeException();
+            throw new FileUploadErrorException();
         }
     }
 
@@ -73,7 +77,7 @@ public class AmazonS3ServiceImpl implements AmazonS3Service {
         return amazonS3.getUrl(bucket, fileName).toString();
     }
 
-    public void remove(String prevImgUrl) {
+    private void remove(String prevImgUrl) {
         int index = prevImgUrl.lastIndexOf("upload/");
         String key = prevImgUrl.substring(index);
 
