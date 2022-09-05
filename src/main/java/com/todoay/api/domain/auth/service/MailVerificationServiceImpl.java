@@ -38,7 +38,7 @@ public class MailVerificationServiceImpl implements MailVerificationService {
                     "http://" + "localhost:8080/auth/email-verification?emailToken=" + emailToken +
                     "')>링크를 클릭하여 인증을 완료해주세요</a>";
             mailHandler.setText(sb, true);
-            mailHandler.send();
+            new Thread(mailHandler::send).start();
             return emailToken;
         } catch (MessagingException e) {
             e.printStackTrace();
