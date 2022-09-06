@@ -56,7 +56,7 @@ public class DueDateTodoCRUDServiceImpl implements DueDateTodoCRUDService {
     @Transactional
     public void modifyDueDateTodo(Long id, DueDateTodoModifyRequestDto dto) {
         DueDateTodo dueDateTodo = checkIsPresentAndIsMineAndGetTodo(id);
-        dueDateTodo.modify(dto.getTitle(), dto.isPublicBool(),dto.isFinishedBool(), dto.getDueDate(), dto.getDescription(),
+        dueDateTodo.modify(dto.getTitle(), dto.isPublicBool(), dto.getDueDate(), dto.getDescription(),
                 (Importance) EnumTransformer.valueOfEnum(Importance.class,dto.getImportance()));
         HashtagAttacher.attachHashtag(dueDateTodo, dto.getHashtagNames(), hashtagRepository);
     }
