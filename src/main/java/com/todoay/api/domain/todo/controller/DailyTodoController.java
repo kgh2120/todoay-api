@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -88,9 +89,8 @@ public class DailyTodoController {
             }
 
     )
-    public ResponseEntity<Void> repeatDailyTodoByCondition(@PathVariable("id") long id, @RequestBody @Validated DailyTodoRepeatRequestDto dto) {
-        dailyTodoCRUDService.repeatDailyTodo(id,dto);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    public ListenableFuture<ResponseEntity<Void>> repeatDailyTodoByCondition(@PathVariable("id") long id, @RequestBody @Validated DailyTodoRepeatRequestDto dto) {
+        return dailyTodoCRUDService.repeatDailyTodo(id, dto);
     }
 
 

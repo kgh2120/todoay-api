@@ -9,7 +9,7 @@ import java.util.List;
 public class NoEndDateSelector implements DateSelector {
     @Override
     public List<LocalDate> select(DateRepeator dateRepeator, int count, LocalDate repeatStandardDate) {
-        LocalDate repeatEndDate = repeatStandardDate.plusYears(3);
+        LocalDate repeatEndDate = repeatStandardDate.plusYears(10);
         return addDateIntoList(dateRepeator, repeatStandardDate, repeatEndDate);
     }
 }

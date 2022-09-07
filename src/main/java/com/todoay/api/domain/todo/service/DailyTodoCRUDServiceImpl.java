@@ -22,7 +22,12 @@ import com.todoay.api.global.context.LoginAuthContext;
 import com.todoay.api.global.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
+import org.springframework.util.concurrent.ListenableFuture;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
@@ -97,10 +102,12 @@ public class DailyTodoCRUDServiceImpl implements DailyTodoCRUDService{
 
     @Override
     @Transactional
-    public void repeatDailyTodo(Long id, DailyTodoRepeatRequestDto dto) {
+    @Async
+    public ListenableFuture<ResponseEntity<Void>> repeatDailyTodo(Long id, DailyTodoRepeatRequestDto dto) {
         DailyTodo source = checkIsPresentAndIsMineAndGetTodo(id);
         List<LocalDate> repeatedDate = getRepeatedDate(dto,source.getDailyDate());
         createDailyTodoByRepeatedDate(source,repeatedDate);
+        return new AsyncResult<>(ResponseEntity.status(HttpStatus.CREATED).build());
     }
 
     @Override
