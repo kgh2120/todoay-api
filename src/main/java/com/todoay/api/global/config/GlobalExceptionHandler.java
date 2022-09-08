@@ -92,5 +92,4 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleMissingServletRequestPartException(HttpServletRequest request) {
         return ErrorResponse.toResponseEntity(MISSING_REQUEST_PART, request.getRequestURI());
     }
-
 }
