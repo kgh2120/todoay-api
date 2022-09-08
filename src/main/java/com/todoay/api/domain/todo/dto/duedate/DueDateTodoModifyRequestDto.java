@@ -19,7 +19,6 @@ public class DueDateTodoModifyRequestDto {
     private String title;
     private String description = "내용 없음";
     private boolean publicBool = false;
-    private boolean finishedBool = false;
 
     // DuedateTodo 속성
     @NotNull

@@ -15,7 +15,6 @@ import javax.persistence.ManyToOne;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.List;
 
 @Entity
 @Getter
@@ -54,8 +53,7 @@ public class DailyTodo extends Todo implements Cloneable{
     }
     public void modify(DailyTodoModifyRequestDto dto,Category category) {
         this.title = dto.getTitle();
-        this.isPublic = dto.isPublic();
-        this.isFinished = dto.isFinished();
+        this.isPublic = dto.isPublicBool();
         this.description = dto.getDescription();
         this.targetTime= dto.getTargetTime();
         this.alarm = dto.getAlarm();
