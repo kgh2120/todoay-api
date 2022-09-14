@@ -16,6 +16,8 @@ public class DailyTodoReadResponseDto {
 
     private Long id;
     private String title;
+    private boolean isPublic;
+    private boolean isFinished;
 
     private CategoryInfoDto categoryInfoDto;
     private List<HashtagInfoDto> hashtagInfoDtos = new ArrayList<>();
@@ -25,6 +27,8 @@ public class DailyTodoReadResponseDto {
         return DailyTodoReadResponseDto.builder()
                 .id(todo.getId())
                 .title(todo.getTitle())
+                .isPublic(todo.isPublic())
+                .isFinished(todo.isFinished())
                 .categoryInfoDto(CategoryInfoDto.create(todo.getCategory()))
                 .hashtagInfoDtos(todo.getTodoHashtags().stream()
                         .map(th-> new HashtagInfoDto(th.getHashTag()))
