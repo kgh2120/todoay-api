@@ -19,7 +19,7 @@ public class DailyTodoReadResponseDto {
     private boolean isPublic;
     private boolean isFinished;
 
-    private CategoryInfoDto categoryInfoDto;
+    private Long categoryId;
     private List<HashtagInfoDto> hashtagInfoDtos = new ArrayList<>();
 
     public static DailyTodoReadResponseDto createDto(DailyTodo todo) {
@@ -29,7 +29,7 @@ public class DailyTodoReadResponseDto {
                 .title(todo.getTitle())
                 .isPublic(todo.isPublic())
                 .isFinished(todo.isFinished())
-                .categoryInfoDto(CategoryInfoDto.create(todo.getCategory()))
+                .categoryId(todo.getCategory().getId())
                 .hashtagInfoDtos(todo.getTodoHashtags().stream()
                         .map(th-> new HashtagInfoDto(th.getHashTag()))
                         .collect(Collectors.toList()))
