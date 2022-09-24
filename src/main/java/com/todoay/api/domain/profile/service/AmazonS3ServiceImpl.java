@@ -35,7 +35,7 @@ public class AmazonS3ServiceImpl implements AmazonS3Service {
 
         try {
 
-            if (prevImgUrl != null) {
+            if (prevImgUrl != null && !prevImgUrl.isBlank()) {
                 remove(prevImgUrl);
             }
             File file = convertMultipartFileToFile(multipartFile)

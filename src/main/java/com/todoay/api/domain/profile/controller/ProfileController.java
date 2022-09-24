@@ -59,7 +59,8 @@ public class ProfileController {
             }
     )
     @PutMapping("/profile/my")
-    public ResponseEntity<Void> updateProfile(@RequestPart("image") MultipartFile multipartFile, @RequestPart("profile") @Validated ProfileUpdateReqeustDto dto) {
+    public ResponseEntity<Void> updateProfile(@RequestPart("image") MultipartFile multipartFile
+            , @RequestPart("profile") @Validated ProfileUpdateReqeustDto dto) {
         profileService.updateMyProfile(multipartFile,dto);
 
         return ResponseEntity.status(204).build();
