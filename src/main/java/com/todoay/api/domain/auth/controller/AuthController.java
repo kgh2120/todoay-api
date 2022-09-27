@@ -92,9 +92,9 @@ public class AuthController {
             }
     )
     @DeleteMapping("/my")
-    public ResponseEntity<Void> deleteAccount(@RequestBody Map<String, String> body) {
+    public ResponseEntity<Void> deleteAccount(@RequestBody AuthDeleteRequestDto dto) {
 
-        authService.deleteAuth(body.get("password"));
+        authService.deleteAuth(dto.getPassword());
         return ResponseEntity.noContent().build();
     }
 
