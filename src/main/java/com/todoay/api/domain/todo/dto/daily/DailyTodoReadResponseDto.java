@@ -11,7 +11,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Data @NoArgsConstructor @AllArgsConstructor @Builder
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class DailyTodoReadResponseDto {
 
     private Long id;
@@ -25,17 +28,20 @@ public class DailyTodoReadResponseDto {
 
     public static DailyTodoReadResponseDto createDto(DailyTodo todo) {
 
-        return DailyTodoReadResponseDto.builder()
+        DailyTodoReadResponseDtoBuilder builder = DailyTodoReadResponseDto.builder()
                 .id(todo.getId())
                 .title(todo.getTitle())
                 .isPublic(todo.isPublic())
                 .isFinished(todo.isFinished())
                 .categoryId(todo.getCategory().getId())
-                .repeatId(todo.getRepeatGroup().getId())
                 .hashtagInfoDtos(todo.getTodoHashtags().stream()
-                        .map(th-> new HashtagInfoDto(th.getHashTag()))
-                        .collect(Collectors.toList()))
-                .build();
+                        .map(th -> new HashtagInfoDto(th.getHashTag()))
+                        .collect(Collectors.toList()));
+
+        if(todo.getRepeatGroup() != null)
+            builder.repeatId(todo.getRepeatGroup().getId());
+
+        return builder.build();
 
     }
 

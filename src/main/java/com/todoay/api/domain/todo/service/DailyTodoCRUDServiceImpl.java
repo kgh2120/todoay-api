@@ -121,6 +121,7 @@ public class DailyTodoCRUDServiceImpl implements DailyTodoCRUDService{
         dailyTodo.changeDailyDate(dto.getDailyDate());
     }
 
+    @Transactional
     @Override
     public void deleteAllRepeatedDailyTodo(Long id) {
         DailyTodo dailyTodo = checkIsPresentAndIsMineAndGetTodo(id);
