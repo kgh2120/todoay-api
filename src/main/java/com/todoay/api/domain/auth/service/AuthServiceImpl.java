@@ -79,10 +79,14 @@ public class AuthServiceImpl implements AuthService {
 
     @Transactional
     @Override
-    public void deleteAuth() {
+    public void deleteAuth(String password) {
         String email = jwtProvider.getLoginId();
         Auth auth =authRepository.findByEmail(email)
                 .orElseThrow(EmailNotFoundException::new);
+
+        if (!encoder.matches(password, auth.getPassword())) {
+            throw new PasswordNotMatchedException();
+        }
         auth.deleteAuth();
     }
 

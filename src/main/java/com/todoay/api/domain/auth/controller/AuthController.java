@@ -16,6 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/auth")
@@ -90,9 +92,9 @@ public class AuthController {
             }
     )
     @DeleteMapping("/my")
-    public ResponseEntity<Void> deleteAccount() {
+    public ResponseEntity<Void> deleteAccount(@RequestBody Map<String, String> body) {
 
-        authService.deleteAuth();
+        authService.deleteAuth(body.get("password"));
         return ResponseEntity.noContent().build();
     }
 

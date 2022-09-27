@@ -14,7 +14,7 @@ public interface AuthService extends UserDetailsService {
     void updateAuthPassword(AuthUpdatePasswordRequestDto dto); // 비밀번호 변경
 
     // 계정 탈퇴
-    void deleteAuth();
+    void deleteAuth(String password);
     Long save(AuthSaveDto authSaveDto);
     LoginResponseDto login(LoginRequestDto loginRequestDto);
 
