@@ -21,4 +21,6 @@ public interface DailyTodoCRUDService extends TodoValidator {
     ListenableFuture<ResponseEntity<Void>> repeatDailyTodo(Long id, DailyTodoRepeatRequestDto dto);
 
     void modifyDailyDate(Long id, DailyTodoDailyDateModifyRequestDto dto);
+
+    void deleteAllRepeatedDailyTodo(Long id);
 }

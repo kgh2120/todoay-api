@@ -34,6 +34,10 @@ public class DailyTodo extends Todo implements Cloneable{
     @JoinColumn(name = "category_id")
     private Category category;
 
+    @ManyToOne
+    @JoinColumn(name = "repeat_id")
+    private RepeatGroup repeatGroup;
+
 
     @Builder
     public DailyTodo(String title, boolean isPublic, boolean isFinished, String description,LocalDateTime targetTime,LocalDateTime alarm, String place, String people, LocalDate dailyDate, Category category, Auth auth) {
@@ -111,6 +115,10 @@ public class DailyTodo extends Todo implements Cloneable{
         if (this.targetTime != null) {
             this.targetTime = LocalDateTime.of(dailyDate, LocalTime.of(this.targetTime.getHour(),targetTime.getMinute()));
         }
+    }
+    public void enterRepeatGroup(RepeatGroup repeatGroup) {
+        this.repeatGroup = repeatGroup;
+        this.repeatGroup.getDailyTodos().add(this);
     }
 
 }

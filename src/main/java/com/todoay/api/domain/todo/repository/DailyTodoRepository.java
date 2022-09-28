@@ -18,6 +18,7 @@ public interface DailyTodoRepository extends JpaRepository<DailyTodo, Long> {
             "join fetch t.auth a " +
             "join fetch t.category c " +
             "join fetch a.profile p " +
+            "left join fetch t.repeatGroup r " +
             "where t.dailyDate =:localDate " +
             "and t.auth =:auth")
     List<DailyTodo> findDailyTodoOfUserByDate(@Param("localDate") LocalDate localDate, @Param("auth") Auth auth);
@@ -28,6 +29,7 @@ public interface DailyTodoRepository extends JpaRepository<DailyTodo, Long> {
             "join fetch t.auth a " +
             "join fetch t.category c " +
             "join fetch a.profile p " +
+            "left join fetch t.repeatGroup r " +
             "where t.id =:id")
     Optional<DailyTodo> findDailyTodoById(@Param("id") Long id);
 }

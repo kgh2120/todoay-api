@@ -11,9 +11,11 @@ import com.todoay.api.domain.hashtag.repository.HashtagRepository;
 import com.todoay.api.domain.profile.exception.EmailNotFoundException;
 import com.todoay.api.domain.todo.dto.daily.*;
 import com.todoay.api.domain.todo.entity.DailyTodo;
+import com.todoay.api.domain.todo.entity.RepeatGroup;
 import com.todoay.api.domain.todo.entity.TodoHashtag;
 import com.todoay.api.domain.todo.exception.TodoNotFoundException;
 import com.todoay.api.domain.todo.repository.DailyTodoRepository;
+import com.todoay.api.domain.todo.repository.RepeatRepository;
 import com.todoay.api.domain.todo.utility.EnumTransformer;
 import com.todoay.api.domain.todo.utility.HashtagAttacher;
 import com.todoay.api.domain.todo.utility.repeat.Duration;
@@ -42,6 +44,8 @@ public class DailyTodoCRUDServiceImpl implements DailyTodoCRUDService{
     private final DailyTodoRepository dailyTodoRepository;
     private final CategoryRepository categoryRepository;
     private final AuthRepository authRepository;
+
+    private final RepeatRepository repeatRepository;
 
     private final HashtagRepository hashtagRepository;
     private final JwtProvider jwtProvider;
@@ -117,13 +121,24 @@ public class DailyTodoCRUDServiceImpl implements DailyTodoCRUDService{
         dailyTodo.changeDailyDate(dto.getDailyDate());
     }
 
+    @Transactional
+    @Override
+    public void deleteAllRepeatedDailyTodo(Long id) {
+        DailyTodo dailyTodo = checkIsPresentAndIsMineAndGetTodo(id);
+        repeatRepository.deleteById(dailyTodo.getRepeatGroup().getId());
+    }
+
     private void createDailyTodoByRepeatedDate(DailyTodo source, List<LocalDate> repeatedDate) {
+        RepeatGroup repeatGroup = new RepeatGroup();
+        repeatRepository.save(repeatGroup);
+        source.enterRepeatGroup(repeatGroup);
         repeatedDate.forEach(d ->{
             DailyTodo repeated = (DailyTodo) source.clone();
             repeated.changeDateForRepeat(d);
             List<Hashtag> hashtags = source.getTodoHashtags().stream().map(TodoHashtag::getHashTag)
                     .collect(Collectors.toList());
             repeated.associateWithHashtag(hashtags);
+            repeated.enterRepeatGroup(repeatGroup);
             dailyTodoRepository.save(repeated);
         });
     }
