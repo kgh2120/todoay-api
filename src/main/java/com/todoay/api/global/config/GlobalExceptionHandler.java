@@ -11,6 +11,7 @@ import io.jsonwebtoken.UnsupportedJwtException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.http.fileupload.impl.SizeLimitExceededException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -92,4 +93,10 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleMissingServletRequestPartException(HttpServletRequest request) {
         return ErrorResponse.toResponseEntity(MISSING_REQUEST_PART, request.getRequestURI());
     }
+
+    @ExceptionHandler(UsernameNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleMissingServletUsernameNotFoundException(HttpServletRequest request) {
+        return ErrorResponse.toResponseEntity(JWT_USERNAME_NOT_FOUND, request.getRequestURI());
+    }
+
 }

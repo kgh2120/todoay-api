@@ -86,13 +86,14 @@ public class AuthController {
             responses = {
                     @ApiResponse(responseCode = "204", description = "성공"),
                     @ApiResponse(responseCode = "401", description = "AccessToken 만료 ",content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-                    @ApiResponse(responseCode = "403",description = "허락되지 않은 접근",content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+                    @ApiResponse(responseCode = "403",description = "허락되지 않은 접근",content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+                    @ApiResponse(responseCode = "404",description = "틀린 비밀번호 입력",content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
             }
     )
     @DeleteMapping("/my")
-    public ResponseEntity<Void> deleteAccount() {
+    public ResponseEntity<Void> deleteAccount(@RequestBody AuthDeleteRequestDto dto) {
 
-        authService.deleteAuth();
+        authService.deleteAuth(dto.getPassword());
         return ResponseEntity.noContent().build();
     }
 
