@@ -51,7 +51,7 @@ public class MailVerificationServiceImpl implements MailVerificationService {
     }
 
     private enum DefaultCategory {
-        NAME("일반"), COLOR("000000"), ORDER_INDEX(0)
+        NAME("일반"), COLOR("#ff333d79"), ORDER_INDEX(0)
         ;
         private Object attributeValue;
         DefaultCategory(Object attributeValue) {
