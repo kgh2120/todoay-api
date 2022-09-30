@@ -1,0 +1,16 @@
+spring:
+  config:
+    activate:
+      on-profile: "dev_url"
+
+url:
+  base: "localhost:8080"
+---
+
+spring:
+  config:
+    activate:
+      on-profile: "prod_url"
+
+url:
+  base: "EC2 주소:8080"
