@@ -8,6 +8,7 @@ build/
 ### Mail Sender ###
 mailSender.yml
 secret.properties
+url.yml
 
 ### STS ###
 .apt_generated

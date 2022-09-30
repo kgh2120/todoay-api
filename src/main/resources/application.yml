@@ -1,7 +1,19 @@
 spring:
+  profiles:
+    group:
+      "default": "dev"
+      "dev": "dev_url"
+      "prod": "prod_url"
+
+
+---
+
+spring:
   config:
     import:
       - classpath:mailSender.yml
+      - classpath:secret.properties
+      - classpath:url.yml
   servlet:
     multipart:
       max-request-size: 10MB
@@ -15,10 +27,11 @@ spring:
   h2:
     console:
       enabled: true
+
 springdoc:
   swagger-ui:
     enabled: true # swagger ui 사용여부 (굳이 설정하지 않아도 default는 true)
-  version: 'v0.0.1' # API 문서 버전
+  version: 'v0.0.4' # API 문서 버전
   default-consumes-media-type: application/json # 기본 consume media type
   default-produces-media-type: application/json # 기본 produce media type
   model-and-view-allowed: true # ModelAndView 허용

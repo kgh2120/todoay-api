@@ -9,6 +9,7 @@ import com.todoay.api.domain.category.repository.CategoryRepository;
 import com.todoay.api.domain.profile.exception.EmailNotFoundException;
 import com.todoay.api.global.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,9 @@ public class MailVerificationServiceImpl implements MailVerificationService {
     private final JwtProvider jwtProvider;
     private final BCryptPasswordEncoder encoder;
 
+    @Value("${url.base}")
+    private String baseUrl;
+
     @Override
     public String sendVerificationMail(AuthSendEmailRequestDto authSendEmailRequestDto) {
         try {
@@ -35,7 +39,7 @@ public class MailVerificationServiceImpl implements MailVerificationService {
             mailHandler.setSubject("[TODOAY] 이메일 인증을 완료해주세요.");
             String emailToken = jwtProvider.createEmailToken(authSendEmailRequestDto.getEmail());
             String sb = "<a href='" +
-                    "http://" + "localhost:8080/auth/email-verification?emailToken=" + emailToken +
+                    "http://" + baseUrl + "/auth/email-verification?emailToken=" + emailToken +
                     "')>링크를 클릭하여 인증을 완료해주세요</a>";
             mailHandler.setText(sb, true);
             new Thread(mailHandler::send).start();
