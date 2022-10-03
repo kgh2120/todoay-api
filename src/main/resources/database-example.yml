@@ -1,0 +1,36 @@
+spring:
+  config:
+    activate:
+      on-profile: "dev_database"
+
+  datasource:
+    driver-class-name: org.h2.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    generate-ddl: true
+    defer-datasource-initialization: true
+  h2:
+    console:
+      enabled: true
+
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: "prod_database"
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: 보내준 url
+    username: 보내준 id
+    password: 보내준 password
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MariaDB103Dialect

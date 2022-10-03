@@ -13,7 +13,9 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceUnit;
 
+
 @RequiredArgsConstructor
+@org.springframework.context.annotation.Profile("dev")
 @Configuration
 public class InitialData {
 
