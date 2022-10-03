@@ -26,8 +26,6 @@ public class ProfileController {
 
     private final ProfileService profileService;
 
-
-
     @Operation(
             summary = "내 정보를 조회한다",
             description = "Jwt 토큰을 통해 얻은 email로 정보를 검색하여, 반환한다.",
@@ -38,10 +36,7 @@ public class ProfileController {
     )
     @GetMapping("/profile/my")
     public ResponseEntity<ProfileReadResponseDto> getMyProfile() {
-
-
         ProfileReadResponseDto profile = profileService.readMyProfile();
-
         return ResponseEntity.ok(profile);
     }
 
@@ -62,7 +57,6 @@ public class ProfileController {
     public ResponseEntity<Void> updateProfile(@RequestPart("image") MultipartFile multipartFile
             , @RequestPart("profile") @Validated ProfileUpdateReqeustDto dto) {
         profileService.updateMyProfile(multipartFile,dto);
-
         return ResponseEntity.status(204).build();
     }
 
