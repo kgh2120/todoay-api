@@ -43,12 +43,10 @@ public class DailyTodoCRUDServiceImpl implements DailyTodoCRUDService{
 
     private final DailyTodoRepository dailyTodoRepository;
     private final CategoryRepository categoryRepository;
-    private final AuthRepository authRepository;
 
     private final RepeatRepository repeatRepository;
 
     private final HashtagRepository hashtagRepository;
-    private final JwtProvider jwtProvider;
 
     private final LoginAuthContext loginAuthContext;
 

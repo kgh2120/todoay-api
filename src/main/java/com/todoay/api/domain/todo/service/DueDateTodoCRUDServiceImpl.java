@@ -27,9 +27,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class DueDateTodoCRUDServiceImpl implements DueDateTodoCRUDService {
     private final DueDateTodoRepository dueDateTodoRepository;
-    private final AuthRepository authRepository;
-    private final JwtProvider jwtProvider;
-
     private final LoginAuthContext loginAuthContext;
     private final HashtagRepository hashtagRepository;
 
