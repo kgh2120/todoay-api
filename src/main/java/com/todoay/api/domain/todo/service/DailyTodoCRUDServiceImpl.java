@@ -9,6 +9,7 @@ import com.todoay.api.domain.category.repository.CategoryRepository;
 import com.todoay.api.domain.hashtag.dto.HashtagInfoDto;
 import com.todoay.api.domain.hashtag.entity.Hashtag;
 import com.todoay.api.domain.hashtag.repository.HashtagRepository;
+import com.todoay.api.domain.profile.exception.EmailNotFoundException;
 import com.todoay.api.domain.todo.dto.daily.*;
 import com.todoay.api.domain.todo.entity.DailyTodo;
 import com.todoay.api.domain.todo.entity.RepeatGroup;
@@ -21,7 +22,6 @@ import com.todoay.api.domain.todo.utility.HashtagAttacher;
 import com.todoay.api.domain.todo.utility.repeat.Duration;
 import com.todoay.api.domain.todo.utility.repeat.RepeatType;
 import com.todoay.api.global.context.LoginAuthContext;
-import com.todoay.api.global.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -47,6 +47,8 @@ public class DailyTodoCRUDServiceImpl implements DailyTodoCRUDService{
     private final RepeatRepository repeatRepository;
 
     private final HashtagRepository hashtagRepository;
+
+    private final AuthRepository authRepository;
 
     private final LoginAuthContext loginAuthContext;
 
@@ -164,7 +166,8 @@ public class DailyTodoCRUDServiceImpl implements DailyTodoCRUDService{
     }
 
     private Auth getLoggedInAuth() {
-        return loginAuthContext.getLoginAuth();
+        return authRepository.findByEmail(loginAuthContext.getLoginAuth().getEmail())
+                .orElseThrow(EmailNotFoundException::new);
     }
 
     private DailyTodo saveNewDailyTodoEntity(DailyTodoSaveRequestDto dto, Auth auth) {

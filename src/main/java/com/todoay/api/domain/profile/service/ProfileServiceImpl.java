@@ -3,6 +3,7 @@ package com.todoay.api.domain.profile.service;
 import com.todoay.api.domain.profile.dto.ProfileReadResponseDto;
 import com.todoay.api.domain.profile.dto.ProfileUpdateReqeustDto;
 import com.todoay.api.domain.profile.entity.Profile;
+import com.todoay.api.domain.profile.exception.EmailNotFoundException;
 import com.todoay.api.domain.profile.exception.FileTypeMismatchException;
 import com.todoay.api.domain.profile.exception.NicknameDuplicateException;
 import com.todoay.api.domain.profile.repository.ProfileRepository;
@@ -83,6 +84,7 @@ public class ProfileServiceImpl implements ProfileService {
         return !profile.getNickname().equals(nickname);
     }
     private Profile getLoggedInProfile() {
-        return loginAuthContext.getLoginAuth().getProfile();
+         return profileRepository.findProfileByAuthEmail( loginAuthContext.getLoginAuth().getEmail())
+                 .orElseThrow(EmailNotFoundException::new);
     }
 }

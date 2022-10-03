@@ -155,6 +155,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     private Auth getLoggedInAuthFromJWT() {
-        return loginAuthContext.getLoginAuth();
+        return authRepository.findByEmail(loginAuthContext.getLoginAuth().getEmail())
+                .orElseThrow(EmailNotFoundException::new);
     }
 }

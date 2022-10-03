@@ -3,6 +3,7 @@ package com.todoay.api.domain.todo.service;
 import com.todoay.api.domain.auth.entity.Auth;
 import com.todoay.api.domain.auth.repository.AuthRepository;
 import com.todoay.api.domain.hashtag.repository.HashtagRepository;
+import com.todoay.api.domain.profile.exception.EmailNotFoundException;
 import com.todoay.api.domain.todo.dto.duedate.*;
 import com.todoay.api.domain.todo.entity.DueDateTodo;
 import com.todoay.api.domain.todo.entity.Importance;
@@ -11,7 +12,6 @@ import com.todoay.api.domain.todo.repository.DueDateTodoRepository;
 import com.todoay.api.domain.todo.utility.EnumTransformer;
 import com.todoay.api.domain.todo.utility.HashtagAttacher;
 import com.todoay.api.global.context.LoginAuthContext;
-import com.todoay.api.global.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -29,6 +29,7 @@ public class DueDateTodoCRUDServiceImpl implements DueDateTodoCRUDService {
     private final DueDateTodoRepository dueDateTodoRepository;
     private final LoginAuthContext loginAuthContext;
     private final HashtagRepository hashtagRepository;
+    private final AuthRepository authRepository;
 
 
     @Override
@@ -117,6 +118,7 @@ public class DueDateTodoCRUDServiceImpl implements DueDateTodoCRUDService {
     }
 
     private Auth getLoggedInAuth() {
-        return loginAuthContext.getLoginAuth();
+        return authRepository.findByEmail(loginAuthContext.getLoginAuth().getEmail())
+                .orElseThrow(EmailNotFoundException::new);
     }
 }
