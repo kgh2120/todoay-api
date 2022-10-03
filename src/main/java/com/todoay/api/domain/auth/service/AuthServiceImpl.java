@@ -54,14 +54,14 @@ public class AuthServiceImpl implements AuthService {
     @Transactional
     @Override
     public void updateAuthPassword(AuthUpdatePasswordRequestDto dto) {
-        Auth auth = validateIsRightAccessBeforeEditAccount(dto.getOriginPassword());
+        Auth auth = validateIsRightAccessToEditAccount(dto.getOriginPassword());
         updatePassword(dto, auth);
     }
 
     @Transactional
     @Override
     public void deleteAuth(String password) {
-        Auth auth = validateIsRightAccessBeforeEditAccount(password);
+        Auth auth = validateIsRightAccessToEditAccount(password);
         auth.deleteAuth();
     }
 
@@ -105,13 +105,13 @@ public class AuthServiceImpl implements AuthService {
         auth.updatePassword(encodedPassword);
     }
 
-    private Auth validateIsRightAccessBeforeEditAccount(String password) {
+    private Auth validateIsRightAccessToEditAccount(String password) {
         Auth auth = getLoggedInAuthFromJWT();
-        validateIsRightPasswordOnLogin(password, auth);
+        validateIsRightPasswordOnEdit(password, auth);
         return auth;
     }
 
-    private void validateIsRightPasswordOnLogin(String password, Auth auth) {
+    private void validateIsRightPasswordOnEdit(String password, Auth auth) {
         if (!encoder.matches(password, auth.getPassword())) {
             throw new PasswordNotMatchedException();
         }
