@@ -12,6 +12,7 @@ import com.todoay.api.domain.todo.dto.daily.DailyTodoReadResponseDto;
 import com.todoay.api.domain.todo.dto.daily.DailyTodoRepeatRequestDto;
 import com.todoay.api.domain.todo.entity.DailyTodo;
 import com.todoay.api.domain.todo.repository.DailyTodoRepository;
+import com.todoay.api.domain.todo.repository.RepeatRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -41,6 +42,9 @@ class DailyTodoCRUDServiceImplTest {
     HashtagRepository hashtagRepository;
     @Autowired
     CategoryRepository categoryRepository;
+
+    @Autowired
+    RepeatRepository repeatRepository;
 
     Long id;
 
@@ -103,19 +107,7 @@ class DailyTodoCRUDServiceImplTest {
     }
 
 
-    @Test
-    void repeatTest() {
-        DailyTodoRepeatRequestDto dto = new DailyTodoRepeatRequestDto();
-        dto.setRepeat(5);
-        dto.setDuration("custom_number");
-        dto.setRepeatType("weeks");
 
-        dailyTodoCRUDService.repeatDailyTodo(id,dto);
-
-        long count = repository.count();
-        assertThat(count).isSameAs(6L);
-
-    }
 
     @Test
     void modifyDailyDate() {
