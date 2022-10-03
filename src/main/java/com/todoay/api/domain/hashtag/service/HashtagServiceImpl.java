@@ -1,7 +1,6 @@
 package com.todoay.api.domain.hashtag.service;
 
 
-import com.todoay.api.domain.hashtag.dto.HashtagAutoCompleteResponseDto;
 import com.todoay.api.domain.hashtag.dto.HashtagInfoDto;
 import com.todoay.api.domain.hashtag.dto.HashtagSearchResponseDto;
 import com.todoay.api.domain.hashtag.entity.Hashtag;
@@ -18,21 +17,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 @Slf4j
 @RequiredArgsConstructor
-@Transactional(readOnly = false)
+@Transactional(readOnly = true)
 @Service
 public class HashtagServiceImpl implements HashtagService{
 
     private final HashtagRepository hashtagRepository;
 
-    @Override
-    public HashtagAutoCompleteResponseDto searchHashtagAutoComplete(String name) {
-        List<Hashtag> hashtags = hashtagRepository.findTop5ByNameStartsWith(name);
-        List<HashtagInfoDto> infoDtos = hashtags.stream()
-                .map(HashtagInfoDto::new)
-                .collect(Collectors.toList());
 
-        return new HashtagAutoCompleteResponseDto(infoDtos);
-    }
 
     @Override
     public HashtagSearchResponseDto searchHashtag(String name, int pageNum, int quantity) {
@@ -42,7 +33,6 @@ public class HashtagServiceImpl implements HashtagService{
         List<HashtagInfoDto> infoDtos = page.getContent().stream()
                 .map(HashtagInfoDto::new)
                 .collect(Collectors.toList());
-        log.info("list = {}",infoDtos);
         if(infoDtos.isEmpty())
             throw new NoMoreDataException();
 

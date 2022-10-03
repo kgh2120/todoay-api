@@ -34,11 +34,6 @@ class HashtagRepositoryTest {
     }
 
 
-    @Test
-    void autoComplete_size_test() {
-        List<Hashtag> tags = repository.findTop5ByNameStartsWith("#tag");
-        assertThat(tags.size()).isSameAs(5);
-    }
 
     @Test
     void search_first_test() {

@@ -1,12 +1,10 @@
 package com.todoay.api.domain.hashtag.service;
 
-import com.todoay.api.domain.hashtag.dto.HashtagAutoCompleteResponseDto;
 import com.todoay.api.domain.hashtag.dto.HashtagInfoDto;
 import com.todoay.api.domain.hashtag.dto.HashtagSearchResponseDto;
 import com.todoay.api.domain.hashtag.entity.Hashtag;
 import com.todoay.api.domain.hashtag.exception.NoMoreDataException;
 import com.todoay.api.domain.hashtag.repository.HashtagRepository;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,22 +32,6 @@ class HashtagServiceImplTest {
             repository.save(h1);
         }
     }
-
-    @AfterEach
-    void afterEach() {
-
-    }
-
-
-    @Test
-    void autoComplete_test() {
-
-        HashtagAutoCompleteResponseDto dto = hashtagService.searchHashtagAutoComplete(name);
-        List<HashtagInfoDto> infos = dto.getInfos();
-
-        assertThat(infos).hasSize(5);
-    }
-
     @Test
     void search_test() {
 
