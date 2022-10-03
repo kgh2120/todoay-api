@@ -11,9 +11,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 public interface AuthService extends UserDetailsService {
     // spring security 필수 메소드
 
-    void updateAuthPassword(AuthUpdatePasswordRequestDto dto); // 비밀번호 변경
+    void updateAuthPassword(AuthUpdatePasswordRequestDto dto);
 
-    // 계정 탈퇴
+
     void deleteAuth(String password);
     Long save(AuthSaveDto authSaveDto);
     LoginResponseDto login(LoginRequestDto loginRequestDto);
