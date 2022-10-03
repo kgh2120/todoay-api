@@ -17,6 +17,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -66,9 +68,9 @@ class DailyTodoCRUDServiceImplTest {
                 .dailyDate(LocalDate.now())
                 .category(category).build();
 
-        List<Hashtag> tags = hashtagRepository.findTop5ByNameStartsWith("#태그");
+        Slice<Hashtag> tags = hashtagRepository.findHashtagByNameContaining("#태그", PageRequest.of(0,5));
 
-        todo.associateWithHashtag(tags);
+        todo.associateWithHashtag(tags.getContent());
 
         System.out.println(todo);
 
@@ -103,19 +105,7 @@ class DailyTodoCRUDServiceImplTest {
     }
 
 
-    @Test
-    void repeatTest() {
-        DailyTodoRepeatRequestDto dto = new DailyTodoRepeatRequestDto();
-        dto.setRepeat(5);
-        dto.setDuration("custom_number");
-        dto.setRepeatType("weeks");
 
-        dailyTodoCRUDService.repeatDailyTodo(id,dto);
-
-        long count = repository.count();
-        assertThat(count).isSameAs(6L);
-
-    }
 
     @Test
     void modifyDailyDate() {
