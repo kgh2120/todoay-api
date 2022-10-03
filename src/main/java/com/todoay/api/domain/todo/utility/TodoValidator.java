@@ -7,9 +7,9 @@ import com.todoay.api.global.context.LoginAuthContext;
 public interface TodoValidator {
 
     default Todo checkIsPresentAndIsMineAndGetTodo(Long id, LoginAuthContext loginAuthContext) {
-        Todo dailyTodo = checkIsPresentAndGetTodo(id);
-        checkThisTodoIsMine(dailyTodo, loginAuthContext);
-        return dailyTodo;
+        Todo todo = checkIsPresentAndGetTodo(id);
+        checkThisTodoIsMine(todo, loginAuthContext);
+        return todo;
     }
 
     private void checkThisTodoIsMine(Todo todo, LoginAuthContext loginAuthContext) {

@@ -6,9 +6,9 @@ import com.todoay.api.domain.category.entity.Category;
 import com.todoay.api.domain.category.exception.CategoryNotFoundException;
 import com.todoay.api.domain.category.exception.NotYourCategoryException;
 import com.todoay.api.domain.category.repository.CategoryRepository;
+import com.todoay.api.domain.hashtag.dto.HashtagInfoDto;
 import com.todoay.api.domain.hashtag.entity.Hashtag;
 import com.todoay.api.domain.hashtag.repository.HashtagRepository;
-import com.todoay.api.domain.profile.exception.EmailNotFoundException;
 import com.todoay.api.domain.todo.dto.daily.*;
 import com.todoay.api.domain.todo.entity.DailyTodo;
 import com.todoay.api.domain.todo.entity.RepeatGroup;
@@ -55,44 +55,24 @@ public class DailyTodoCRUDServiceImpl implements DailyTodoCRUDService{
     @Override
     @Transactional
     public DailyTodoSaveResponseDto addTodo(DailyTodoSaveRequestDto dto) {
-        Auth auth = authRepository.findByEmail(jwtProvider.getLoginId()).orElseThrow(EmailNotFoundException::new);
-        DailyTodo dailyTodo = DailyTodo.builder()
-                .title(dto.getTitle())
-                .isPublic(dto.isPublic())
-                .isFinished(false)
-                .description(dto.getDescription())
-                .targetTime(dto.getTargetTime())
-                .alarm(dto.getAlarm())
-                .place(dto.getPlace())
-                .people(dto.getPeople())
-                .dailyDate(dto.getDailyDate())
-                .category(checkIsPresentAndIsMineGetCategory(dto.getCategoryId()))
-                .auth(auth)   // auth??
-                .build();
-        HashtagAttacher.attachHashtag(dailyTodo, dto.getHashtagNames(), hashtagRepository);
-       dailyTodoRepository.save(dailyTodo);
+        Auth auth = getLoggedInAuth();
+        DailyTodo dailyTodo = saveNewDailyTodoEntity(dto, auth);
 
         return DailyTodoSaveResponseDto.builder().id(dailyTodo.getId()).build();
     }
+
     @Override
     @Transactional
     public void modifyDailyTodo(Long id, DailyTodoModifyRequestDto dto) {
         DailyTodo dailyTodo = checkIsPresentAndIsMineAndGetTodo(id);
         dailyTodo.modify(dto, checkIsPresentAndIsMineGetCategory(dto.getCategoryId()));
-        HashtagAttacher.attachHashtag(dailyTodo, dto.getHashtagNames(), hashtagRepository);
-    }
-
-    @Override
-    @Transactional
-    public void deleteDailyTodo(Long id) {
-        DailyTodo dailyTodo = checkIsPresentAndIsMineAndGetTodo(id);
-        dailyTodoRepository.delete(dailyTodo);
+        attachHashtagToDailyTodo(dailyTodo, dto.getHashtagNames());
     }
 
     @Override
     public List<DailyTodoReadResponseDto> readDailyTodosByDate(LocalDate date) {
-        Auth loginedAuth = loginAuthContext.getLoginAuth();
-        List<DailyTodo> dailyTodos = dailyTodoRepository.findDailyTodoOfUserByDate(date, loginedAuth);
+        Auth loggedInAuth = getLoggedInAuth();
+        List<DailyTodo> dailyTodos = dailyTodoRepository.findDailyTodoOfUserByDate(date, loggedInAuth);
         return dailyTodos.stream()
                 .map(DailyTodoReadResponseDto::createDto)
                 .collect(Collectors.toList());
@@ -108,9 +88,9 @@ public class DailyTodoCRUDServiceImpl implements DailyTodoCRUDService{
     @Transactional
     @Async
     public ListenableFuture<ResponseEntity<Void>> repeatDailyTodo(Long id, DailyTodoRepeatRequestDto dto) {
-        DailyTodo source = checkIsPresentAndIsMineAndGetTodo(id);
-        List<LocalDate> repeatedDate = getRepeatedDate(dto,source.getDailyDate());
-        createDailyTodoByRepeatedDate(source,repeatedDate);
+        DailyTodo origin = checkIsPresentAndIsMineAndGetTodo(id);
+        List<LocalDate> repeatedDate = getRepeatedDate(dto,origin.getDailyDate());
+        createDailyTodoByRepeatedDate(origin,repeatedDate);
         return new AsyncResult<>(ResponseEntity.status(HttpStatus.CREATED).build());
     }
 
@@ -144,16 +124,28 @@ public class DailyTodoCRUDServiceImpl implements DailyTodoCRUDService{
     }
 
     private List<LocalDate> getRepeatedDate(DailyTodoRepeatRequestDto dto, LocalDate targetDate) {
-        RepeatType repeatType = (RepeatType) EnumTransformer.valueOfEnum(RepeatType.class, dto.getRepeatType());
-        Duration duration = (Duration) EnumTransformer.valueOfEnum(Duration.class, dto.getDuration());
+        RepeatType repeatType = transformUserInputToRepeatTypeEnum(dto);
+        Duration duration = transformUserInputToDurationEnum(dto);
+        return createRepeatedDateByCondition(dto, targetDate, repeatType, duration);
+    }
+
+    private List<LocalDate> createRepeatedDateByCondition(DailyTodoRepeatRequestDto dto, LocalDate targetDate, RepeatType repeatType, Duration duration) {
         return duration.select(repeatType.getDateRepeator(), dto.getRepeat(), targetDate);
     }
 
+    private Duration transformUserInputToDurationEnum(DailyTodoRepeatRequestDto dto) {
+        return (Duration) EnumTransformer.valueOfEnum(Duration.class, dto.getDuration());
+    }
+
+    private RepeatType transformUserInputToRepeatTypeEnum(DailyTodoRepeatRequestDto dto) {
+        return (RepeatType) EnumTransformer.valueOfEnum(RepeatType.class, dto.getRepeatType());
+    }
 
 
     private DailyTodo checkIsPresentAndIsMineAndGetTodo(Long id) {
         return (DailyTodo) checkIsPresentAndIsMineAndGetTodo(id,loginAuthContext);
     }
+
     private Category checkIsPresentAndIsMineGetCategory(Long id) {
         Category category = checkIsPresentAndGetCategory(id);
         checkThisCategoryIsMine(category);
@@ -164,7 +156,6 @@ public class DailyTodoCRUDServiceImpl implements DailyTodoCRUDService{
         if(!category.getAuth().equals(loginAuthContext.getLoginAuth()))
             throw new NotYourCategoryException();
     }
-
     private Category checkIsPresentAndGetCategory(Long id) {
         return categoryRepository.findById(id).orElseThrow(CategoryNotFoundException::new);
     }
@@ -172,6 +163,38 @@ public class DailyTodoCRUDServiceImpl implements DailyTodoCRUDService{
     @Override
     public DailyTodo checkIsPresentAndGetTodo(Long id) {
         return dailyTodoRepository.findDailyTodoById(id).orElseThrow(TodoNotFoundException::new);
+    }
+
+    private Auth getLoggedInAuth() {
+        return loginAuthContext.getLoginAuth();
+    }
+
+    private DailyTodo saveNewDailyTodoEntity(DailyTodoSaveRequestDto dto, Auth auth) {
+        DailyTodo dailyTodo = createDailyTodoEntity(dto, auth);
+        dailyTodoRepository.save(dailyTodo);
+        return dailyTodo;
+    }
+
+    private DailyTodo createDailyTodoEntity(DailyTodoSaveRequestDto dto, Auth auth) {
+        DailyTodo dailyTodo = DailyTodo.builder()
+                .title(dto.getTitle())
+                .isPublic(dto.isPublic())
+                .isFinished(false)
+                .description(dto.getDescription())
+                .targetTime(dto.getTargetTime())
+                .alarm(dto.getAlarm())
+                .place(dto.getPlace())
+                .people(dto.getPeople())
+                .dailyDate(dto.getDailyDate())
+                .category(checkIsPresentAndIsMineGetCategory(dto.getCategoryId()))
+                .auth(auth)
+                .build();
+        attachHashtagToDailyTodo(dailyTodo, dto.getHashtagNames());
+        return dailyTodo;
+    }
+
+    private void attachHashtagToDailyTodo(DailyTodo dailyTodo, List<HashtagInfoDto> dto) {
+        HashtagAttacher.attachHashtag(dailyTodo, dto, hashtagRepository);
     }
 }
 
