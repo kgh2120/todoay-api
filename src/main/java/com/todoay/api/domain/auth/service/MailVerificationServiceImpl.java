@@ -109,16 +109,33 @@ public class MailVerificationServiceImpl implements MailVerificationService {
         return null;
     }
 
-    private String sendMail(String email, String subject, String path, String message) throws MessagingException {
+    private String sendMail(String email, String title , String path, String message) throws MessagingException {
         MailHandler mailHandler = new MailHandler(mailSender);
-        mailHandler.setTo(email);
-        mailHandler.setSubject(subject);
-        String emailToken = jwtProvider.createEmailToken(email);
-        String sb = MailTextCreator.createMailText(baseUrl,path
-        ,emailToken,message);
-        mailHandler.setText(sb, true);
+        String emailToken = setConditionOfSendMail(email, title, path, message, mailHandler);
         new Thread(mailHandler::send).start();
         return emailToken;
+    }
+
+    private String setConditionOfSendMail(String email, String subject, String path, String message, MailHandler mailHandler) throws MessagingException {
+        setAddressee(email, mailHandler);
+        setMailTitle(subject, mailHandler);
+        return setMailContents(email, path, message, mailHandler);
+    }
+
+    private String setMailContents(String email, String path, String message, MailHandler mailHandler) throws MessagingException {
+        String emailToken = jwtProvider.createEmailToken(email);
+        String sb = MailTextCreator.createMailText(baseUrl, path
+        ,emailToken, message);
+        mailHandler.setText(sb, true);
+        return emailToken;
+    }
+
+    private void setMailTitle(String subject, MailHandler mailHandler) throws MessagingException {
+        mailHandler.setSubject(subject);
+    }
+
+    private void setAddressee(String email, MailHandler mailHandler) throws MessagingException {
+        mailHandler.setTo(email);
     }
 
 
