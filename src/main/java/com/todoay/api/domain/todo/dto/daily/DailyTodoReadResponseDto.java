@@ -11,25 +11,37 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Data @NoArgsConstructor @AllArgsConstructor @Builder
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class DailyTodoReadResponseDto {
 
     private Long id;
     private String title;
+    private boolean isPublic;
+    private boolean isFinished;
 
-    private CategoryInfoDto categoryInfoDto;
+    private Long categoryId;
+    private Long repeatId;
     private List<HashtagInfoDto> hashtagInfoDtos = new ArrayList<>();
 
     public static DailyTodoReadResponseDto createDto(DailyTodo todo) {
 
-        return DailyTodoReadResponseDto.builder()
+        DailyTodoReadResponseDtoBuilder builder = DailyTodoReadResponseDto.builder()
                 .id(todo.getId())
                 .title(todo.getTitle())
-                .categoryInfoDto(CategoryInfoDto.create(todo.getCategory()))
+                .isPublic(todo.isPublic())
+                .isFinished(todo.isFinished())
+                .categoryId(todo.getCategory().getId())
                 .hashtagInfoDtos(todo.getTodoHashtags().stream()
-                        .map(th-> new HashtagInfoDto(th.getHashTag()))
-                        .collect(Collectors.toList()))
-                .build();
+                        .map(th -> new HashtagInfoDto(th.getHashTag()))
+                        .collect(Collectors.toList()));
+
+        if(todo.getRepeatGroup() != null)
+            builder.repeatId(todo.getRepeatGroup().getId());
+
+        return builder.build();
 
     }
 

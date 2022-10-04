@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -86,11 +87,24 @@ public class DailyTodoController {
                     @ApiResponse(responseCode = "403", description = "1. 내 TODO가 아닌 TODO에 접근 \t\n 2. ENUM 변환 실패", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
                     @ApiResponse(responseCode = "404", description = "해당 ID에 리소스가 존재하지 않음", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
             }
-
     )
-    public ResponseEntity<Void> repeatDailyTodoByCondition(@PathVariable("id") long id, @RequestBody @Validated DailyTodoRepeatRequestDto dto) {
-        dailyTodoCRUDService.repeatDailyTodo(id,dto);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    public ListenableFuture<ResponseEntity<Void>> repeatDailyTodoByCondition(@PathVariable("id") long id, @RequestBody @Validated DailyTodoRepeatRequestDto dto) {
+        return dailyTodoCRUDService.repeatDailyTodo(id, dto);
+    }
+    @DeleteMapping("/{id}/repeat")
+    @Operation(
+            summary = "로그인 유저의 반복 그룹에 엮이 Daily Todo를 전부 삭제한다",
+            responses = {
+                    @ApiResponse(responseCode = "204"),
+                    @ApiResponse(responseCode = "400", description = "올바른 양식을 입력하지 않음.", content = @Content(schema = @Schema(implementation = ValidErrorResponse.class))),
+                    @ApiResponse(responseCode = "401", description = "Access Token 만료", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+                    @ApiResponse(responseCode = "403", description = "리소스가 로그인 유저의 것이 아님", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+                    @ApiResponse(responseCode = "404", description = "해당 id의 리소스가 존재하지 않음", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+            }
+    )
+    public ResponseEntity<Void> deleteAllRepeatGroupById(@PathVariable("id") long id) {
+        dailyTodoCRUDService.deleteAllRepeatedDailyTodo(id);
+        return ResponseEntity.noContent().build();
     }
 
 

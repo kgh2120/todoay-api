@@ -32,6 +32,8 @@ public class DailyTodoReadDetailResponseDto {
     private LocalDate dailyDate;
     private CategoryInfoDto category;
 
+    private Long repeatId;
+
     private List<HashtagInfoDto> hashtagNames = new ArrayList<>();
 
     public static DailyTodoReadDetailResponseDto createReadResponseDto(DailyTodo dailyTodo) {
@@ -57,6 +59,8 @@ public class DailyTodoReadDetailResponseDto {
         if (isStrNotNull(dailyTodo.getPlace()))
             dto.place = dailyTodo.getPlace();
         dto.dailyDate = dailyTodo.getDailyDate();
+        if(dailyTodo.getRepeatGroup() != null)
+            dto.repeatId = dailyTodo.getRepeatGroup().getId();
         return dto;
     }
 

@@ -1,6 +1,7 @@
 package com.todoay.api.domain.todo.service;
 
 import com.todoay.api.domain.auth.entity.Auth;
+import com.todoay.api.domain.auth.repository.AuthRepository;
 import com.todoay.api.domain.todo.dto.duedate.DueDateTodoReadDetailResponseDto;
 import com.todoay.api.domain.todo.dto.duedate.DueDateTodoReadResponseDto;
 import com.todoay.api.domain.todo.entity.DueDateTodo;
@@ -38,13 +39,15 @@ class DueDateTodoCRUDServiceImplTest {
     DueDateTodoRepository dueDateTodoRepository;
     @Mock
     LoginAuthContext loginAuthContext;
+    @Mock
+    AuthRepository authRepository;
     @InjectMocks
     DueDateTodoCRUDServiceImpl service;
 
     @Test
     void readDueDateTodoByCondition_Order() throws Exception{
         //given
-        setMockObjectMethodForReadMultiObj();
+        setMockObjectForLoggedInAuth();
 
         //when
         String condition = "duedate";
@@ -62,7 +65,7 @@ class DueDateTodoCRUDServiceImplTest {
     @Test
     void readDueDateTodoByCondition_Importance() throws Exception{
         //given
-        setMockObjectMethodForReadMultiObj();
+        setMockObjectForLoggedInAuth();
 
         //when
         String condition = "importance";
@@ -81,7 +84,7 @@ class DueDateTodoCRUDServiceImplTest {
     @Test
     void readDueDateTodoByCondition_Else() throws Exception{
         //given
-        setMockObjectMethodForReadMultiObj();
+        setMockObjectForLoggedInAuth();
 
         //when
         //then
@@ -190,14 +193,27 @@ class DueDateTodoCRUDServiceImplTest {
     }
 
     private void setMockObjectMethodForReadFinishedObj() throws Exception {
+        given(authRepository.findByEmail(any()))
+                .willReturn(Optional.of(createAuthData()));
         given(dueDateTodoRepository.findFinishedDueDateTodoByAuth(any()))
                 .willReturn(filterFinishedData());
         given(loginAuthContext.getLoginAuth())
                 .willReturn(createAuthData());
     }
 
+    private void setMockObjectForLoggedInAuth() throws Exception{
+        given(authRepository.findByEmail(any()))
+                .willReturn(Optional.of(createAuthData()));
+        given(dueDateTodoRepository.findNotFinishedDueDateTodoByAuth(any()))
+                .willReturn(filterNotFinishedData());
+        given(loginAuthContext.getLoginAuth())
+                .willReturn(createAuthData());
+    }
+
 
     private void setMockObjectMethodForReadMultiObj() throws Exception {
+//        given()
+
         given(dueDateTodoRepository.findNotFinishedDueDateTodoByAuth(any()))
                 .willReturn(filterNotFinishedData());
         given(loginAuthContext.getLoginAuth())

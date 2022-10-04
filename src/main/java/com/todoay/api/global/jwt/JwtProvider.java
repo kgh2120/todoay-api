@@ -10,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,7 +21,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Date;
 
-@PropertySource("classpath:secret.properties")
 @Component
 @RequiredArgsConstructor
 public class JwtProvider {
@@ -46,19 +44,18 @@ public class JwtProvider {
 
     private String createToken(long expirationTime, String email) {
         // 토큰 생성 시작
-        LOGGER.info("[createToken] 토큰 생성 시작");
+
         Claims claims = Jwts.claims().setSubject(email);
 
         Date now = new Date();
-        String token = Jwts.builder()
+
+
+        return Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(now)
                 .setExpiration(new Date(now.getTime() + expirationTime))
                 .signWith(SignatureAlgorithm.HS256, secretKey) // 암호화 알고리즘, secret 값 세팅
                 .compact();
-
-        LOGGER.info("[createToken] 토큰 생성 완료");
-        return token;
     }
 
     public String createEmailToken(String email) {
@@ -76,18 +73,15 @@ public class JwtProvider {
     public String getUserEmail(String token) {
         // Jwts.parser()로 secretKey를 설정하고 claim을 추출해서 토큰 생성할 때 넣었던 sub 값 추출
         try {
-            LOGGER.info("[getUserEmail] 토큰 기반 회원 구별 정보 추출");
-            String info = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody()
+
+            return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody()
                     .getSubject();
-            LOGGER.info("[getUserEmail] 토큰 기반 회원 구별 정보 추출 완료, info : {}", info);
-            return info;
         } catch (IllegalArgumentException e) {
             throw new JwtHeaderNotFoundException();
         }
     }
 
     public String resolveToken(HttpServletRequest request) {
-        LOGGER.info("[resolveToken] HTTP 헤더에서 Token 값 추출");
         return request.getHeader("X-AUTH-TOKEN");
     }
 
@@ -95,13 +89,11 @@ public class JwtProvider {
         SecurityContext context = SecurityContextHolder.getContext();
         Authentication authentication = context.getAuthentication();
         Auth auth = (Auth) authentication.getPrincipal();
-        LOGGER.info("auth = {}", auth);
         return auth.getEmail();
     }
 
     public Claims validateToken(String token) {
         try {
-            LOGGER.info("[validateToken] 토큰 유효 체크 시작");
             Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
             return claims.getBody();
         } catch (IllegalArgumentException e) {

@@ -12,6 +12,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -55,9 +57,9 @@ class DailyTodoRepositoryTest {
                 .category(ca)
                 .dailyDate(LocalDate.now()).build();
 
-        List<Hashtag> tags = hashtagRepository.findTop5ByNameStartsWith("#태그");
+        Slice<Hashtag> tags = hashtagRepository.findHashtagByNameContaining("#태그", PageRequest.of(0,5));
 
-        todo.associateWithHashtag(tags);
+        todo.associateWithHashtag(tags.getContent());
 
         System.out.println("[TODO-READY]"+todo);
 

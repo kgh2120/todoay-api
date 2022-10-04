@@ -33,10 +33,9 @@ public class DueDateTodo extends Todo{
         this.auth = auth;
     }
 
-    public void modify(String title, boolean isPublic,boolean isFinished, LocalDate dueDate, String description, Importance importance) {
+    public void modify(String title, boolean isPublic, LocalDate dueDate, String description, Importance importance) {
         this.title = title;
         this.isPublic = isPublic;
-        this.isFinished = isFinished;
         this.dueDate = dueDate;
         this.description = description;
         this.importance = importance;

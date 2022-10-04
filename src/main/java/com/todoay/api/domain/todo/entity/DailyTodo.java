@@ -15,7 +15,6 @@ import javax.persistence.ManyToOne;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.List;
 
 @Entity
 @Getter
@@ -34,6 +33,10 @@ public class DailyTodo extends Todo implements Cloneable{
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
+
+    @ManyToOne
+    @JoinColumn(name = "repeat_id")
+    private RepeatGroup repeatGroup;
 
 
     @Builder
@@ -54,8 +57,7 @@ public class DailyTodo extends Todo implements Cloneable{
     }
     public void modify(DailyTodoModifyRequestDto dto,Category category) {
         this.title = dto.getTitle();
-        this.isPublic = dto.isPublic();
-        this.isFinished = dto.isFinished();
+        this.isPublic = dto.isPublicBool();
         this.description = dto.getDescription();
         this.targetTime= dto.getTargetTime();
         this.alarm = dto.getAlarm();
@@ -113,6 +115,10 @@ public class DailyTodo extends Todo implements Cloneable{
         if (this.targetTime != null) {
             this.targetTime = LocalDateTime.of(dailyDate, LocalTime.of(this.targetTime.getHour(),targetTime.getMinute()));
         }
+    }
+    public void enterRepeatGroup(RepeatGroup repeatGroup) {
+        this.repeatGroup = repeatGroup;
+        this.repeatGroup.getDailyTodos().add(this);
     }
 
 }

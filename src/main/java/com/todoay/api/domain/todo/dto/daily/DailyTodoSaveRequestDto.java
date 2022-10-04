@@ -6,7 +6,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -18,7 +20,7 @@ import java.util.List;
 @AllArgsConstructor
 public class DailyTodoSaveRequestDto {
     // 투두 공통 속성
-    @NotNull
+    @NotBlank
     private String title;
     private String description = "내용 없음";
     private boolean isPublic = false;

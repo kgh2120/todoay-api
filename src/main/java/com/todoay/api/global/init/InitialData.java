@@ -13,7 +13,9 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceUnit;
 
+
 @RequiredArgsConstructor
+@org.springframework.context.annotation.Profile("dev")
 @Configuration
 public class InitialData {
 
@@ -46,7 +48,7 @@ public class InitialData {
 
 
         for (int i = 0; i < 10; i++) {
-            Hashtag hashtag = new Hashtag("#태그" + i);
+            Hashtag hashtag = new Hashtag("태그" + i);
             em.persist(hashtag);
         }
 

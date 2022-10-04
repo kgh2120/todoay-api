@@ -35,15 +35,13 @@ public class AuthController {
             }
     )
     @PostMapping("/sign-up")
-    public ResponseEntity<Void> signup(@RequestBody @Validated AuthSaveDto authSaveDto) {  // validated하고 설정하면 그 중에 몇개만 골라서 검사 해줌. valid는 다 함
+    public ResponseEntity<Void> signup(@RequestBody @Validated AuthSaveDto authSaveDto) {
 
 
         authService.save(authSaveDto);
-        // save까지 authService interface에 구현?
         return ResponseEntity.noContent().build();
     }
 
-    // login 할 때는 jwt로 반환하기로
     @Operation(
             summary = "로그인을 한다.",
             description = "가입된 이메일과 패스워드로 로그인을 진행. 입력한 이메일과 패스워드가 가입된 이메일, 패스워드와 다르거나 없는 경우 오류 발생.",
@@ -57,7 +55,7 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDto> login(@RequestBody @Validated LoginRequestDto loginRequestDto) {
         LoginResponseDto tokens = authService.login(loginRequestDto);
-        refreshTokenService.login(loginRequestDto,tokens.getRefreshToken()); // refreshToken 저장
+        refreshTokenService.login(loginRequestDto,tokens.getRefreshToken());
         return ResponseEntity.status(201).body(tokens);
     }
 
@@ -86,13 +84,14 @@ public class AuthController {
             responses = {
                     @ApiResponse(responseCode = "204", description = "성공"),
                     @ApiResponse(responseCode = "401", description = "AccessToken 만료 ",content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-                    @ApiResponse(responseCode = "403",description = "허락되지 않은 접근",content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+                    @ApiResponse(responseCode = "403",description = "허락되지 않은 접근",content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+                    @ApiResponse(responseCode = "404",description = "틀린 비밀번호 입력",content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
             }
     )
     @DeleteMapping("/my")
-    public ResponseEntity<Void> deleteAccount() {
+    public ResponseEntity<Void> deleteAccount(@RequestBody AuthDeleteRequestDto dto) {
 
-        authService.deleteAuth();
+        authService.deleteAuth(dto.getPassword());
         return ResponseEntity.noContent().build();
     }
 

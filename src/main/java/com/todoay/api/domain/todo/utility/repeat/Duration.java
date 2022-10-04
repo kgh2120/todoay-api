@@ -1,10 +1,7 @@
 package com.todoay.api.domain.todo.utility.repeat;
 
 
-import com.todoay.api.domain.todo.utility.repeat.impl.selector.CustomMonthDateSelector;
-import com.todoay.api.domain.todo.utility.repeat.impl.selector.CustomNumberDateSelector;
-import com.todoay.api.domain.todo.utility.repeat.impl.selector.OneMonthDateSelector;
-import com.todoay.api.domain.todo.utility.repeat.impl.selector.CustomWeeksDateSelector;
+import com.todoay.api.domain.todo.utility.repeat.impl.selector.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -14,6 +11,7 @@ import java.util.List;
 @RequiredArgsConstructor @Getter
 public enum Duration {
     ONE_MONTH(new OneMonthDateSelector()),
+    NO_END_DATE(new NoEndDateSelector()),
     CUSTOM_WEEKS(new CustomWeeksDateSelector()),
     CUSTOM_MONTH(new CustomMonthDateSelector()),
     CUSTOM_NUMBER(new CustomNumberDateSelector());

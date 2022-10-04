@@ -13,21 +13,23 @@ import java.util.Optional;
 public interface DailyTodoRepository extends JpaRepository<DailyTodo, Long> {
 
     @Query("select distinct t from DailyTodo t " +
-            "join fetch t.todoHashtags th " +
-            "join fetch th.hashTag h " +
+            "left join fetch t.todoHashtags th " +
+            "left join fetch th.hashTag h " +
             "join fetch t.auth a " +
             "join fetch t.category c " +
             "join fetch a.profile p " +
+            "left join fetch t.repeatGroup r " +
             "where t.dailyDate =:localDate " +
             "and t.auth =:auth")
     List<DailyTodo> findDailyTodoOfUserByDate(@Param("localDate") LocalDate localDate, @Param("auth") Auth auth);
 
     @Query("select distinct t from DailyTodo t " +
-            "join fetch t.todoHashtags th " +
-            "join fetch th.hashTag h " +
+            "left join fetch t.todoHashtags th " +
+            "left join fetch th.hashTag h " +
             "join fetch t.auth a " +
             "join fetch t.category c " +
             "join fetch a.profile p " +
+            "left join fetch t.repeatGroup r " +
             "where t.id =:id")
     Optional<DailyTodo> findDailyTodoById(@Param("id") Long id);
 }

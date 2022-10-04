@@ -1,9 +1,12 @@
 package com.todoay.api.domain.todo.dto.daily;
 
 import com.todoay.api.domain.hashtag.dto.HashtagInfoDto;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -11,14 +14,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-@Builder
+@Builder @NoArgsConstructor @AllArgsConstructor
 public class DailyTodoModifyRequestDto {
     // 투두 공통 속성
-    @NotNull
+    @NotBlank
     private String title;
     private String description = "내용 없음";
-    private boolean isPublic = false;
-    private boolean isFinished = false;
+    private boolean publicBool = false;
 
     // DailyTodo 속성
     private LocalDateTime alarm;

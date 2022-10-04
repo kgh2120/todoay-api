@@ -1,12 +1,10 @@
 package com.todoay.api.domain.hashtag.service;
 
-import com.todoay.api.domain.hashtag.dto.HashtagAutoCompleteResponseDto;
 import com.todoay.api.domain.hashtag.dto.HashtagInfoDto;
 import com.todoay.api.domain.hashtag.dto.HashtagSearchResponseDto;
 import com.todoay.api.domain.hashtag.entity.Hashtag;
 import com.todoay.api.domain.hashtag.exception.NoMoreDataException;
 import com.todoay.api.domain.hashtag.repository.HashtagRepository;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,26 +32,10 @@ class HashtagServiceImplTest {
             repository.save(h1);
         }
     }
-
-    @AfterEach
-    void afterEach() {
-
-    }
-
-
-    @Test
-    void autoComplete_test() {
-
-        HashtagAutoCompleteResponseDto dto = hashtagService.searchHashtagAutoComplete(name);
-        List<HashtagInfoDto> infos = dto.getInfos();
-
-        assertThat(infos).hasSize(5);
-    }
-
     @Test
     void search_test() {
 
-        HashtagSearchResponseDto dto = hashtagService.searchHashtag(name, 0);
+        HashtagSearchResponseDto dto = hashtagService.searchHashtag(name, 0, 5);
         List<HashtagInfoDto> infos = dto.getInfos();
         int nextPage = dto.getNextPageNum();
         boolean hasNext = dto.isHasNext();
@@ -66,13 +48,13 @@ class HashtagServiceImplTest {
 
     @Test
     void search_test_exception_page() {
-        assertThatThrownBy(() -> hashtagService.searchHashtag(name, 1000))
+        assertThatThrownBy(() -> hashtagService.searchHashtag(name, 1000, 5))
                 .isInstanceOf(NoMoreDataException.class);
     }
 
     @Test
     void search_test_exception_name() {
-        assertThatThrownBy(() -> hashtagService.searchHashtag("qwecqwceqwecqwec", 0))
+        assertThatThrownBy(() -> hashtagService.searchHashtag("qwecqwceqwecqwec", 0, 5))
                 .isInstanceOf(NoMoreDataException.class);
     }
 
