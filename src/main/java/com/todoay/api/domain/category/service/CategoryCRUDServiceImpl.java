@@ -21,8 +21,7 @@ public class CategoryCRUDServiceImpl implements CategoryCRUDService {
 
     @Override
     public CategorySaveResponseDto addCategory(CategorySaveRequestDto dto) {
-        log.info("Category-addCategory - Auth = {}",loginAuthContext.getLoginAuth());
-        return new CategorySaveResponseDto(categoryRepository.save(new Category(dto.getName(), dto.getColor(), dto.getOrderIndex(), loginAuthContext.getLoginAuth())).getId());
+        return new CategorySaveResponseDto(saveNewCategoryEntity(dto));
     }
 
     @Override
@@ -48,6 +47,11 @@ public class CategoryCRUDServiceImpl implements CategoryCRUDService {
     @Override
     public void endCategory(Long id) {
         checkIsPresentAndIsMineAndGetCategory(id).end();
+    }
+
+    private Long saveNewCategoryEntity(CategorySaveRequestDto dto) {
+        return categoryRepository.save(new Category(dto.getName(), dto.getColor(),
+                dto.getOrderIndex(), loginAuthContext.getLoginAuth())).getId();
     }
 
     private Category checkIsPresentAndIsMineAndGetCategory(Long id) {

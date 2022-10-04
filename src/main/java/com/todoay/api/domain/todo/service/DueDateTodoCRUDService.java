@@ -9,7 +9,6 @@ import java.util.List;
 public interface DueDateTodoCRUDService extends TodoValidator {
     DueDateTodoSaveResponseDto addTodo(DueDateTodoSaveRequestDto dto);
     void modifyDueDateTodo(Long id, DueDateTodoModifyRequestDto dto);
-    void deleteDueDateTodo(Long id);
     List<DueDateTodoReadResponseDto> readTodosOrderByCondition(String condition);
 
     DueDateTodoReadDetailResponseDto readDueDateTodoDetail(Long id);
